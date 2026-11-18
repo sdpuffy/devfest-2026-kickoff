@@ -15,7 +15,7 @@ const neutral = coachPose(0, 'idle', true, restingSpeech);
 const poseKeys = Object.keys(neutral) as (keyof CoachPose)[];
 const status = { idle: 'READY WHEN YOU ARE', talking: 'COACH IS SPEAKING', exercise: 'MOVEMENT DEMO · SQUAT', celebrate: 'LET’S GO!', thinking: 'THINKING…' };
 
-export function AnimatedCoach({ coach, motion, speechAnimation, compact = false, height, showStatus = true, exercise, paused = false }: { exercise?: string; paused?: boolean; coach: Coach; compact?: boolean; height?: number; showStatus?: boolean; motion: CoachMotion; speechAnimation: RefObject<SpeechAnimation> }) {
+export function AnimatedCoach({ coach, motion, speechAnimation, compact = false, height, showStatus = true, exercise, paused = false }: { exercise?: string; paused?: boolean; coach: Coach; compact?: boolean; height?: number; showStatus?: boolean; motion: CoachMotion; speechAnimation?: RefObject<SpeechAnimation> }) {
   const current = useRef(motion);
   useEffect(() => { current.current = motion; }, [motion]);
   const playback = useRef({ exercise, paused });
@@ -53,7 +53,7 @@ export function AnimatedCoach({ coach, motion, speechAnimation, compact = false,
       }
       if (!playback.current.paused) elapsed += dt;
       if (state === 'exercise' && playback.current.paused) return;
-      const target = coachPose(elapsed, state, reduced, sampleSpeech(speechAnimation.current, Date.now()));
+      const target = coachPose(elapsed, state, reduced, speechAnimation ? sampleSpeech(speechAnimation.current, Date.now()) : restingSpeech);
       const blend = reduced ? 1 : easeInOut((now - transitionStart) / 450);
       for (const key of poseKeys) {
         // Keep word boundaries responsive, while softly settling lips between syllables.

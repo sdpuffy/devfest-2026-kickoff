@@ -63,7 +63,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "atlas.png",
     "icon": "🏀",
-    "color": "#552583",
+    "color": "#1f8a8a",
     "greeting": "What's good! I'm Coach Atlas. We train for the long game here: strength, conditioning and recovery. Tell me what you want to work on and I'll build your week."
   },
   {
@@ -124,7 +124,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "ironside.png",
     "icon": "💪",
-    "color": "#8B1E1E",
+    "color": "#3d4f8a",
     "greeting": "Let's go! Ready to build some serious size? I'm Coach Ironside. Tell me how many days you can train and let's get to work!"
   },
   {
@@ -187,7 +187,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "blaze.png",
     "icon": "⚡",
-    "color": "#007A3D",
+    "color": "#e2462f",
     "greeting": "Hey hey! Coach Blaze here, your speed coach. Fast is a skill, and we're gonna practice it. What do you want: speed, explosiveness, or getting lean?"
   },
   {
@@ -251,7 +251,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "vanguard.png",
     "icon": "⚽",
-    "color": "#B8860B",
+    "color": "#2f6fd0",
     "greeting": "Welcome. I'm Coach Vanguard. Discipline every day, that's how we win. Tell me your goal and how many days you can train."
   },
   {
@@ -315,7 +315,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "rally.png",
     "icon": "🎾",
-    "color": "#C2185B",
+    "color": "#7b3fa0",
     "greeting": "Hey champ! I'm Coach Rally. We'll build power you can repeat and keep your joints happy. What are we working toward?"
   },
   {
@@ -374,7 +374,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "strike.png",
     "icon": "🥋",
-    "color": "#1565C0",
+    "color": "#d63a3a",
     "greeting": "Hi! I'm Coach Strike. Cardio got me started, lifting made me strong. Want to build strong legs and learn some kicks?"
   },
   {
@@ -435,7 +435,7 @@ export const COACHES: Coach[] = [
     },
     "avatar": "anvil.png",
     "icon": "🏋️",
-    "color": "#E65100",
+    "color": "#d9a21b",
     "greeting": "Hey! Coach Anvil here. Simple lifts, done hard, done consistently. What's your goal and how often can you get to the gym?"
   }
 ];

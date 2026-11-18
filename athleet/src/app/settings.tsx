@@ -256,10 +256,6 @@ export default function SettingsScreen() {
 
         {/* ── More ── */}
         <Section title="More" styles={styles}>
-          <Pressable style={styles.rowLink} onPress={() => router.push('/voice-settings' as any)} accessibilityRole="button">
-            <Text style={styles.rowLinkText}>Coach voice settings</Text>
-            <Text style={styles.rowLinkArrow}>›</Text>
-          </Pressable>
           <Pressable
             style={({ pressed }) => [styles.resetBtn, pressed && styles.pressed]}
             onPress={resetAppearance}
@@ -439,9 +435,6 @@ function makeStyles({ colors: c }: StyleContext) {
 
     toggleRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 },
 
-    rowLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 },
-    rowLinkText: { color: c.text, fontSize: 15, fontWeight: '600' },
-    rowLinkArrow: { color: c.textFaint, fontSize: 22 },
     resetBtn: { minHeight: 44, borderRadius: 8, borderWidth: 1, borderColor: c.dangerBorder, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
     resetText: { color: c.danger, fontSize: 14, fontWeight: '700' },
     pressed: { opacity: 0.6 },

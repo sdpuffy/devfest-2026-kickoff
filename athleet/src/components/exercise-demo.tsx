@@ -4,14 +4,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, StyleSheet, Text, View } from 'react-native';
 import { exerciseRig, type Point } from '@/lib/exercise-rig';
 import type { Coach } from '@/lib/types';
-import { coachArt } from './coach-art';
+import { COACH_LOOKS, coachArt } from './coach-art';
 import { useReduceMotion } from '@/lib/appearance';
 import { themedStyles } from '@/lib/theme';
 
-const looks: Record<string, [string, string]> = {
-  atlas: ['#985b3c', '#ffcf32'], ironside: ['#945436', '#bc4941'], blaze: ['#875336', '#ffcf32'],
-  vanguard: ['#d79a70', '#bf4142'], rally: ['#a8673e', '#294267'], strike: ['#ecc09a', '#3879b3'], anvil: ['#e6b18b', '#424f60'],
-};
 function Bone({ a, b, color, width, opacity = 1 }: { a: Point; b: Point; color: string; width: number; opacity?: number }) {
   return <View style={{ position: 'absolute', left: a.x - width / 2, top: a.y - width / 2, width: Math.hypot(b.x - a.x, b.y - a.y) + width, height: width, borderRadius: width / 2, backgroundColor: color, opacity, transformOrigin: `${width / 2}px 50%`, transform: [{ rotate: `${Math.atan2(b.y - a.y, b.x - a.x)}rad` }] }} />;
 }
@@ -43,7 +39,7 @@ export function ExerciseDemo({ coach, exercise, paused, height = 210 }: { coach:
   }, [paused, reduced, focused, active, exercise]);
   const pose = exerciseRig(reduced ? 0 : time, exercise);
   if (!pose) return <View style={[styles.stage, { height }]}><Text style={styles.cue}>A movement demo isn’t available for this exercise yet.</Text></View>;
-  const [skin, kit] = looks[coach.id] ?? looks.atlas;
+  const { skin, kit } = COACH_LOOKS[coach.id] ?? COACH_LOOKS.atlas;
   const art = coachArt[coach.id] ?? coachArt.atlas;
   const scale = Math.min(width / 360, (height - 32) / 200);
   const angle = Math.atan2(pose.shoulder.y - pose.hip.y, pose.shoulder.x - pose.hip.x);

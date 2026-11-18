@@ -32,7 +32,7 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 - **A plan that's yours.** Training days, session length, warm-ups, cool-downs and exercise
   notes are tailored to your answers. Don't like it? Generate a new variation.
 - **Guided workouts.** Log sets, reps and weight, follow the rest timer, and watch an animated
-  movement demo. Your coach cheers you on, out loud.
+  movement demo. Your coach cheers you on every set.
 - **Meals that fit.** A weekly meal plan built on your nutrition targets, with dietary
   restrictions, a weekly budget, prep-ahead tips and a grocery list.
 - **Stay on track.** Workout calendar, weekly recap and a streak badge.
@@ -77,9 +77,6 @@ npx expo start
 Then press **w** for the web, or scan the QR code with [Expo Go](https://expo.dev/go) on your
 phone.
 
-**Optional: custom coach voices.** Copy `athleet/.env.example` to `athleet/.env` and add an
-ElevenLabs API key. Without it, coaches speak with your device's built-in voices.
-
 | Command | What it does |
 | --- | --- |
 | `npm start` | Start the dev server |
@@ -93,14 +90,12 @@ ElevenLabs API key. Without it, coaches speak with your device's built-in voices
   and the **React Compiler**.
 - **Runs offline-first.** Plans, meals and progress are generated and saved on the device; a
   hosted backend is optional.
-- **Expo API routes** proxy text-to-speech for custom coach voices, keeping the API key on the
-  server.
 - **GitHub Actions** type-checks, lints, tests and deploys the website to GitHub Pages on
   every push to `main`.
 
 ```
 athleet/
-├── src/app/          screens (file-based routes) and API routes
+├── src/app/          screens (file-based routes)
 ├── src/components/   UI: coach, plan, workout, meals, settings
 ├── src/data/         coaches, workouts, foods
 ├── src/lib/          plan and meal generation, storage, theme

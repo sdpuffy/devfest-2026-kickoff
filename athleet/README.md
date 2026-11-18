@@ -20,7 +20,6 @@ Copy `.env.example` to `.env`:
 
 | Variable | Used for |
 | --- | --- |
-| `ELEVENLABS_API_KEY` | Custom coach voices. Server-only: read by the API routes, never bundled. Without it, coaches use the device's built-in voices. |
 | `EXPO_PUBLIC_API_URL` | A hosted backend for plans and chat. Without it, everything is generated on the device. |
 
 ## Scripts
@@ -43,13 +42,10 @@ src/
 │   ├── (tabs)/     Your Plan, Workout Plan, Your Meals, Coaches
 │   ├── chat/[id]   coach chat, plan preview and guided workout
 │   ├── settings    appearance and feel
-│   └── api/voice/  server routes for custom coach voices
 ├── components/     UI building blocks
 ├── data/           coaches, workouts, foods, suggestions
 ├── lib/            plan and meal generation, storage, theme, settings
 ├── hooks/          shared React hooks
-└── server/         server-only helpers for the API routes
-voices/             shared coach voice samples (see voices/README.md)
 tests/              unit tests
 ```
 
@@ -75,9 +71,7 @@ What's different on GitHub Pages (it only hosts static files):
 
 - The build uses `static` output with the repo name as the base URL (see `app.config.js`). Local
   development with `npx expo start` is unchanged.
-- The voice API routes (`src/app/api/voice`) can't run there, so coaches use the device's built-in
-  voices and custom voice cloning is unavailable. Everything else (plans, meals, workouts, settings)
-  runs in the browser and saves to the browser's storage.
+- Everything (plans, meals, workouts, settings) runs in the browser and saves to the browser's storage.
 - To use a hosted backend, add `EXPO_PUBLIC_API_URL` under **Settings → Secrets and variables →
   Actions → Variables**. Never put secret keys in `EXPO_PUBLIC_` variables: they end up in the
   public site.

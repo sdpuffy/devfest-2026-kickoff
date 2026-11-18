@@ -1,7 +1,6 @@
 // Extends app.json for the GitHub Pages build.
 //
-// Normal development (`npx expo start`) uses app.json unchanged: `server` output, so the
-// voice API routes in src/app/api keep working locally.
+// Normal development (`npx expo start`) uses app.json unchanged.
 //
 // When EXPO_BASE_URL is set (the deploy workflow sets it to "/<repo-name>"), the web build
 // becomes a static site that GitHub Pages can host:

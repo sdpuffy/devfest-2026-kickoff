@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AccountSettings } from '@/components/account-settings';
 import { ResetOnboarding } from '@/components/reset-onboarding';
 import { coachShortName, getCoach } from '@/data/coaches';
 import {
@@ -91,6 +92,9 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Keyed by theme version so the form pieces redraw with the current look. */}
+        <AccountSettings key={`account-${version}`} />
+
         <Preview colors={colors} styles={styles} />
 
         {/* ── Theme ── */}

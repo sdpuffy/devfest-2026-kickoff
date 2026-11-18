@@ -6,6 +6,8 @@ import { View } from 'react-native';
 import { PlanTabBar } from '@/components/plan-tab-bar';
 import { SettingsButton } from '@/components/settings-button';
 import { useReduceMotion } from '@/lib/appearance';
+// Restores the signed-in account and starts syncing at launch.
+import '@/lib/account';
 import { useTheme } from '@/lib/theme';
 
 export default function RootLayout() {
@@ -47,6 +49,7 @@ export default function RootLayout() {
           <Stack.Screen name="chat/[id]" options={{ title: 'Chat' }} />
           <Stack.Screen name="plan" options={{ headerShown: false }} />
           <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen name="account" options={{ headerShown: false }} />
           <Stack.Screen name="workout" options={{ headerShown: false, gestureEnabled: false }} />
         </Stack>
         {/* Once a plan is selected, the bottom tabs stay visible on every screen.

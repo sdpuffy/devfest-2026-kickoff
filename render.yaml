@@ -1,0 +1,28 @@
+# Render Blueprint for the Athleet accounts server (server/).
+# Render dashboard → New → Blueprint → pick this repo. You'll be asked for the two Turso
+# values below (create them with the Turso CLI or dashboard; see server/README.md).
+# Free plan: no card needed, but the server sleeps after 15 idle minutes and takes about a
+# minute to wake. Its disk is wiped on every restart, so all data lives in Turso.
+services:
+  - type: web
+    name: athleet-accounts
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      # The GitHub Pages site plus local development. Scheme + host only, no path.
+      - key: ALLOWED_ORIGINS
+        value: https://sdpuffy.github.io,http://localhost:8081
+      # Render sits in front of the server, so rate limits use the forwarded client address.
+      - key: TRUST_PROXY
+        value: "1"

@@ -38,6 +38,10 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
   movement demo. Your coach cheers you on every set.
 - **Meals that fit.** A weekly meal plan built on your nutrition targets, with dietary
   restrictions, a weekly budget, prep-ahead tips and a grocery list.
+- **Your account, every device.** Sign up with just a username and password (no email or
+  phone). Your plan, workout history and settings sync across devices, and a recovery code
+  gets you back in if you forget your password. Requires the accounts server in
+  [`server/`](server/README.md).
 - **Stay on track.** Workout calendar, weekly recap and a streak badge.
 - **Make it yours.** Themes (dark, dimmed, OLED, light, high contrast), accent colors,
   text size, big workout mode, reduced motion, colorblind-friendly status colors and more.

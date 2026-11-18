@@ -82,12 +82,25 @@ function getLogs() {
   return logs;
 }
 
+/** Workout history, oldest first (used by account sync). */
+export const getWorkoutLogs = getLogs;
+
+/** Replace the whole history, e.g. with the merged history from your account. */
+export function replaceWorkoutLogs(next: WorkoutLog[]) {
+  logs = next.map(migrate);
+  persistLogs();
+  notify();
+}
+
 function subscribe(listener: () => void) {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
   };
 }
+
+/** Calls `listener` when the history changes (used by account sync). */
+export const subscribeWorkoutLogs = (listener: () => void) => subscribe(listener);
 
 export function useWorkoutLogs(): WorkoutLog[] {
   return useSyncExternalStore(subscribe, getLogs, getLogs);

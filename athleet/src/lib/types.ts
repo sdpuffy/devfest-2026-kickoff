@@ -18,6 +18,12 @@ export type UserProfile = {
   sessionMinutes: number;
   equipment: Equipment;
   injuries: string;
+  /** Position, event or style for the current sport coach's plan (see data/positions.ts). */
+  position?: string;
+  /** The position picked for each sport coach, by coach id. */
+  positions?: Record<string, string>;
+  /** Has someone to throw, catch or feed for partner drills. Unset means training solo. */
+  hasPartner?: boolean;
 };
 
 export type Coach = {

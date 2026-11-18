@@ -32,6 +32,18 @@ export const SIGNATURES: Record<string, Signature> = {
   anvil: {
     text: "Let's get it!",
   },
+  blitz: {
+    text: 'Win the first step!',
+  },
+  apex: {
+    text: 'Earn the skill!',
+  },
+  tide: {
+    text: 'Smooth is fast!',
+  },
+  diamond: {
+    text: 'Rotate and drive!',
+  },
 };
 
 export function signatureFor(coachId: string): Signature {
@@ -118,6 +130,50 @@ export const HYPE: Record<string, HypeLines> = {
     ],
     rest: ['Breathe, sip water, back at it.', 'Rest up, but not too long!'],
     finish: ['Done! Consistency over perfection!', 'Another one in the bank. Proud of you!'],
+  },
+  blitz: {
+    setStart: [
+      "Low pad level. Explode!",
+      "Win the first step. Go!",
+      "Fourth-quarter legs are built right now.",
+      "Fast hips, strong finish!",
+      "Treat this rep like third and one.",
+    ],
+    rest: ["Hands on hips, breathe. Next rep is full speed.", "Huddle up, reset, go again."],
+    finish: ["That's a winning practice!", "Strong frame, fast feet. Great work!"],
+  },
+  apex: {
+    setStart: [
+      "Strict reps. Own every inch.",
+      "Control the way down.",
+      "Your body is the gym. Let's go!",
+      "Tight core, long arms. Hold it!",
+      "One clean rep beats five messy ones.",
+    ],
+    rest: ["Shake out your wrists and breathe.", "Rest up; quality over quantity."],
+    finish: ["Skill earned today. Proud of you!", "Stronger than yesterday. Nice work!"],
+  },
+  tide: {
+    setStart: [
+      "Long and smooth. Go!",
+      "Reach, pull, kick!",
+      "Hold your streamline!",
+      "Smooth is fast. Find your rhythm.",
+      "Strong pull, quiet kick.",
+    ],
+    rest: ["Breathe easy; watch the pace clock.", "Shake out your shoulders. Next one smooth."],
+    finish: ["Great swim! Refuel and stretch those shoulders.", "Engine built. Nice work today!"],
+  },
+  diamond: {
+    setStart: [
+      "Rotate and drive through it!",
+      "Hips first, then hands.",
+      "Quick feet, quick hands. Go!",
+      "Run it out like it's a close play.",
+      "Stay balanced and explode.",
+    ],
+    rest: ["Take a breath; reset your stance.", "Shake out the arm. Next one sharp."],
+    finish: ["That's a good day at the park!", "Arm cared for, swing sharpened. Nice work!"],
   },
 };
 

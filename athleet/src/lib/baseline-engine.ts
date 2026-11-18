@@ -1,7 +1,7 @@
 /**
  * baseline-engine.ts — Athleet Baseline Personalization & Coach Routine Generator
  *
- * Pulls from authentic celebrity routines for all 7 coaches:
+ * Pulls from each coach's signature routine:
  *   1. Coach Atlas (Longevity, basketball power, athletic conditioning)
  *   2. Coach Ironside (Heavy compound mass, high-volume hypertrophy)
  *   3. Coach Blaze (Sprint mechanics, explosive plyometrics, core power)
@@ -9,6 +9,10 @@
  *   5. Coach Rally (Lower-body kinetic drive, agility, joint durability)
  *   6. Coach Strike (Leg/glute strength, martial arts striking, flexibility)
  *   7. Coach Anvil (Simple & intense physique, RPE 8-9, posterior chain)
+ *   8. Coach Blitz (Football strength, speed and agility, sled conditioning)
+ *   9. Coach Apex (Calisthenics strength and bodyweight skills)
+ *   10. Coach Tide (Pool endurance, stroke technique, dryland pull strength)
+ *   11. Coach Diamond (Rotational power, arm care, base running speed)
  *
  * Algorithm adapts to the user baseline:
  *   - Age (Masters 50+/60+ joint protection vs Youth <18 technique)
@@ -141,6 +145,42 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'Dumbbell Overhead Shoulder Press', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '60s', muscleGroups: ['Shoulders', 'Triceps'], focusNotes: 'Lock ribs down; do not arch lower back.' },
     { name: 'Lat Pulldown', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '60s', muscleGroups: ['Lats'], focusNotes: 'Pull with elbows down to hips.' },
     { name: 'Jump Rope or Mountain Climber Burnout', defaultSets: 3, defaultReps: '60 seconds', defaultRest: '45s', muscleGroups: ['Conditioning'], focusNotes: 'High intensity finisher to burn fat.' },
+  ],
+  blitz: [
+    { name: 'Barbell Back Squat', defaultSets: 4, defaultReps: '5-6 reps', defaultRest: '150s', muscleGroups: ['Quads', 'Glutes'], focusNotes: "Drive out of the hole fast; brace hard." },
+    { name: 'Power Clean', defaultSets: 5, defaultReps: '3 reps', defaultRest: '120s', muscleGroups: ['Posterior Chain', 'Traps'], focusNotes: "Jump and shrug; fast elbows into the catch." },
+    { name: 'Flat Bench Press', defaultSets: 4, defaultReps: '6-8 reps', defaultRest: '120s', muscleGroups: ['Chest', 'Triceps'], focusNotes: "Feet planted, shoulder blades pinned." },
+    { name: '3-Point Starts', defaultSets: 6, defaultReps: '10 yards', defaultRest: 'Full rest', muscleGroups: ['Acceleration', 'Hips'], focusNotes: "Explode low; first two steps short and powerful." },
+    { name: 'Pro Agility Shuttle (5-10-5)', defaultSets: 5, defaultReps: '1 rep', defaultRest: '60s', muscleGroups: ['Agility', 'Ankles'], focusNotes: "Stay low through the cuts; touch every line." },
+    { name: 'Sled Push', defaultSets: 6, defaultReps: '20 meters', defaultRest: '90s', muscleGroups: ['Legs', 'Conditioning'], focusNotes: "Arms straight, lean in, drive with short steps." },
+    { name: "Farmer's Carry", defaultSets: 3, defaultReps: '30 meters', defaultRest: '60s', muscleGroups: ['Grip', 'Core'], focusNotes: "Stand tall; do not let the weights swing." },
+  ],
+  apex: [
+    { name: 'Strict Pull-Up (or Band-Assisted)', defaultSets: 4, defaultReps: '5-8 reps', defaultRest: '90s', muscleGroups: ['Lats', 'Biceps'], focusNotes: "Dead hang to chin over bar, no kipping." },
+    { name: 'Dips', defaultSets: 4, defaultReps: '6-10 reps', defaultRest: '90s', muscleGroups: ['Chest', 'Triceps'], focusNotes: "Shoulders down; lower until elbows reach 90 degrees." },
+    { name: 'Pistol Squat', defaultSets: 3, defaultReps: '5 each leg', defaultRest: '75s', muscleGroups: ['Quads', 'Glutes'], focusNotes: "Hold a post at first; heel stays down." },
+    { name: 'Pike Push-Up', defaultSets: 3, defaultReps: '8-10 reps', defaultRest: '60s', muscleGroups: ['Shoulders', 'Triceps'], focusNotes: "Hips high; lower your head between your hands." },
+    { name: 'L-Sit Hold', defaultSets: 4, defaultReps: '10-20 seconds', defaultRest: '60s', muscleGroups: ['Core', 'Hip Flexors'], focusNotes: "Push the floor away; legs straight and level." },
+    { name: 'Wall Handstand Hold', defaultSets: 4, defaultReps: '20-30 seconds', defaultRest: '60s', muscleGroups: ['Shoulders', 'Core'], focusNotes: "Ribs in, glutes tight, push tall." },
+    { name: 'Hollow Body Hold', defaultSets: 3, defaultReps: '30 seconds', defaultRest: '45s', muscleGroups: ['Core'], focusNotes: "Low back pressed down the whole time." },
+  ],
+  tide: [
+    { name: 'Freestyle Intervals', defaultSets: 1, defaultReps: '10 x 50m', defaultRest: '20s between', muscleGroups: ['Endurance', 'Lats'], focusNotes: "Long reach and steady breathing on a pace clock." },
+    { name: 'Kickboard Sets', defaultSets: 1, defaultReps: '6 x 25m', defaultRest: '15s between', muscleGroups: ['Legs', 'Hips'], focusNotes: "Kick from the hips with relaxed ankles." },
+    { name: 'Breaststroke Drills', defaultSets: 1, defaultReps: '6 x 25m', defaultRest: '20s between', muscleGroups: ['Technique', 'Inner Thighs'], focusNotes: "Pull, breathe, kick, glide: in that order." },
+    { name: 'Lat Pulldown', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '60s', muscleGroups: ['Lats', 'Upper Back'], focusNotes: "Pull elbows down to your sides like a pull in the water." },
+    { name: 'Band External Rotation', defaultSets: 3, defaultReps: '15 each arm', defaultRest: '30s', muscleGroups: ['Rotator Cuff'], focusNotes: "Elbow pinned; slow and controlled for shoulder health." },
+    { name: 'Streamline Jump', defaultSets: 4, defaultReps: '5 reps', defaultRest: '60s', muscleGroups: ['Legs', 'Power'], focusNotes: "Arms locked over your ears; explode like a start." },
+    { name: 'Flutter Kicks', defaultSets: 3, defaultReps: '30 seconds', defaultRest: '30s', muscleGroups: ['Core', 'Hip Flexors'], focusNotes: "Small, fast kicks with your low back down." },
+  ],
+  diamond: [
+    { name: 'Trap Bar Deadlift', defaultSets: 4, defaultReps: '5 reps', defaultRest: '120s', muscleGroups: ['Posterior Chain', 'Legs'], focusNotes: "Push the floor away; hips and shoulders rise together." },
+    { name: 'Split Squat', defaultSets: 3, defaultReps: '8 each leg', defaultRest: '75s', muscleGroups: ['Quads', 'Glutes'], focusNotes: "Front knee tracks over toes; stay tall." },
+    { name: 'Medicine Ball Rotational Throw', defaultSets: 4, defaultReps: '6 each side', defaultRest: '60s', muscleGroups: ['Obliques', 'Hips'], focusNotes: "Turn the hips first, then let the arms follow." },
+    { name: 'Cable Rotational Woodchop', defaultSets: 3, defaultReps: '10 each side', defaultRest: '45s', muscleGroups: ['Core', 'Rotational Chain'], focusNotes: "Rotate from the hips like your swing." },
+    { name: 'Band External Rotation', defaultSets: 3, defaultReps: '15 each arm', defaultRest: '30s', muscleGroups: ['Rotator Cuff'], focusNotes: "Arm care: elbow pinned, slow tempo." },
+    { name: 'Tee Work (Batting)', defaultSets: 1, defaultReps: '15 minutes', defaultRest: '—', muscleGroups: ['Hitting', 'Rotation'], focusNotes: "Quality swings; drive the barrel through the ball." },
+    { name: 'Base Running Sprints', defaultSets: 6, defaultReps: 'home to first', defaultRest: 'Full rest', muscleGroups: ['Speed', 'Acceleration'], focusNotes: "Explode out of the box and run through the bag." },
   ],
 };
 
@@ -391,6 +431,26 @@ export function generateAdaptedPlan(
       "Simple, hard, consistent. No magic pills, just solid lifts pushed close to failure. Let's crush this!",
       "Consistency over perfection every single time. Grab your water, warm up, and let's build those glutes and back!",
       "Don't overcomplicate it. Master the basic lifts, push yourself to RPE 8-9, and enjoy the gains!",
+    ],
+    blitz: [
+      "Win the first step and you win the rep. Explosive hips, strong frame, let's get to work.",
+      "Fourth-quarter legs are built in the off-season. Every sprint here counts.",
+      "Strength, speed, conditioning: we stack all three. Bring the energy today.",
+    ],
+    apex: [
+      "Your body is the gym. Strict reps today, new skills tomorrow.",
+      "Control beats momentum every time. Own every inch of every rep.",
+      "Progressions are earned, not rushed. Stay patient and stay strict.",
+    ],
+    tide: [
+      "Smooth is fast. Build the engine, protect the shoulders and enjoy the water.",
+      "Every length is technique practice. Long reach, steady breathing, strong kick.",
+      "Pool and dryland work together. Show up for both and the speed will come.",
+    ],
+    diamond: [
+      "Rotate hard, throw healthy, run every ball out. Let's get better today.",
+      "Power comes from the ground up: legs and hips first, hands last.",
+      "Take care of your arm like it is your career. Arm care is never optional.",
     ],
   };
 

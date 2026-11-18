@@ -10,6 +10,10 @@ const BY_COACH: Record<string, string[]> = {
   rally: ['How do I protect my knees?', 'Help my footwork'],
   strike: ['How do I kick higher?', 'How do I start lifting?'],
   anvil: ['How do I grow my glutes?', 'How close to failure should I go?'],
+  blitz: ['How do I get faster off the line?', 'How do I bulk up for football?'],
+  apex: ['How do I get my first pull-up?', 'How do I learn a handstand?'],
+  tide: ['How do I breathe better when I swim?', 'What should I do on land to swim faster?'],
+  diamond: ['How do I hit with more power?', 'How do I keep my arm healthy?'],
 };
 
 export const PLAN_PROMPT = GENERAL[0];
@@ -58,4 +62,20 @@ export const SUGGESTION_ANSWERS: Record<string, string> = {
     'Hip thrusts, Romanian deadlifts and walking lunges are the big three. Go heavy-ish, control the lowering, squeeze at the top. Train them twice a week and eat enough protein. Simple, hard, consistent.',
   'how close to failure should i go?':
     'Most sets: 1-2 reps left in the tank. Last set of an exercise: go to failure with good form. Beginners stay a bit further away while learning. Consistency matters more than any single set.',
+  'how do i get faster off the line?':
+    "Speed off the line is a stance and a first step. Weight slightly forward, back knee loaded, then push the ground away and drive your knee, low and hard. Practice 3-point starts for 5-10 yards with full rest, twice a week, and keep squatting and power cleaning to build the push.",
+  'how do i bulk up for football?':
+    "Eat more and lift heavy. Add a meal or a shake a day, protein at every meal, and plenty of rice, potatoes and pasta around practice. Squat, bench, clean and deadlift 2-3 times a week, and add weight a little at a time. Aim for slow, steady gains so you stay fast.",
+  'how do i get my first pull-up?':
+    "Build it in steps: dead hangs for grip, Australian pull-ups for strength, then slow negatives: jump to the top and lower yourself for 3-5 seconds. Do 3-4 sets two or three times a week. When negatives feel easy, try one strict rep. Most people get there in a few weeks.",
+  'how do i learn a handstand?':
+    "Start against a wall. Pike push-ups and wall holds build the shoulders; hollow holds teach the straight body line. Hands shoulder-width, push the floor away, ribs in, glutes tight. Do short 20-30 second holds with good form, and practice a few minutes almost every day.",
+  'how do i breathe better when i swim?':
+    "Breathe out steadily underwater through your nose and mouth, so you only need to breathe in when you turn. Turn your head with your body roll and keep one goggle in the water. Practice breathing every 3 strokes on easy laps, then use it on harder sets.",
+  'what should i do on land to swim faster?':
+    "Pull strength, shoulder care and a strong core. Lat pulldowns or pull-ups, band external rotations, planks and flutter kicks, plus streamline jumps for your starts. Two dryland sessions a week is plenty; keep the pool for technique and conditioning.",
+  'how do i hit with more power?':
+    "Power comes from the ground up: load your back hip, take a short stride, then turn your hips before your hands. Train it with medicine ball rotational throws, cable chops and trap bar deadlifts, and take quality swings off a tee so your mechanics stay clean.",
+  'how do i keep my arm healthy?':
+    "Warm up properly, build your throwing distance gradually, and respect pitch and throw counts. Do band external rotations and rows every week for the back of the shoulder, and stretch after throwing. If your arm hurts, stop and rest it; never throw through pain.",
 };

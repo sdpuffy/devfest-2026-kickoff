@@ -93,6 +93,43 @@ export const COACH_LOOKS: Record<string, CoachLook> = {
     emblem: '<path d="M140 200h38v8l-7 3v5h-6v5h8v6h-30v-6h8v-5h-4q-3-9-11-11Z" fill="#2f3a45"/>',
     detail: '<g fill="none" stroke="#2f3a45" stroke-width="3.5"><circle cx="135" cy="119" r="22"/><circle cx="185" cy="119" r="22"/><path d="M157 116q3-3 6 0m-50-4-9-3m103 3 9-3"/></g>',
   },
+  // American football. Forest green and white, a football emblem, tight fade and eye black.
+  blitz: {
+    skin: '#5e3b26', shade: '#45291a', hair: '#141216', kit: '#2e7d4f', trim: '#f2efe6', legs: '#e9e2cc', shoe: '#141216',
+    build: 'power', sleeves: true,
+    backHair: '',
+    frontHair: '<path d="M107 102q-2-46 53-46t53 46q-50-22-106 0Z" fill="#141216"/><path d="M127 71l15-7" stroke="#5e3b26" stroke-width="3" stroke-linecap="round"/>',
+    face: '',
+    emblem: '<ellipse cx="160" cy="211" rx="15" ry="9" fill="#7a4a24"/><path d="M151 211h18m-13-3v6m4-6v6m4-6v6" stroke="#f2efe6" stroke-width="2"/>',
+    detail: '<g fill="#141216"><rect x="122" y="140" width="26" height="6" rx="2"/><rect x="172" y="140" width="26" height="6" rx="2"/></g>',
+  },
+  // Calisthenics. Charcoal and hot pink, an apex emblem, long braid.
+  apex: {
+    skin: '#d9a07a', shade: '#b57d5b', hair: '#2a1c17', kit: '#2b2b33', trim: '#ff4f9a', legs: '#2b2b33', shoe: '#f2efe6',
+    build: 'normal', sleeves: false,
+    backHair: '',
+    frontHair: '<path d="M106 106q-4-50 56-50 54 0 52 50-10-26-44-30-30 6-64 30Z" fill="#2a1c17"/><path d="M208 92q24 22 20 56-2 16-6 26" fill="none" stroke="#2a1c17" stroke-width="15" stroke-linecap="round"/><path d="M216 112l9 3m-8 13 10 1m-11 13 10 2m-12 11 9 3" stroke="#4a3329" stroke-width="3" stroke-linecap="round"/><circle cx="222" cy="177" r="5" fill="#ff4f9a"/>',
+    face: '',
+    emblem: '<path d="M145 223l15-26 15 26Z" fill="none" stroke="#ff4f9a" stroke-width="4" stroke-linejoin="round"/><path d="M153 223l7-11 7 11" fill="none" stroke="#ff4f9a" stroke-width="3" stroke-linejoin="round"/>',
+  },
+  // Swimmer. Navy swimsuit with aqua, a wave emblem, swim cap with goggles.
+  tide: {
+    skin: '#c68a5e', shade: '#a26c45', hair: '#1c1a20', kit: '#16508c', trim: '#5fe0e6', legs: '#c68a5e', shoe: '#c68a5e',
+    build: 'normal', sleeves: false,
+    backHair: '',
+    frontHair: '<path d="M104 112q-6-58 56-58t56 58q-26-16-56-18-30 2-56 18Z" fill="#5fe0e6"/><path d="M124 72q20-12 44-10" stroke="#a7f1f4" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M104 92l21-4m70 0 21 4M151 86h18" stroke="#1c1a20" stroke-width="3"/><g fill="#16508c" stroke="#1c1a20" stroke-width="2"><ellipse cx="138" cy="86" rx="13" ry="8"/><ellipse cx="182" cy="86" rx="13" ry="8"/></g>',
+    face: '',
+    emblem: '<path d="M140 210q7-8 14 0t14 0 14 0" fill="none" stroke="#5fe0e6" stroke-width="4" stroke-linecap="round"/><path d="M140 221q7-8 14 0t14 0 14 0" fill="none" stroke="#5fe0e6" stroke-width="3" stroke-linecap="round" opacity=".7"/>',
+  },
+  // Baseball. Grey road jersey with red, a baseball emblem, navy cap and a goatee.
+  diamond: {
+    skin: '#b9825a', shade: '#966240', hair: '#3a2a20', kit: '#9aa3ad', trim: '#c8102e', legs: '#d9dde2', shoe: '#1a1a1f',
+    build: 'normal', sleeves: true,
+    backHair: '',
+    frontHair: '<path d="M104 104q-2-50 56-50t56 50q-56-12-112 0Z" fill="#1f2d4d"/><path d="M110 100q50-14 100 0l-2 9q-48-12-96 0Z" fill="#15203a"/><circle cx="160" cy="55" r="4" fill="#15203a"/><path d="M160 66l9 10-9 10-9-10Z" fill="#c8102e"/>',
+    face: '<path d="M148 176q12 6 24 0l-2 8q-10 5-20 0Z" fill="#3a2a20"/>',
+    emblem: '<circle cx="160" cy="211" r="12" fill="#f5f2ea"/><path d="M152 202q5 9 0 18m16-18q-5 9 0 18" fill="none" stroke="#c8102e" stroke-width="2.5"/>',
+  },
 };
 
 function svg(markup: string) {

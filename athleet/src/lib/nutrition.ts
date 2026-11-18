@@ -2,7 +2,8 @@ import type { NutritionTargets, UserProfile } from '@/lib/types';
 
 // Calorie and macro targets computed in code so numbers are consistent.
 // Same math as server/nutrition.ts.
-export function computeTargets(p: UserProfile): NutritionTargets {
+/** `calorieFactor` scales calories for demanding positions (e.g. 1.1 for a lineman). */
+export function computeTargets(p: UserProfile, calorieFactor = 1): NutritionTargets {
   if (p.age < 18) {
     return {
       showNumbers: false,
@@ -42,6 +43,11 @@ export function computeTargets(p: UserProfile): NutritionTargets {
       proteinPerKg = 1.8;
       note = 'Fuel performance at maintenance.';
       break;
+  }
+
+  if (calorieFactor !== 1) {
+    calories *= calorieFactor;
+    note += calorieFactor > 1 ? ' Adjusted up for the extra work your role demands.' : ' Adjusted down slightly: your role involves less running.';
   }
 
   const floor = p.sex === 'female' ? 1200 : 1500;

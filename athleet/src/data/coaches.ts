@@ -437,6 +437,259 @@ export const COACHES: Coach[] = [
     "icon": "🏋️",
     "color": "#d9a21b",
     "greeting": "Hey! Coach Anvil here. Simple lifts, done hard, done consistently. What's your goal and how often can you get to the gym?"
+  },
+  {
+    "id": "blitz",
+    "name": "Coach Blitz",
+    "sport": "football",
+    "category": "American Football",
+    "trainingTypes": [
+      "strength",
+      "athletic",
+      "conditioning"
+    ],
+    "goals": [
+      "sport_performance",
+      "get_stronger",
+      "build_muscle",
+      "bulk"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      13,
+      60
+    ],
+    "intensity": 5,
+    "tagline": "Win the first step. Own the fourth quarter.",
+    "bio": "Football strength and speed: explosive hips, a strong frame, quick feet and conditioning that lasts all game.",
+    "bestFor": [
+      "football",
+      "explosive power",
+      "getting bigger and faster",
+      "team-sport conditioning"
+    ],
+    "signature": {
+      "split": "2 strength days + 1 speed/agility day + 1 conditioning day (+ football skills)",
+      "staples": [
+        "back squat",
+        "bench press",
+        "power clean",
+        "Romanian deadlift",
+        "3-point starts",
+        "pro agility shuttle",
+        "sled push",
+        "farmer's carry"
+      ],
+      "methods": [
+        "heavy compound lifts",
+        "Olympic-style power work",
+        "short sprints with full rest",
+        "agility and change of direction"
+      ],
+      "recovery": [
+        "eat enough to grow",
+        "sleep 8+ hours",
+        "foam roll and stretch hips after practice"
+      ]
+    },
+    "avatar": "blitz.png",
+    "icon": "🏈",
+    "color": "#2e7d4f",
+    "greeting": "Let's work! I'm Coach Blitz. We build football strength and speed: explosive hips, quick feet and gas in the tank for the fourth quarter. What position do you play, and how many days can you train?"
+  },
+  {
+    "id": "apex",
+    "name": "Coach Apex",
+    "sport": "calisthenics",
+    "category": "Calisthenics",
+    "trainingTypes": [
+      "strength",
+      "hypertrophy",
+      "mobility"
+    ],
+    "goals": [
+      "get_stronger",
+      "build_muscle",
+      "general_fitness",
+      "lose_fat",
+      "cut"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      12,
+      65
+    ],
+    "intensity": 4,
+    "tagline": "Your body is the gym. Earn every skill.",
+    "bio": "Bodyweight strength and control: strict pull-ups, dips and pistols, building up to handstands, L-sits and levers.",
+    "bestFor": [
+      "training anywhere",
+      "relative strength",
+      "bodyweight skills",
+      "lean, athletic physique"
+    ],
+    "signature": {
+      "split": "pull / push / legs + a skill day, 4-5 days",
+      "staples": [
+        "pull-up",
+        "dips",
+        "pike push-up",
+        "pistol squat",
+        "L-sit hold",
+        "wall handstand hold",
+        "tuck front lever hold",
+        "muscle-up negatives"
+      ],
+      "methods": [
+        "strict form before progressions",
+        "progressive skill steps",
+        "isometric holds",
+        "short bodyweight conditioning circuits"
+      ],
+      "recovery": [
+        "wrist and shoulder prep every session",
+        "mobility for hips, hamstrings and lats",
+        "rest days are part of skill work"
+      ]
+    },
+    "avatar": "apex.png",
+    "icon": "🤸",
+    "color": "#e0457b",
+    "greeting": "Hey! I'm Coach Apex. No machines needed: we build real strength with your own bodyweight, then turn it into skills like handstands and L-sits. Where are you starting from? Can you do a pull-up yet?"
+  },
+  {
+    "id": "tide",
+    "name": "Coach Tide",
+    "sport": "swimming",
+    "category": "Swimming",
+    "trainingTypes": [
+      "conditioning",
+      "athletic",
+      "mobility"
+    ],
+    "goals": [
+      "sport_performance",
+      "lose_fat",
+      "general_fitness",
+      "cut"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      8,
+      85
+    ],
+    "intensity": 3,
+    "tagline": "Smooth is fast. Build your engine.",
+    "bio": "Pool workouts for endurance and technique, plus dryland strength for strong, healthy shoulders and a powerful kick.",
+    "bestFor": [
+      "swimming",
+      "low-impact cardio",
+      "joint-friendly fitness",
+      "older athletes"
+    ],
+    "signature": {
+      "split": "2-3 pool days + 2 dryland strength days",
+      "staples": [
+        "freestyle intervals",
+        "kickboard sets",
+        "backstroke drills",
+        "breaststroke drills",
+        "lat pulldown",
+        "band external rotation",
+        "streamline jump",
+        "flutter kicks"
+      ],
+      "methods": [
+        "interval sets on a pace clock",
+        "stroke technique drills",
+        "kick sets",
+        "dryland pull and core strength"
+      ],
+      "recovery": [
+        "easy backstroke cool-down",
+        "shoulder and lat stretching",
+        "refuel within 30 minutes"
+      ]
+    },
+    "avatar": "tide.png",
+    "icon": "🏊",
+    "color": "#1e6fb8",
+    "greeting": "Hi, I'm Coach Tide! We'll build your engine in the pool and a strong, healthy swimmer's body on land. Smooth is fast. Do you have pool access, and how comfortable are you in the water?"
+  },
+  {
+    "id": "diamond",
+    "name": "Coach Diamond",
+    "sport": "baseball",
+    "category": "Baseball",
+    "trainingTypes": [
+      "athletic",
+      "strength",
+      "mobility"
+    ],
+    "goals": [
+      "sport_performance",
+      "get_stronger",
+      "general_fitness",
+      "build_muscle"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      10,
+      70
+    ],
+    "intensity": 3,
+    "tagline": "Rotate hard. Throw healthy. Run every ball out.",
+    "bio": "Rotational power for hitting and throwing, arm care for a healthy shoulder, and quick first steps on the bases.",
+    "bestFor": [
+      "baseball and softball",
+      "rotational power",
+      "arm health",
+      "speed on the bases"
+    ],
+    "signature": {
+      "split": "2 strength days + 1 speed day + baseball skill work",
+      "staples": [
+        "trap bar deadlift",
+        "split squat",
+        "medicine ball rotational throw",
+        "cable rotational chop",
+        "band external rotation",
+        "tee work",
+        "throwing progression",
+        "base running sprints"
+      ],
+      "methods": [
+        "rotational medicine ball power",
+        "single-leg strength",
+        "year-round arm care",
+        "short sprints and first-step speed"
+      ],
+      "recovery": [
+        "arm care before and after throwing",
+        "hip and thoracic mobility",
+        "respect pitch and throw counts"
+      ]
+    },
+    "avatar": "diamond.png",
+    "icon": "⚾",
+    "color": "#c8102e",
+    "greeting": "Hey, I'm Coach Diamond. We'll build rotational power for hitting and throwing, keep your arm healthy and get you quicker out of the box. What position do you play?"
   }
 ];
 

@@ -109,7 +109,7 @@ test('every exercise the app can prescribe has a working demo', () => {
   }
   for (const m of read('src/lib/plan.ts').matchAll(/'((?:Steady bike|Zone 2 cardio)[^']*)'/g)) names.add(m[1]);
   // Backup plan engine: exercise banks only (its day titles also use `name:`).
-  for (const m of read('src/lib/baseline-engine.ts').matchAll(/name: '([^']+)', defaultSets/g)) names.add(m[1]);
+  for (const m of read('src/lib/baseline-engine.ts').matchAll(/name: (['"])(.+?)\1, defaultSets/g)) names.add(m[2]);
   assert.ok(names.size > 150);
   const missing = [...names].filter((name) => !exerciseRecipe(name));
   assert.deepEqual(missing, [], `No movement demo for: ${missing.join(', ')}`);

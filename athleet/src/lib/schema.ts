@@ -290,6 +290,15 @@ export const UserProfileInputSchema = z.object({
 
   level: LevelEnum,
 
+  /** Position, event or style id for sport coaches (see data/positions.ts). Not free text. */
+  position: z
+    .string()
+    .regex(/^[a-z0-9]{1,20}$/, 'Unknown position')
+    .optional(),
+
+  /** Has a training partner for drills that need a second person. */
+  partner: z.boolean().optional(),
+
   /** How many days per week the user can train. */
   daysPerWeek: z
     .number()

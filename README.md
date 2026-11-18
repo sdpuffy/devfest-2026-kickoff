@@ -27,10 +27,13 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 
 ## Features
 
-- **Find your coach.** A short questionnaire (age, body stats, goal, schedule) ranks seven
+- **Find your coach.** A short questionnaire (age, body stats, goal, schedule) ranks eleven
   coaches by how well they fit you.
 - **A plan that's yours.** Training days, session length, warm-ups, cool-downs and exercise
   notes are tailored to your answers. Don't like it? Generate a new variation.
+- **Train for your position.** Sport coaches ask for your position, event or style
+  (quarterback or lineman, goalkeeper or striker, sprint or distance freestyle…) and reshape
+  your drills, sprint distances and meal plan around it.
 - **Guided workouts.** Log sets, reps and weight, follow the rest timer, and watch an animated
   movement demo. Your coach cheers you on every set.
 - **Meals that fit.** A weekly meal plan built on your nutrition targets, with dietary
@@ -59,6 +62,10 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 | 🎾 | Coach Rally | *Power you can repeat for three sets.* | Lower-body power, joint health, new to strength |
 | 🥋 | Coach Strike | *From cardio to strength, one kick at a time.* | Leg and glute strength, martial arts basics |
 | 🏋️ | Coach Anvil | *Simple, hard, consistent.* | General gym-goers, getting lean and strong |
+| 🏈 | Coach Blitz | *Win the first step. Own the fourth quarter.* | Football, explosive power, getting bigger and faster |
+| 🤸 | Coach Apex | *Your body is the gym. Earn every skill.* | Training anywhere, pull-ups to handstands, bodyweight strength |
+| 🏊 | Coach Tide | *Smooth is fast. Build your engine.* | Swimming, low-impact cardio, joint-friendly fitness |
+| ⚾ | Coach Diamond | *Rotate hard. Throw healthy. Run every ball out.* | Baseball and softball, rotational power, arm health |
 
 > All coaches are original, fan-made characters built around common training styles.
 > They aren't based on, affiliated with, or endorsed by any real athlete.

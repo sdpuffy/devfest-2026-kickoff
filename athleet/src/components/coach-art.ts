@@ -1,19 +1,19 @@
-import { lebronArt } from './lebron-art';
+import { atlasArt } from './atlas-art';
 
 type Look = { skin: string; shade: string; hair: string; kit: string; trim: string; style: 'power' | 'track' | 'soccer' | 'tennis' | 'martial' | 'gym' };
 const looks: Record<string, Look> = {
-  ronnie: { skin: '#945436', shade: '#703b2b', hair: '#30262b', kit: '#bc4941', trim: '#fff3d5', style: 'power' },
-  bolt: { skin: '#875336', shade: '#653c2c', hair: '#26252b', kit: '#ffcf32', trim: '#258556', style: 'track' },
-  ronaldo: { skin: '#d79a70', shade: '#b97755', hair: '#332c2c', kit: '#bf4142', trim: '#78a36a', style: 'soccer' },
-  serena: { skin: '#a8673e', shade: '#82472f', hair: '#382823', kit: '#294267', trim: '#ffcf32', style: 'tennis' },
-  callina: { skin: '#ecc09a', shade: '#ce9675', hair: '#44302c', kit: '#3879b3', trim: '#ffcf69', style: 'martial' },
-  patty: { skin: '#e6b18b', shade: '#c78c6c', hair: '#634331', kit: '#424f60', trim: '#ec6956', style: 'gym' },
+  ironside: { skin: '#945436', shade: '#703b2b', hair: '#30262b', kit: '#bc4941', trim: '#fff3d5', style: 'power' },
+  blaze: { skin: '#875336', shade: '#653c2c', hair: '#26252b', kit: '#ffcf32', trim: '#258556', style: 'track' },
+  vanguard: { skin: '#d79a70', shade: '#b97755', hair: '#332c2c', kit: '#bf4142', trim: '#78a36a', style: 'soccer' },
+  rally: { skin: '#a8673e', shade: '#82472f', hair: '#382823', kit: '#294267', trim: '#ffcf32', style: 'tennis' },
+  strike: { skin: '#ecc09a', shade: '#ce9675', hair: '#44302c', kit: '#3879b3', trim: '#ffcf69', style: 'martial' },
+  anvil: { skin: '#e6b18b', shade: '#c78c6c', hair: '#634331', kit: '#424f60', trim: '#ec6956', style: 'gym' },
 };
 function svg(markup: string) {
   return { uri: `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">${markup}</svg>`)}` };
 }
 const empty = svg('');
-export type CoachArt = typeof lebronArt & { detail: ReturnType<typeof svg> };
+export type CoachArt = typeof atlasArt & { detail: ReturnType<typeof svg> };
 function makeCoach(p: Look): CoachArt {
   const { skin, shade, hair, kit, trim, style } = p;
   const power = style === 'power';
@@ -48,7 +48,7 @@ function makeCoach(p: Look): CoachArt {
     : `<path d="M105 116q-15-57 48-61 64-6 63 58l-13-20q-20-1-31-22-6 28-38 39l13-23q-13 22-33 28Z" fill="${hair}"/><path d="M122 86q9-17 26-21m36 2q21 9 23 22" fill="none" stroke="${style === 'gym' ? '#997043' : '#735043'}" stroke-width="5" stroke-linecap="round"/>`;
   const beard = style === 'track' ? `<path d="M144 177q16 9 32 0l-4 8q-13 5-24 0Z" fill="${hair}"/>` : style === 'power' ? `<path d="M151 181q9 4 18 0" stroke="${hair}" stroke-width="5" stroke-linecap="round"/>` : '';
   return {
-    ...lebronArt,
+    ...atlasArt,
     left: arm(true), right: arm(false), leftThigh: leg(true, 'thigh'), rightThigh: leg(false, 'thigh'), leftShin: leg(true, 'shin'), rightShin: leg(false, 'shin'), leftShoe: leg(true, 'shoe'), rightShoe: leg(false, 'shoe'),
     body: svg(`<path d="M145 158h30v28h-30Z" fill="${shade}"/><path d="M${power ? 109 : 117} 174Q160 165 ${power ? 211 : 203} 174l${power ? 5 : 10} 63q-56 18-112 0Z" fill="${kit}"/><path d="M116 180l-7 49m95-49 7 49" stroke="${trim}" stroke-width="6"/><path d="M130 174q30 28 60 0" fill="none" stroke="#fff3d5" stroke-width="8"/><path d="M130 174q30 28 60 0" fill="none" stroke="${trim}" stroke-width="4"/><path d="M109 237l-3 18 44 5 10-14 10 14 44-5-3-18" fill="${style === 'track' ? trim : kit}" stroke="${style === 'track' ? kit : trim}" stroke-width="5" stroke-linejoin="round"/>${style === 'tennis' ? `<path d="M111 235l-10 24q59 13 118 0l-10-24Z" fill="${kit}"/><path d="M103 257q57 14 114 0" stroke="${trim}" stroke-width="4" fill="none"/>` : ''}${badge}`),
     head: svg(`${rearHair}<ellipse cx="104" cy="124" rx="12" ry="17" fill="${skin}"/><ellipse cx="216" cy="124" rx="12" ry="17" fill="${skin}"/><path d="M106 106q-2-46 54-46t54 46v34q-3 44-54 46-50-2-54-46Z" fill="${skin}"/>${frontHair}<ellipse cx="120" cy="144" rx="10" ry="6" fill="${shade}" opacity=".4"/><ellipse cx="200" cy="144" rx="10" ry="6" fill="${shade}" opacity=".4"/><path d="M155 124l-4 18q9 5 17-1" fill="none" stroke="${shade}" stroke-width="4" stroke-linecap="round"/>${beard}`),
@@ -57,7 +57,7 @@ function makeCoach(p: Look): CoachArt {
   };
 }
 export const coachArt: Record<string, CoachArt> = {
-  lebron: { ...lebronArt, detail: empty },
+  atlas: { ...atlasArt, detail: empty },
   ...Object.fromEntries(Object.entries(looks).map(([id, look]) => [id, makeCoach(look)])),
 };
 

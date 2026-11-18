@@ -2,13 +2,13 @@
  * baseline-engine.ts — Athleet Baseline Personalization & Coach Routine Generator
  *
  * Pulls from authentic celebrity routines for all 7 coaches:
- *   1. LeBron James (Longevity, basketball power, athletic conditioning)
- *   2. Ronnie Coleman (Heavy compound mass, high-volume hypertrophy)
- *   3. Usain Bolt (Sprint mechanics, explosive plyometrics, core power)
- *   4. Cristiano Ronaldo (Cardio-strength circuits, durability, athletic lean cut)
- *   5. Serena Williams (Lower-body kinetic drive, agility, joint durability)
- *   6. Callina Liang (Leg/glute strength, martial arts striking, flexibility)
- *   7. Lean Beef Patty (Simple & intense physique, RPE 8-9, posterior chain)
+ *   1. Coach Atlas (Longevity, basketball power, athletic conditioning)
+ *   2. Coach Ironside (Heavy compound mass, high-volume hypertrophy)
+ *   3. Coach Blaze (Sprint mechanics, explosive plyometrics, core power)
+ *   4. Coach Vanguard (Cardio-strength circuits, durability, athletic lean cut)
+ *   5. Coach Rally (Lower-body kinetic drive, agility, joint durability)
+ *   6. Coach Strike (Leg/glute strength, martial arts striking, flexibility)
+ *   7. Coach Anvil (Simple & intense physique, RPE 8-9, posterior chain)
  *
  * Algorithm adapts to the user baseline:
  *   - Age (Masters 50+/60+ joint protection vs Youth <18 technique)
@@ -78,7 +78,7 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
   muscleGroups: string[];
   focusNotes: string;
 }[]> = {
-  lebron: [
+  atlas: [
     { name: 'Landmine Rotational Press', defaultSets: 3, defaultReps: '8 each side', defaultRest: '60s', muscleGroups: ['Shoulders', 'Core'], focusNotes: 'Rotate through hips; transfer kinetic force through core.' },
     { name: 'Inverted Row', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '60s', muscleGroups: ['Upper Back', 'Biceps'], focusNotes: 'Retract scapulae fully; keep neck neutral.' },
     { name: 'Walking Lunge with Torso Rotation', defaultSets: 3, defaultReps: '12 reps each leg', defaultRest: '75s', muscleGroups: ['Quads', 'Glutes', 'Core'], focusNotes: 'Stay tall; knee tracks softly over mid-foot.' },
@@ -88,9 +88,9 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'V-Up to Hollow Hold', defaultSets: 3, defaultReps: '12 reps + 10s hold', defaultRest: '45s', muscleGroups: ['Abs'], focusNotes: 'Lower back presses flush against deck.' },
     { name: 'VersaClimber or Jump Rope Intervals', defaultSets: 4, defaultReps: '45 sec high output', defaultRest: '45s', muscleGroups: ['Cardio', 'Calves'], focusNotes: 'Championship engine conditioning.' },
   ],
-  ronnie: [
-    { name: 'Barbell Back Squat', defaultSets: 4, defaultReps: '8-10 reps', defaultRest: '120s', muscleGroups: ['Quads', 'Glutes'], focusNotes: 'YEAH BUDDY! Full depth, push the earth down!' },
-    { name: 'Deadlift', defaultSets: 4, defaultReps: '6-8 reps', defaultRest: '150s', muscleGroups: ['Posterior Chain', 'Back'], focusNotes: 'LIGHT WEIGHT BABY! Pull slack out of bar before blastoff.' },
+  ironside: [
+    { name: 'Barbell Back Squat', defaultSets: 4, defaultReps: '8-10 reps', defaultRest: '120s', muscleGroups: ['Quads', 'Glutes'], focusNotes: 'Full depth, push the earth down!' },
+    { name: 'Deadlift', defaultSets: 4, defaultReps: '6-8 reps', defaultRest: '150s', muscleGroups: ['Posterior Chain', 'Back'], focusNotes: 'Pull slack out of bar before blastoff.' },
     { name: 'T-Bar Row', defaultSets: 4, defaultReps: '10-12 reps', defaultRest: '90s', muscleGroups: ['Lats', 'Rhomboids'], focusNotes: 'Squeeze lats at the top for a full 1-second pause.' },
     { name: 'Flat Bench Press', defaultSets: 4, defaultReps: '8-10 reps', defaultRest: '90s', muscleGroups: ['Chest', 'Triceps'], focusNotes: 'Control eccentric descent; touch chest and drive upward.' },
     { name: 'Incline Dumbbell Press', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '75s', muscleGroups: ['Upper Chest'], focusNotes: 'Deep stretch at bottom; squeeze pecs at lock.' },
@@ -98,7 +98,7 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'Standing Barbell Curl', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '60s', muscleGroups: ['Biceps'], focusNotes: 'Keep elbows pinned to ribcage.' },
     { name: 'Close-Grip Bench Press', defaultSets: 3, defaultReps: '10-12 reps', defaultRest: '60s', muscleGroups: ['Triceps'], focusNotes: 'Shoulder-width grip to overload lateral tricep head.' },
   ],
-  bolt: [
+  blaze: [
     { name: 'Explosive Box Jump', defaultSets: 4, defaultReps: '5 reps', defaultRest: '90s', muscleGroups: ['Hips', 'Glutes'], focusNotes: 'Full triple extension; land softly with knees buffered.' },
     { name: 'Medicine Ball Overhead Slam', defaultSets: 3, defaultReps: '8 reps', defaultRest: '60s', muscleGroups: ['Lats', 'Core'], focusNotes: 'Reach sky-high and slam down with whole body momentum.' },
     { name: 'Single-Leg Cable Knee Drive', defaultSets: 3, defaultReps: '10 reps each', defaultRest: '60s', muscleGroups: ['Hip Flexors', 'Core'], focusNotes: 'Mimic sprint acceleration drive phase.' },
@@ -107,7 +107,7 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'Hanging Leg Raise', defaultSets: 3, defaultReps: '12-15 reps', defaultRest: '45s', muscleGroups: ['Core', 'Grip'], focusNotes: 'Strict control; curl pelvis up without swinging.' },
     { name: 'Good Morning (Hip Hinge)', defaultSets: 3, defaultReps: '10 reps', defaultRest: '75s', muscleGroups: ['Hamstrings', 'Lower Back'], focusNotes: 'Bulletproof hamstrings for top-end sprint safety.' },
   ],
-  ronaldo: [
+  vanguard: [
     { name: 'Power Clean to Push Press', defaultSets: 4, defaultReps: '6 reps', defaultRest: '90s', muscleGroups: ['Full Body', 'Shoulders'], focusNotes: 'Violent hip pop; catch crisply in quarter-squat.' },
     { name: 'Bulgarian Split Squat', defaultSets: 3, defaultReps: '10 each leg', defaultRest: '60s', muscleGroups: ['Quads', 'Glutes'], focusNotes: 'Unilateral leg stamina and balance.' },
     { name: 'Single-Leg Romanian Deadlift', defaultSets: 3, defaultReps: '10 each side', defaultRest: '60s', muscleGroups: ['Hamstrings', 'Stability'], focusNotes: 'Keep hips square to the ground.' },
@@ -115,7 +115,7 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'Push-up into Plank Renegade Row', defaultSets: 3, defaultReps: '8 each arm', defaultRest: '45s', muscleGroups: ['Chest', 'Core', 'Lats'], focusNotes: 'Zero hip rotation during the row.' },
     { name: 'Side Plank Hip Abductions', defaultSets: 3, defaultReps: '12 each side', defaultRest: '45s', muscleGroups: ['Glute Medius', 'Obliques'], focusNotes: 'Key for rotational change of direction on pitch.' },
   ],
-  serena: [
+  rally: [
     { name: 'Barbell Pause Squat (2-sec hold)', defaultSets: 4, defaultReps: '8 reps', defaultRest: '90s', muscleGroups: ['Quads', 'Glutes'], focusNotes: 'Eliminate bounce at the bottom to build raw starting strength.' },
     { name: 'Cable Rotational Woodchop', defaultSets: 3, defaultReps: '12 each side', defaultRest: '45s', muscleGroups: ['Obliques', 'Rotational Chain'], focusNotes: 'Drive through ground, pivot back foot like a forehand.' },
     { name: 'Dumbbell Walking Lunge', defaultSets: 3, defaultReps: '10 each leg', defaultRest: '60s', muscleGroups: ['Glutes', 'Quads'], focusNotes: 'Deep knee bend with vertical torso.' },
@@ -124,7 +124,7 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'Lateral Agility Ladder / Cone Shuffles', defaultSets: 4, defaultReps: '30 seconds', defaultRest: '45s', muscleGroups: ['Agility', 'Ankles'], focusNotes: 'Low center of gravity; quick decelerations.' },
     { name: 'Bicycle Crunch (Slow Tempo)', defaultSets: 3, defaultReps: '15 each side', defaultRest: '30s', muscleGroups: ['Core'], focusNotes: 'Turn shoulder toward opposite knee, not just elbow.' },
   ],
-  callina: [
+  strike: [
     { name: 'Goblet Squat (Heels Elevated)', defaultSets: 4, defaultReps: '12 reps', defaultRest: '60s', muscleGroups: ['Quads', 'Glutes'], focusNotes: 'Deep knee flexion to build striking leg drive.' },
     { name: 'Barbell Hip Thrust', defaultSets: 4, defaultReps: '10-12 reps', defaultRest: '90s', muscleGroups: ['Glutes'], focusNotes: 'Chin tucked; drive through heels and squeeze glutes hard at lockout.' },
     { name: 'Bulgarian Split Squat', defaultSets: 3, defaultReps: '10 each leg', defaultRest: '60s', muscleGroups: ['Quads', 'Glutes'], focusNotes: 'Keep front shin perpendicular for glute emphasis.' },
@@ -133,7 +133,7 @@ const ATHLETE_EXERCISE_BANKS: Record<string, {
     { name: 'Shadowboxing Combinations (Paced)', defaultSets: 3, defaultReps: '2 minutes', defaultRest: '60s', muscleGroups: ['Shoulders', 'Conditioning'], focusNotes: 'Stay light on toes; snap punches and recover guard.' },
     { name: 'Pilates Criss-Cross Core', defaultSets: 3, defaultReps: '15 each side', defaultRest: '30s', muscleGroups: ['Abs', 'Obliques'], focusNotes: 'Smooth controlled rotation; breathe out on effort.' },
   ],
-  patty: [
+  anvil: [
     { name: 'Barbell Hip Thrust', defaultSets: 4, defaultReps: '10-12 reps', defaultRest: '90s', muscleGroups: ['Glutes'], focusNotes: 'Push near failure (RPE 8-9); lock hips out at top.' },
     { name: 'Romanian Deadlift (Dumbbell or Barbell)', defaultSets: 4, defaultReps: '8-10 reps', defaultRest: '90s', muscleGroups: ['Hamstrings', 'Glutes'], focusNotes: 'Push hips to back wall; strict stretch.' },
     { name: 'Strict Pull-Up (or Band-Assisted)', defaultSets: 3, defaultReps: '6-10 reps', defaultRest: '75s', muscleGroups: ['Lats', 'Upper Back'], focusNotes: 'Full dead-hang at bottom; pull chin over bar.' },
@@ -152,7 +152,7 @@ export function generateAdaptedPlan(
 ): GeneratePlanResponse {
   const coach = getCoach(req.coachId) || COACHES[0];
   const athleteKey = coach.id.toLowerCase();
-  const bank = ATHLETE_EXERCISE_BANKS[athleteKey] || ATHLETE_EXERCISE_BANKS.lebron;
+  const bank = ATHLETE_EXERCISE_BANKS[athleteKey] || ATHLETE_EXERCISE_BANKS.atlas;
 
   const adaptations: BaselineAdaptation[] = [];
 
@@ -357,44 +357,44 @@ export function generateAdaptedPlan(
 
   // 3. Coach Motivational Quote
   const coachQuotes: Record<string, string[]> = {
-    lebron: [
+    atlas: [
       "We build for the long game. Protect your joints, master the foundation, and put in championship reps.",
       "Longevity is an everyday commitment. Sleep, recover, and attack every set with deliberate focus.",
       "Consistency over hype. Follow this split and let's build an athlete that can dominate for years to come.",
     ],
-    ronnie: [
-      "YEAH BUDDY! Ain't nothin' to it but to do it! We got heavy weight and high volume ready for you!",
-      "LIGHT WEIGHT BABY! Time to feed the muscle and leave zero excuses on the gym floor!",
+    ironside: [
+      "Stack the plates! We got heavy weight and high volume ready for you!",
+      "Iron doesn't lie! Time to feed the muscle and leave zero excuses on the gym floor!",
       "Everybody wants to be a bodybuilder, but nobody wants to lift this heavy weight! Let's get big!",
     ],
-    bolt: [
+    blaze: [
       "Fast is a skill, and we're going to practice it. Quality and explosiveness over tired grinding reps!",
       "Stay relaxed and strike fast. Power comes from relaxed speed and explosive hips. Let's fly!",
       "Practice your speed mechanics every single day. Train smart, have fun, and bring the energy!",
     ],
-    ronaldo: [
+    vanguard: [
       "Discipline every single day. Talent is nothing without relentless dedication. Let's execute this plan.",
       "Stay hungry, stay sharp. Keep the intensity high and the diet strictly clean.",
       "We prepare to win. Work through every circuit with full concentration and zero shortcuts.",
     ],
-    serena: [
+    rally: [
       "Step into the session with power and intent. We build strength that lasts for three brutal sets.",
       "Champions adjust. Take care of your shoulders, stay low in your stance, and bring the fire!",
       "Power is built rep by rep. Trust your body, protect your knees, and let's get to work.",
     ],
-    callina: [
+    strike: [
       "From cardio to real strength! We're building powerful legs, explosive kicks, and rock-solid core.",
       "Progressive overload and consistency make all the difference. Let's sculpt those legs and glutes!",
       "Keep your technique clean and your kicks snappy. Proud of you for showing up today!",
     ],
-    patty: [
+    anvil: [
       "Simple, hard, consistent. No magic pills, just solid lifts pushed close to failure. Let's crush this!",
       "Consistency over perfection every single time. Grab your water, warm up, and let's build those glutes and back!",
       "Don't overcomplicate it. Master the basic lifts, push yourself to RPE 8-9, and enjoy the gains!",
     ],
   };
 
-  const quotes = coachQuotes[athleteKey] || coachQuotes.lebron;
+  const quotes = coachQuotes[athleteKey] || coachQuotes.atlas;
   const selectedQuote = quotes[seed % quotes.length];
 
   // 4. Personalized Nutrition

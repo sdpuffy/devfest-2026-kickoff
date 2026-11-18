@@ -1,10 +1,11 @@
+import { canonicalCoachId } from '../lib/coach-ids';
 import type { Coach } from '@/lib/types';
 
-// Coach roster. Training details are based on publicly reported routines.
+// Coach roster: original, fan-made characters. Training styles draw on common, publicly known methods.
 export const COACHES: Coach[] = [
   {
-    "id": "lebron",
-    "name": "LeBron James",
+    "id": "atlas",
+    "name": "Coach Atlas",
     "sport": "basketball",
     "category": "Basketball",
     "trainingTypes": [
@@ -60,14 +61,14 @@ export const COACHES: Coach[] = [
         "deload when legs feel heavy"
       ]
     },
-    "avatar": "lebron.png",
+    "avatar": "atlas.png",
     "icon": "🏀",
     "color": "#552583",
-    "greeting": "What's good! I'm your LeBron-style coach. We train for the long game here: strength, conditioning and recovery. Tell me what you want to work on and I'll build your week."
+    "greeting": "What's good! I'm Coach Atlas. We train for the long game here: strength, conditioning and recovery. Tell me what you want to work on and I'll build your week."
   },
   {
-    "id": "ronnie",
-    "name": "Ronnie Coleman",
+    "id": "ironside",
+    "name": "Coach Ironside",
     "sport": "bodybuilding",
     "category": "Bodybuilding",
     "trainingTypes": [
@@ -121,14 +122,14 @@ export const COACHES: Coach[] = [
         "one full rest day"
       ]
     },
-    "avatar": "ronnie.png",
+    "avatar": "ironside.png",
     "icon": "💪",
     "color": "#8B1E1E",
-    "greeting": "Yeah buddy! Ready to build some serious size? I'm your Ronnie-style coach. Tell me how many days you can train and let's get to work!"
+    "greeting": "Let's go! Ready to build some serious size? I'm Coach Ironside. Tell me how many days you can train and let's get to work!"
   },
   {
-    "id": "bolt",
-    "name": "Usain Bolt",
+    "id": "blaze",
+    "name": "Coach Blaze",
     "sport": "track",
     "category": "Track & Speed",
     "trainingTypes": [
@@ -184,14 +185,14 @@ export const COACHES: Coach[] = [
         "never sprint tired"
       ]
     },
-    "avatar": "bolt.png",
+    "avatar": "blaze.png",
     "icon": "⚡",
     "color": "#007A3D",
-    "greeting": "Hey hey! Your Bolt-style speed coach here. Fast is a skill, and we're gonna practice it. What do you want: speed, explosiveness, or getting lean?"
+    "greeting": "Hey hey! Coach Blaze here, your speed coach. Fast is a skill, and we're gonna practice it. What do you want: speed, explosiveness, or getting lean?"
   },
   {
-    "id": "ronaldo",
-    "name": "Cristiano Ronaldo",
+    "id": "vanguard",
+    "name": "Coach Vanguard",
     "sport": "soccer",
     "category": "Soccer",
     "trainingTypes": [
@@ -248,14 +249,14 @@ export const COACHES: Coach[] = [
         "avoid sugary foods"
       ]
     },
-    "avatar": "ronaldo.png",
+    "avatar": "vanguard.png",
     "icon": "⚽",
     "color": "#B8860B",
-    "greeting": "Welcome. I'm your Ronaldo-style coach. Discipline every day, that's how we win. Tell me your goal and how many days you can train."
+    "greeting": "Welcome. I'm Coach Vanguard. Discipline every day, that's how we win. Tell me your goal and how many days you can train."
   },
   {
-    "id": "serena",
-    "name": "Serena Williams",
+    "id": "rally",
+    "name": "Coach Rally",
     "sport": "tennis",
     "category": "Tennis",
     "trainingTypes": [
@@ -312,14 +313,14 @@ export const COACHES: Coach[] = [
         "variety to avoid burnout"
       ]
     },
-    "avatar": "serena.png",
+    "avatar": "rally.png",
     "icon": "🎾",
     "color": "#C2185B",
-    "greeting": "Hey champ! I'm your Serena-style coach. We'll build power you can repeat and keep your joints happy. What are we working toward?"
+    "greeting": "Hey champ! I'm Coach Rally. We'll build power you can repeat and keep your joints happy. What are we working toward?"
   },
   {
-    "id": "callina",
-    "name": "Callina Liang",
+    "id": "strike",
+    "name": "Coach Strike",
     "sport": "martial_arts",
     "category": "Martial Arts & Legs",
     "trainingTypes": [
@@ -341,7 +342,7 @@ export const COACHES: Coach[] = [
       55
     ],
     "intensity": 3,
-    "tagline": "From cardio girl to strength girl.",
+    "tagline": "From cardio to strength, one kick at a time.",
     "bio": "Leg-focused strength plus kicking and striking skills. Great if you're new to lifting.",
     "bestFor": [
       "leg and glute strength",
@@ -371,14 +372,14 @@ export const COACHES: Coach[] = [
         "eat enough protein"
       ]
     },
-    "avatar": "callina.png",
+    "avatar": "strike.png",
     "icon": "🥋",
     "color": "#1565C0",
-    "greeting": "Hi! I'm your Callina-style coach. I used to be a cardio girl too, now I love lifting. Want to build strong legs and learn some kicks?"
+    "greeting": "Hi! I'm Coach Strike. Cardio got me started, lifting made me strong. Want to build strong legs and learn some kicks?"
   },
   {
-    "id": "patty",
-    "name": "Lean Beef Patty",
+    "id": "anvil",
+    "name": "Coach Anvil",
     "sport": "fitness",
     "category": "Gym & Physique",
     "trainingTypes": [
@@ -432,13 +433,19 @@ export const COACHES: Coach[] = [
         "foam rolling"
       ]
     },
-    "avatar": "patty.png",
+    "avatar": "anvil.png",
     "icon": "🏋️",
     "color": "#E65100",
-    "greeting": "Hey! Your Patty-style coach here. Simple lifts, done hard, done consistently. What's your goal and how often can you get to the gym?"
+    "greeting": "Hey! Coach Anvil here. Simple lifts, done hard, done consistently. What's your goal and how often can you get to the gym?"
   }
 ];
 
 export function getCoach(id: string): Coach | undefined {
-  return COACHES.find((c) => c.id === id);
+  const coachId = canonicalCoachId(id);
+  return COACHES.find((c) => c.id === coachId);
+}
+
+/** The coach's name without the "Coach " title, e.g. "Atlas". */
+export function coachShortName(coach: Pick<Coach, 'name'>): string {
+  return coach.name.replace(/^Coach\s+/, '');
 }

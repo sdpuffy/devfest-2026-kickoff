@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { exerciseRecipe } from '@/lib/exercise-rig';
 import { AnimatedCoach } from '@/components/animated-coach';
 import { PlanView, type PlanParams } from '@/components/plan-view';
+import { coachShortName } from '@/data/coaches';
 import { CoachWorkout } from '@/components/coach-workout';
 import { useCoachSpeech } from '@/hooks/use-coach-speech';
 import { sendChat } from '@/lib/api';
@@ -72,7 +73,7 @@ export function CoachTraining({ coach, parameters, newPlan = false, initialDay, 
     finally { if (token === request.current) setBusy(false); }
   }
   return <SafeAreaView style={styles.screen} edges={['bottom']}>
-    <Stack.Screen options={{ headerShown: true, title: `${coach.name.split(' ')[0]} · Train together`, headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.accent, headerBackTitle: 'Coaches' }} />
+    <Stack.Screen options={{ headerShown: true, title: `${coachShortName(coach)} · Train together`, headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.accent, headerBackTitle: 'Coaches' }} />
     <KeyboardAvoidingView style={styles.shell} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
       <AnimatedCoach key={workout ? demo.name : 'plan'} coach={coach} compact exercise={demo.name ?? undefined} paused={!playing || demo.resting} motion={workout && !complete && demo.name ? 'exercise' : speech.speaking ? 'talking' : busy ? 'thinking' : complete && workout ? 'celebrate' : 'idle'} speechAnimation={speech.animation} />
       {workout && !complete && demo.name && <View style={styles.demoControls}>
@@ -92,7 +93,7 @@ export function CoachTraining({ coach, parameters, newPlan = false, initialDay, 
         {!!speech.error && <Text style={styles.message}>{speech.error}</Text>}
         {asking && <View style={styles.row}><TextInput accessibilityLabel="Question for your coach" style={styles.input} placeholder="Ask about this exercise…" placeholderTextColor={colors.textSubtle} value={input} onChangeText={setInput} onSubmitEditing={ask} /><Pressable disabled={busy || !input.trim()} accessibilityRole="button" onPress={ask}><Text style={styles.link}>Send</Text></Pressable></View>}
       </View>
-      {!workout && day !== null && !complete && <Pressable accessibilityRole="button" style={styles.resume} onPress={() => setWorkout(true)}><Text style={styles.link}>Resume workout with {coach.name.split(' ')[0]} →</Text></Pressable>}
+      {!workout && day !== null && !complete && <Pressable accessibilityRole="button" style={styles.resume} onPress={() => setWorkout(true)}><Text style={styles.link}>Resume workout with {coachShortName(coach)} →</Text></Pressable>}
       <View style={[styles.panel, workout && styles.hidden]}>
         <PlanView key={mode} embedded parameters={parameters} mode={mode} onStartWorkout={startWorkout} onPlanChanged={resetWorkout} workoutInProgress={day !== null && !complete} />
       </View>

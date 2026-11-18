@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { Animated, AppState, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { sampleSpeech, emptySpeechAnimation, type SpeechAnimation } from '@/lib/speech-animation';
-import { coachPose, easeInOut, type CoachMotion, type CoachPose } from '@/lib/lebron-motion';
+import { coachPose, easeInOut, type CoachMotion, type CoachPose } from '@/lib/coach-motion';
 import { ExerciseDemo } from './exercise-demo';
 import { coachArt, type CoachArt } from './coach-art';
 import type { Coach } from '@/lib/types';
@@ -70,7 +70,7 @@ export function AnimatedCoach({ coach, motion, speechAnimation, compact = false,
   const stageHeight = height ?? (compact ? 190 : 300);
   const size = Math.max(0, Math.min(compact ? 172 : 278, stageHeight - (showStatus ? 22 : 0)));
   const rotate = (value: Animated.Value, direction = 1) => value.interpolate({ inputRange: [-180, 180], outputRange: [`${-180 * direction}deg`, `${180 * direction}deg`] });
-  const layers = coachArt[coach.id] ?? coachArt.lebron;
+  const layers = coachArt[coach.id] ?? coachArt.atlas;
   const art = (name: keyof CoachArt) => <Image source={layers[name]} style={styles.image} contentFit="contain" accessible={false} />;
   return (
     <View style={[styles.stage, { height: stageHeight }]} accessible accessibilityLabel={`Illustrated ${coach.name} coach, ${exercise && motion === 'exercise' ? exercise : motion}`}>

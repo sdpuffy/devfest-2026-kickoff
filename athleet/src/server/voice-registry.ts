@@ -111,7 +111,7 @@ export function syncVoiceFolders(): Promise<{ voices: Record<string, SharedVoice
     let changed = false;
     for (const coachId of dirs) {
       if (!COACH_ID.test(coachId)) {
-        problems.push({ coachId, message: `Folder "${coachId}" isn't a valid coach id (use lowercase, e.g. "ronnie").` });
+        problems.push({ coachId, message: `Folder "${coachId}" isn't a valid coach id (use lowercase, e.g. "ironside").` });
         continue;
       }
       let folder;

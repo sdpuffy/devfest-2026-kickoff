@@ -4,7 +4,7 @@ import type { sampleSpeech } from '@/lib/speech-animation';
 export type CoachMotion = 'idle' | 'talking' | 'exercise' | 'celebrate' | 'thinking';
 
 /** A locally built, articulated stylized character; no remote models or textures. */
-export function createLeBronScene() {
+export function createCoachScene() {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#191812');
   scene.add(new THREE.HemisphereLight(0xffffff, 0x6b5633, 1.7));

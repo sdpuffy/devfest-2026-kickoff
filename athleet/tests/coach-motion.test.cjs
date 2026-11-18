@@ -10,7 +10,7 @@ function load(file) {
   vm.runInNewContext(code, context);
   return context.exports;
 }
-const { coachPose, easeInOut } = load(path.resolve(__dirname, '../src/lib/lebron-motion.ts'));
+const { coachPose, easeInOut } = load(path.resolve(__dirname, '../src/lib/coach-motion.ts'));
 const quiet = { open: 0, width: 1, emphasis: 0, smile: 0, brow: 0, round: 0 };
 test('all five motion states loop continuously with finite transforms', () => {
   for (const state of ['idle', 'thinking', 'talking', 'exercise', 'celebrate']) {

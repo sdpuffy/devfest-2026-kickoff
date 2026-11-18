@@ -15,7 +15,7 @@ function leg(left: boolean, part: 'thigh' | 'shin' | 'shoe') {
   if (part === 'shin') return svg(`<path d="M${x} 272V291" stroke="${skin}" stroke-width="19" stroke-linecap="round"/><path d="M${x-10} 282h20" stroke="#fff3d5" stroke-width="14"/><path d="M${x-10} 280h20" stroke="#69449a" stroke-width="4"/>`);
   return svg(`<path d="M${x-11} 286Q${x} 280 ${x+12} 288l${left ? '-2' : '16'} 8q5 8-8 9h-31q-10-2-6-10Z" fill="#24345e"/><path d="M${x-22} 300h39" stroke="#fff3d5" stroke-width="7" stroke-linecap="round"/><path d="M${x-6} 288l12 4m-15 1 13 4" stroke="#fff3d5" stroke-width="3" stroke-linecap="round"/>`);
 }
-export const lebronArt = {
+export const atlasArt = {
   left: arm(true), right: arm(false), leftThigh: leg(true, 'thigh'), rightThigh: leg(false, 'thigh'), leftShin: leg(true, 'shin'), rightShin: leg(false, 'shin'), leftShoe: leg(true, 'shoe'), rightShoe: leg(false, 'shoe'),
   floor: svg('<ellipse cx="160" cy="301" rx="94" ry="10" fill="#28251d"/>'),
   body: svg(`<path d="M145 158h30v28h-30Z" fill="${shadow}"/><path d="M117 174Q160 165 203 174l10 63q-53 18-106 0Z" fill="#ffcf32"/><path d="M116 180l-7 49m95-49 7 49" stroke="#e9ae10" stroke-width="8"/><path d="M130 174q30 28 60 0" fill="none" stroke="#fff3d5" stroke-width="10"/><path d="M130 174q30 28 60 0" fill="none" stroke="#69449a" stroke-width="4"/><path d="M109 237l-3 18 44 5 10-14 10 14 44-5-3-18" fill="#ffcf32" stroke="#69449a" stroke-width="5" stroke-linejoin="round"/><g fill="none" stroke="#69449a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M137 207q15-10 16 3 0 7-17 17h18M168 204h16l-10 10q15-2 10 10-4 7-17 1"/></g>`),

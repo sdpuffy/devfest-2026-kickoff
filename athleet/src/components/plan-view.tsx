@@ -16,7 +16,7 @@ import { CoachAvatar } from '@/components/coach-avatar';
 import { StreakBadge } from '@/components/streak-badge';
 import { NutritionBlueprint } from '@/components/nutrition-blueprint';
 import { WeeklyRecapView } from '@/components/weekly-recap';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
 import { generatePlan, type GeneratePlanResponse } from '@/lib/api';
 import { defaultPlanDayIndex, planWarnings, trainingWeekdays } from '@/lib/plan';
 import { getProfile, updateProfile } from '@/lib/profile-store';
@@ -64,7 +64,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
   const saved = mode === 'saved' ? selected : null;
   const logs = useWorkoutLogs();
 
-  const coachId = saved?.coachId || params.coachId || 'lebron';
+  const coachId = saved?.coachId || params.coachId || 'atlas';
   const coach = getCoach(coachId);
 
   const age = saved?.request?.age || Number(params.age) || profile?.age || 26;
@@ -205,7 +205,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
           <View style={styles.loadingCard}>
             <ActivityIndicator size="large" color={colors.accent} />
             <Text style={styles.loadingTitle}>
-              {coach ? `Coach ${coach.name.split(' ')[0]} is crafting your routine...` : 'Building your routine...'}
+              {coach ? `Coach ${coachShortName(coach)} is crafting your routine...` : 'Building your routine...'}
             </Text>
             <Text style={styles.loadingSubtitle}>
               Personalizing sets, rest periods, and volume to your baseline
@@ -314,8 +314,8 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                 <View style={styles.quoteCoach}>
                   <CoachAvatar coach={coach} size={44} />
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.quoteCoachName}>Coach {coach.name}</Text>
-                    <Text style={styles.quoteCoachSub}>{coach.category} • Authentic Athlete Routine</Text>
+                    <Text style={styles.quoteCoachName}>{coach.name}</Text>
+                    <Text style={styles.quoteCoachSub}>{coach.category} • Signature Routine</Text>
                   </View>
                   {seed > 0 && (
                     <View style={styles.variationBadge}>
@@ -653,7 +653,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                 onPress={() => router.push({ pathname: '/chat/[id]' as any, params: { id: coachId } })}
                 accessibilityRole="button"
               >
-                <Text style={styles.chatBtnText}>{emoji('💬')}Chat with {coach?.name.split(' ')[0]}</Text>
+                <Text style={styles.chatBtnText}>{emoji('💬')}Chat with {coach && coachShortName(coach)}</Text>
               </Pressable>}
             </View>
 

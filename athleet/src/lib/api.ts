@@ -1,5 +1,5 @@
 import type { ChatMessage, Coach, UserProfile , NutritionTargets } from '@/lib/types';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
 import { hypeLine } from '@/data/hype';
 import { SUGGESTION_ANSWERS } from '@/data/suggestions';
 import { PROGRAMS } from '@/data/workouts';
@@ -187,7 +187,7 @@ function localPlan(req: GeneratePlanRequest, seed: number): GeneratePlanResponse
   const program = PROGRAMS[coach.id];
 
   return {
-    title: `${coach.name.split(' ')[0]}'s week for you`,
+    title: `${coachShortName(coach)}'s week for you`,
     coachId: coach.id,
     coachMessage: plan.why,
     why: plan.why,
@@ -260,7 +260,7 @@ function normalizePlanResponse(raw: any, req: GeneratePlanRequest): GeneratePlan
 async function demoReply(coach: Coach, profile: UserProfile | null, messages: ChatMessage[]) {
   await new Promise((r) => setTimeout(r, 700));
   const last = messages[messages.length - 1]?.content.toLowerCase() ?? '';
-  const first = coach.name.split(' ')[0];
+  const first = coachShortName(coach);
 
   if (/plan|week|routine|program|workout/.test(last)) {
     const days = coach.signature.split;

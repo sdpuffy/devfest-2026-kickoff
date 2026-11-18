@@ -39,7 +39,7 @@ export type CoachProgram = {
 };
 
 export const PROGRAMS: Record<string, CoachProgram> = {
-  lebron: {
+  atlas: {
     voice: "We're playing the long game: strength, conditioning and recovery.",
     warmup: '20-min dynamic warm-up: light jog, leg swings, hip openers, band shoulder work',
     cooldown: '10-min yoga flow: down dog, pigeon, hamstring stretch',
@@ -109,8 +109,8 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  ronnie: {
-    voice: "Yeah buddy! We're building size with heavy compounds and high volume.",
+  ironside: {
+    voice: "Let's go! We're building size with heavy compounds and high volume.",
     warmup: '10 min light cardio, then 2 light warm-up sets on the first lift',
     cooldown: '5-10 min stretching for the muscles you trained',
     finisher: { name: 'Incline treadmill walk', kind: 'conditioning', reps: '15 min' },
@@ -182,7 +182,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  bolt: {
+  blaze: {
     voice: "Fast is a skill, so we'll practice it: sprint mechanics, explosive power and core every day.",
     warmup: '15-min sprint warm-up: jog, A-skips, B-skips, high knees, butt kicks, leg swings',
     cooldown: '10 min stretching: hamstrings, hip flexors, calves',
@@ -250,7 +250,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  ronaldo: {
+  vanguard: {
     voice: 'Discipline every day. We mix circuits, sprints, power and core.',
     warmup: '10 min: jump rope + dynamic stretches',
     cooldown: 'Stretch and foam roll; get 8 hours of sleep tonight',
@@ -330,7 +330,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  serena: {
+  rally: {
     voice: "We build power you can repeat for a whole match, and we protect your joints.",
     warmup: '10 min fun cardio (dance, bike or swim), then hamstring and side stretches',
     cooldown: 'Foam roll + stretch shoulders, hips and knees',
@@ -405,8 +405,8 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  callina: {
-    voice: 'I was a cardio girl before I fell in love with lifting. We build strong legs and real kicks.',
+  strike: {
+    voice: 'Cardio got me started, then I fell in love with lifting. We build strong legs and real kicks.',
     warmup: 'Jump rope + hip openers + leg swings (10 min)',
     cooldown: 'Flexibility work: hamstrings, hip flexors, adductors',
     finisher: { name: 'Heavy bag rounds', kind: 'conditioning', reps: '4 x 2 min' },
@@ -471,7 +471,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  patty: {
+  anvil: {
     voice: 'Simple lifts, done hard, done consistently. That is the whole secret.',
     warmup: '5-10 min jump rope, then light warm-up sets',
     cooldown: '10 min stretching + 5-10 min foam rolling',

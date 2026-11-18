@@ -4,7 +4,7 @@ import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ResetOnboarding } from '@/components/reset-onboarding';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
 import {
   resetAppearance,
   setAppearance,
@@ -161,7 +161,7 @@ export default function SettingsScreen() {
             style={[styles.coachChip, settings.accent === 'coach' && styles.chipOn, !coach && styles.disabled]}>
             <View style={[styles.coachDot, { backgroundColor: accentBase({ ...settings, accent: 'coach' }) }]} />
             <Text style={[styles.chipText, settings.accent === 'coach' && styles.chipTextOn]}>
-              {coach ? `Match ${coach.name.split(' ')[0]}'s color` : "Match my coach's color"}
+              {coach ? `Match ${coachShortName(coach)}'s color` : "Match my coach's color"}
             </Text>
           </Pressable>
           <Text style={styles.hint}>

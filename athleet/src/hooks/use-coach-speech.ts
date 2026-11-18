@@ -5,7 +5,7 @@ import { coachVoiceOptions } from '@/lib/voice';
 import { getClonedVoice, speakWithClonedVoice, stopClonedAudio } from '@/lib/voice-clone';
 import { emptySpeechAnimation, speechWords } from '@/lib/speech-animation';
 
-export function useCoachSpeech(initiallyEnabled = false, coachId = 'lebron') {
+export function useCoachSpeech(initiallyEnabled = false, coachId = 'atlas') {
   const [enabled, setEnabled] = useState(initiallyEnabled);
   const [speaking, setSpeaking] = useState(false);
   const [error, setError] = useState('');

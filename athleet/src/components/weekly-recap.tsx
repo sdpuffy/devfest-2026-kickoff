@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { CoachAvatar } from '@/components/coach-avatar';
 import { WorkoutCalendarModal } from '@/components/workout-calendar';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
 import type { GeneratePlanResponse } from '@/lib/api';
 import { planDayIndexForDate, weekdayName } from '@/lib/plan';
 import {
@@ -97,19 +97,19 @@ export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps
 
   // Coach-specific weekly hype quote
   const coachQuote = useMemo(() => {
-    const name = coach?.name.split(' ')[0] || 'Coach';
+    const name = coach ? coachShortName(coach) : 'Coach';
     if (completedCount >= targetDays) {
-      return coachId === 'ronnie'
-        ? `YEAH BUDDY! ${completedCount} workouts crushed this week! LIGHT WEIGHT BABY!`
-        : coachId === 'bolt'
+      return coachId === 'ironside'
+        ? `STACK THE PLATES! ${completedCount} workouts crushed this week!`
+        : coachId === 'blaze'
         ? `Clean sweep! ${completedCount} sessions clocked. You're leaving the competition in the dust.`
         : `${name}: "Flawless consistency this week. You hit your goal of ${targetDays} sessions. Recovery starts now."`;
     }
     if (completedCount > 0) {
-      return coachId === 'ronnie'
-        ? `Everybody wanna be a champion! You got ${completedCount} down, don't stop now!`
-        : coachId === 'lebron'
-        ? `LeBron: "The main thing is keeping the main thing the main thing. ${completedCount}/${targetDays} days in the books."`
+      return coachId === 'ironside'
+        ? `Champions are built one session at a time! You got ${completedCount} down, don't stop now!`
+        : coachId === 'atlas'
+        ? `${name}: "Stack good days and the long game takes care of itself. ${completedCount}/${targetDays} days in the books."`
         : `${name}: "Solid momentum with ${completedCount} session${completedCount > 1 ? 's' : ''}. Let's lock in the rest of the week."`;
     }
     return `${name}: "New week, blank canvas. Choose your first day and let's get to work."`;
@@ -363,7 +363,7 @@ export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps
             </Text>
             {coach && (
               <Text style={styles.restCoachTip}>
-                {`💡 ${coach.name.split(' ')[0]}'s Tip: "Recovery isn't time off; it's part of the process."`}
+                {`💡 ${coachShortName(coach)}'s Tip: "Recovery isn't time off; it's part of the process."`}
               </Text>
             )}
           </View>
@@ -419,7 +419,7 @@ export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps
                 </View>
                 <Text style={styles.historyCardSets}>
                   Logged {log.sets?.length || 0} completed sets with coach{' '}
-                  {getCoach(log.coachId)?.name.split(' ')[0] || coach?.name.split(' ')[0]}
+                  {coachShortName(getCoach(log.coachId) ?? coach ?? { name: '' })}
                 </Text>
               </View>
             );

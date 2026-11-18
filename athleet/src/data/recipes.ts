@@ -42,7 +42,7 @@ export const RECIPES: Recipe[] = [
     slot: 'breakfast',
     minutes: 5,
     tags: ['no_cook', 'meal_prep', 'budget', 'vegetarian', 'quick'],
-    coachPicks: ['patty', 'callina'],
+    coachPicks: ['anvil', 'strike'],
     ingredients: [
       { id: 'oats', g: 60 },
       { id: 'milk', g: 200 },
@@ -62,7 +62,7 @@ export const RECIPES: Recipe[] = [
     slot: 'breakfast',
     minutes: 12,
     tags: ['quick', 'vegetarian', 'budget'],
-    coachPicks: ['lebron'],
+    coachPicks: ['atlas'],
     ingredients: [
       { id: 'eggs', g: 100, note: 'whole' },
       { id: 'egg_whites', g: 120 },
@@ -83,7 +83,7 @@ export const RECIPES: Recipe[] = [
     slot: 'breakfast',
     minutes: 3,
     tags: ['no_cook', 'quick', 'vegetarian'],
-    coachPicks: ['serena'],
+    coachPicks: ['rally'],
     ingredients: [
       { id: 'greek_yogurt', g: 250 },
       { id: 'granola', g: 40 },
@@ -103,7 +103,7 @@ export const RECIPES: Recipe[] = [
     slot: 'breakfast',
     minutes: 8,
     tags: ['quick', 'budget', 'vegetarian', 'pre_workout'],
-    coachPicks: ['ronnie', 'bolt'],
+    coachPicks: ['ironside', 'blaze'],
     ingredients: [
       { id: 'oats', g: 80 },
       { id: 'milk', g: 250 },
@@ -123,7 +123,7 @@ export const RECIPES: Recipe[] = [
     slot: 'breakfast',
     minutes: 15,
     tags: ['meal_prep', 'quick'],
-    coachPicks: ['ronaldo'],
+    coachPicks: ['vanguard'],
     ingredients: [
       { id: 'ground_turkey', g: 85 },
       { id: 'eggs', g: 100 },
@@ -165,7 +165,7 @@ export const RECIPES: Recipe[] = [
     slot: 'lunch',
     minutes: 25,
     tags: ['meal_prep', 'budget', 'post_workout'],
-    coachPicks: ['ronnie', 'patty'],
+    coachPicks: ['ironside', 'anvil'],
     ingredients: [
       { id: 'chicken_breast', g: 170, note: 'raw weight' },
       { id: 'white_rice', g: 75, note: 'dry weight' },
@@ -206,7 +206,7 @@ export const RECIPES: Recipe[] = [
     slot: 'lunch',
     minutes: 10,
     tags: ['no_cook', 'quick', 'budget', 'meal_prep'],
-    coachPicks: ['ronaldo'],
+    coachPicks: ['vanguard'],
     ingredients: [
       { id: 'tuna', g: 113, note: 'drained' },
       { id: 'chickpeas', g: 120 },
@@ -228,7 +228,7 @@ export const RECIPES: Recipe[] = [
     slot: 'lunch',
     minutes: 35,
     tags: ['meal_prep', 'budget'],
-    coachPicks: ['lebron'],
+    coachPicks: ['atlas'],
     ingredients: [
       { id: 'ground_turkey', g: 140 },
       { id: 'kidney_beans', g: 100 },
@@ -250,7 +250,7 @@ export const RECIPES: Recipe[] = [
     slot: 'lunch',
     minutes: 25,
     tags: ['vegan', 'vegetarian', 'meal_prep'],
-    coachPicks: ['serena'],
+    coachPicks: ['rally'],
     ingredients: [
       { id: 'tofu', g: 200, note: 'pressed, cubed' },
       { id: 'quinoa', g: 60, note: 'dry' },
@@ -272,7 +272,7 @@ export const RECIPES: Recipe[] = [
     slot: 'lunch',
     minutes: 35,
     tags: ['meal_prep'],
-    coachPicks: ['bolt'],
+    coachPicks: ['blaze'],
     ingredients: [
       { id: 'chicken_thigh', g: 170 },
       { id: 'jerk_seasoning', g: 20 },
@@ -296,7 +296,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 30,
     tags: ['post_workout'],
-    coachPicks: ['lebron', 'serena'],
+    coachPicks: ['atlas', 'rally'],
     ingredients: [
       { id: 'salmon', g: 170, note: 'fillet' },
       { id: 'sweet_potato', g: 250, note: 'cubed' },
@@ -316,7 +316,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 35,
     tags: ['post_workout'],
-    coachPicks: ['ronnie'],
+    coachPicks: ['ironside'],
     ingredients: [
       { id: 'sirloin', g: 200 },
       { id: 'potato', g: 300 },
@@ -335,7 +335,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 25,
     tags: ['meal_prep', 'budget'],
-    coachPicks: ['patty', 'callina'],
+    coachPicks: ['anvil', 'strike'],
     ingredients: [
       { id: 'ground_turkey', g: 150 },
       { id: 'pasta', g: 85, note: 'dry' },
@@ -355,7 +355,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 20,
     tags: ['quick'],
-    coachPicks: ['bolt'],
+    coachPicks: ['blaze'],
     ingredients: [
       { id: 'shrimp', g: 170 },
       { id: 'jasmine_rice', g: 75, note: 'dry' },
@@ -377,7 +377,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 30,
     tags: [],
-    coachPicks: ['ronaldo'],
+    coachPicks: ['vanguard'],
     ingredients: [
       { id: 'cod', g: 200 },
       { id: 'potato', g: 250 },
@@ -398,7 +398,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 30,
     tags: ['vegan', 'vegetarian', 'meal_prep', 'budget'],
-    coachPicks: ['serena'],
+    coachPicks: ['rally'],
     ingredients: [
       { id: 'lentils', g: 80, note: 'dry' },
       { id: 'coconut_milk_lite', g: 120 },
@@ -420,7 +420,7 @@ export const RECIPES: Recipe[] = [
     slot: 'dinner',
     minutes: 25,
     tags: ['meal_prep'],
-    coachPicks: ['callina'],
+    coachPicks: ['strike'],
     ingredients: [
       { id: 'chicken_breast', g: 170 },
       { id: 'brown_rice', g: 65, note: 'dry' },
@@ -444,7 +444,7 @@ export const RECIPES: Recipe[] = [
     slot: 'snack',
     minutes: 3,
     tags: ['quick', 'no_cook', 'post_workout', 'vegetarian'],
-    coachPicks: ['ronnie', 'lebron', 'bolt'],
+    coachPicks: ['ironside', 'atlas', 'blaze'],
     ingredients: [
       { id: 'whey', g: 30 },
       { id: 'milk', g: 250 },
@@ -459,7 +459,7 @@ export const RECIPES: Recipe[] = [
     slot: 'snack',
     minutes: 2,
     tags: ['quick', 'no_cook', 'vegetarian'],
-    coachPicks: ['ronaldo', 'serena'],
+    coachPicks: ['vanguard', 'rally'],
     ingredients: [
       { id: 'greek_yogurt', g: 200 },
       { id: 'almonds', g: 20 },
@@ -485,7 +485,7 @@ export const RECIPES: Recipe[] = [
     slot: 'snack',
     minutes: 3,
     tags: ['quick', 'no_cook', 'budget', 'pre_workout', 'vegetarian'],
-    coachPicks: ['bolt', 'callina'],
+    coachPicks: ['blaze', 'strike'],
     ingredients: [
       { id: 'rice_cakes', g: 27 },
       { id: 'peanut_butter', g: 16 },
@@ -500,7 +500,7 @@ export const RECIPES: Recipe[] = [
     slot: 'snack',
     minutes: 2,
     tags: ['quick', 'no_cook', 'budget', 'vegetarian'],
-    coachPicks: ['patty'],
+    coachPicks: ['anvil'],
     ingredients: [
       { id: 'cottage_cheese', g: 200 },
       { id: 'pineapple', g: 100 },

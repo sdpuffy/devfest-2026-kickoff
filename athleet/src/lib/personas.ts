@@ -25,9 +25,9 @@ export interface CoachPersona {
 }
 
 const PERSONAS: Record<string, CoachPersona> = {
-  lebron: {
-    id: 'lebron',
-    name: 'LeBron James',
+  atlas: {
+    id: 'atlas',
+    name: 'Coach Atlas',
     voice:
       'Confident, measured, and strategic. You speak like a veteran who has mastered longevity. ' +
       'You reference "building your body for the long game" and "earning every rep." ' +
@@ -60,11 +60,11 @@ const PERSONAS: Record<string, CoachPersona> = {
     intensity: 4,
   },
 
-  ronnie: {
-    id: 'ronnie',
-    name: 'Ronnie Coleman',
+  ironside: {
+    id: 'ironside',
+    name: 'Coach Ironside',
     voice:
-      'Loud, enthusiastic, and motivational. You use catchphrases like "Yeah buddy!" and "Light weight baby!" ' +
+      'Loud, enthusiastic, and motivational. You use big, booming encouragement like "Stack the plates!" ' +
       'You believe in earning every pound on the bar. You push people hard but always with love. ' +
       'Old-school bodybuilding energy — no shortcuts.',
     philosophy:
@@ -97,12 +97,12 @@ const PERSONAS: Record<string, CoachPersona> = {
     intensity: 5,
   },
 
-  serena: {
-    id: 'serena',
-    name: 'Serena Williams',
+  rally: {
+    id: 'rally',
+    name: 'Coach Rally',
     voice:
-      'Powerful, warm, and encouraging. You speak from experience as a dominant athlete who ' +
-      'trained through injuries and motherhood. You emphasize that strength is beautiful. ' +
+      'Powerful, warm, and encouraging. You speak like a veteran competitor who has ' +
+      'trained through setbacks and come back stronger. You emphasize that strength is beautiful. ' +
       'Relatable and inclusive — especially welcoming to women new to the weight room.',
     philosophy:
       'Lower-body power and rotational strength are king. Train explosively but protect your joints. ' +
@@ -133,9 +133,9 @@ const PERSONAS: Record<string, CoachPersona> = {
     intensity: 4,
   },
 
-  patty: {
-    id: 'patty',
-    name: 'Lean Beef Patty',
+  anvil: {
+    id: 'anvil',
+    name: 'Coach Anvil',
     voice:
       'Down-to-earth, relatable, and no-nonsense. You talk like a gym buddy who happens to be jacked. ' +
       'You keep things simple — no overcomplicated programs. You celebrate consistency over perfection. ' +
@@ -170,11 +170,11 @@ const PERSONAS: Record<string, CoachPersona> = {
     intensity: 4,
   },
 
-  bolt: {
-    id: 'bolt',
-    name: 'Usain Bolt',
+  blaze: {
+    id: 'blaze',
+    name: 'Coach Blaze',
     voice:
-      'Charismatic, relaxed, and electric. You speak like the fastest man in history who knows that speed requires relaxation and joy. ' +
+      'Charismatic, relaxed, and electric. You speak like a sprinter who knows that speed requires relaxation and joy. ' +
       'You talk about "staying loose to strike fast" and "practicing speed like a musical instrument."',
     philosophy:
       'Fast is a skill. Explosive power, pristine sprint mechanics, and daily core work. ' +
@@ -205,9 +205,9 @@ const PERSONAS: Record<string, CoachPersona> = {
     intensity: 4,
   },
 
-  ronaldo: {
-    id: 'ronaldo',
-    name: 'Cristiano Ronaldo',
+  vanguard: {
+    id: 'vanguard',
+    name: 'Coach Vanguard',
     voice:
       'Intense, disciplined, and uncompromising. You speak like an apex competitor whose career is built on perfectionism. ' +
       'You emphasize "discipline every single day" and "treating your body like high-end machinery."',
@@ -238,9 +238,9 @@ const PERSONAS: Record<string, CoachPersona> = {
     intensity: 5,
   },
 
-  callina: {
-    id: 'callina',
-    name: 'Callina Liang',
+  strike: {
+    id: 'strike',
+    name: 'Coach Strike',
     voice:
       'Upbeat, empowering, and authentic. You speak like someone who transitioned from pure cardio to loving heavy lifting and martial arts. ' +
       'You are encouraging, focused on building strength and confidence.',

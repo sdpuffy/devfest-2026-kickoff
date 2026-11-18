@@ -1,4 +1,4 @@
-import { Stack, useFocusEffect, useLocalSearchParams, router } from 'expo-router';
+import { Redirect, Stack, useFocusEffect, useLocalSearchParams, router } from 'expo-router';
 import { useCallback, useRef, useState, type ComponentRef } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,11 +7,12 @@ import type { PlanParams } from '@/components/plan-view';
 import { useSelectedPlan } from '@/lib/selected-plan';
 import { AnimatedCoach } from '@/components/animated-coach';
 import { PLAN_PROMPT, suggestionsFor } from '@/data/suggestions';
-import { COACHES, getCoach } from '@/data/coaches';
+import { COACHES, coachShortName, getCoach } from '@/data/coaches';
 import { useCoachSpeech } from '@/hooks/use-coach-speech';
 import { sendChat } from '@/lib/api';
 import { getProfile } from '@/lib/profile-store';
-import type { CoachMotion } from '@/lib/lebron-motion';
+import { canonicalCoachId } from '@/lib/coach-ids';
+import type { CoachMotion } from '@/lib/coach-motion';
 import type { ChatMessage, Equipment, Goal } from '@/lib/types';
 import { colors, themedStyles } from '@/lib/theme';
 
@@ -30,7 +31,7 @@ const EQUIPMENT: { value: Equipment; label: string; icon: string }[] = [
 ];
 const LABELS = ['Your goal', 'Your week', 'Your time', 'Your space', 'Movement lab', 'Ready to go'];
 
-// For the static GitHub Pages build: write one page per coach (/chat/lebron, …) so links
+// For the static GitHub Pages build: write one page per coach (/chat/atlas, …) so links
 // and refreshes work without a server. Ignored by the normal dev server.
 export async function generateStaticParams(): Promise<Record<string, string>[]> {
   return COACHES.map((coach) => ({ id: coach.id }));
@@ -38,6 +39,9 @@ export async function generateStaticParams(): Promise<Record<string, string>[]> 
 
 export default function ChatScreen() {
   const params = useLocalSearchParams<PlanParams & { id: string; view?: string; day?: string }>();
+  // Old links used the previous coach ids (e.g. /chat/lebron); send them to the renamed coach.
+  const coachId = canonicalCoachId(String(params.id));
+  if (coachId !== params.id) return <Redirect href={{ pathname: '/chat/[id]', params: { ...params, id: coachId } }} />;
   return <CoachSession key={`${params.id}:${params.view ?? ''}`} id={String(params.id)} parameters={params} />;
 }
 function CoachSession({ id, parameters }: { id: string; parameters: PlanParams & { view?: string; day?: string } }) {
@@ -62,7 +66,7 @@ function CoachSession({ id, parameters }: { id: string; parameters: PlanParams &
   const speech = useCoachSpeech(false, id);
   const { stop, speak, enabled } = speech;
   useFocusEffect(useCallback(() => () => { stop(); request.current++; setBusy(false); setExercise(false); }, [stop, setBusy, setExercise]));
-  const first = coach?.name.split(' ')[0] ?? 'Coach';
+  const first = coach ? coachShortName(coach) : 'Coach';
   const goalLabel = GOALS.find(g => g.value === goal)?.label ?? goal?.replace(/_/g, ' ') ?? 'your goal';
   const prompts = [
     `Let's build your game plan, one step at a time. What do you want to work toward?`,
@@ -131,7 +135,7 @@ function CoachSession({ id, parameters }: { id: string; parameters: PlanParams &
               <Pressable accessibilityRole="button" onPress={() => setAsking(!asking)}><Text style={styles.link}>{asking ? '− Close question' : '+ Ask coach a question'}</Text></Pressable>
               {asking && <View style={styles.inputRow}><TextInput accessibilityLabel="Question for your coach" style={styles.input} value={input} onChangeText={setInput} placeholder="What’s on your mind?" placeholderTextColor={colors.textSubtle} returnKeyType="send" onSubmitEditing={() => void ask()} /><Pressable disabled={busy || !input.trim()} accessibilityRole="button" accessibilityLabel="Send question" onPress={() => void ask()} style={[styles.send, (busy || !input.trim()) && styles.disabled]}><Text style={styles.ctaText}>↑</Text></Pressable></View>}
               {asking && !busy && <View style={styles.options}>{suggestionsFor(id, messages.filter(m => m.role === 'user').map(m => m.content)).map(question => <Pressable key={question} accessibilityRole="button" onPress={() => question === PLAN_PROMPT ? (canContinue && step === 5 ? openPlan() : setAsking(false)) : void ask(question)}><Text style={styles.link}>{question}</Text></Pressable>)}</View>}
-              <Text style={styles.disclosure}>{coach.name}-inspired demo character · device voice</Text>
+              <Text style={styles.disclosure}>Fan-made demo character · device voice</Text>
             </View>
           </ScrollView>
           <View style={styles.footer}>{step > 0 && <Pressable style={styles.back} accessibilityRole="button" onPress={() => changeStep(step - 1)}><Text style={styles.backText}>Back</Text></Pressable>}<Pressable disabled={!canContinue} accessibilityRole="button" accessibilityState={{ disabled: !canContinue }} style={[styles.cta, !canContinue && styles.disabled]} onPress={() => step === 5 ? openPlan() : changeStep(step + 1)}><Text style={styles.ctaText}>{step === 5 ? 'BUILD MY PLAN  →' : step === 4 ? 'GOT IT. LET’S GO  →' : 'CONTINUE  →'}</Text></Pressable></View>

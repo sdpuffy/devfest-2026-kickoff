@@ -52,16 +52,16 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 
 | | Coach | Style | Best for |
 | --- | --- | --- | --- |
-| 🏀 | LeBron James | *Train for the long game.* | Athleticism, longevity, older athletes |
-| 💪 | Ronnie Coleman | *Heavy weight, high volume, no excuses.* | Building mass, classic bodybuilding |
-| ⚡ | Usain Bolt | *Fast is a skill. Let's practice it.* | Speed, explosiveness, vertical jump |
-| ⚽ | Cristiano Ronaldo | *Discipline every day. Mix it up.* | Soccer fitness, getting lean, conditioning |
-| 🎾 | Serena Williams | *Power you can repeat for three sets.* | Lower-body power, joint health, new to strength |
-| 🥋 | Callina Liang | *From cardio girl to strength girl.* | Leg and glute strength, martial arts basics |
-| 🏋️ | Lean Beef Patty | *Simple, hard, consistent.* | General gym-goers, getting lean and strong |
+| 🏀 | Coach Atlas | *Train for the long game.* | Athleticism, longevity, older athletes |
+| 💪 | Coach Ironside | *Heavy weight, high volume, no excuses.* | Building mass, classic bodybuilding |
+| ⚡ | Coach Blaze | *Fast is a skill. Let's practice it.* | Speed, explosiveness, vertical jump |
+| ⚽ | Coach Vanguard | *Discipline every day. Mix it up.* | Soccer fitness, getting lean, conditioning |
+| 🎾 | Coach Rally | *Power you can repeat for three sets.* | Lower-body power, joint health, new to strength |
+| 🥋 | Coach Strike | *From cardio to strength, one kick at a time.* | Leg and glute strength, martial arts basics |
+| 🏋️ | Coach Anvil | *Simple, hard, consistent.* | General gym-goers, getting lean and strong |
 
-> Coaches are fan-made characters inspired by these athletes' public training styles.
-> Athleet is a hackathon project and isn't affiliated with or endorsed by any of them.
+> All coaches are original, fan-made characters built around common training styles.
+> They aren't based on, affiliated with, or endorsed by any real athlete.
 
 ## Getting started
 

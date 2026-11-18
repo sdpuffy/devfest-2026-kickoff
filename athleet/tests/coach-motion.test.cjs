@@ -89,8 +89,41 @@ test('curl keeps upper arm still; leg raise keeps torso down; unknown demos are 
   assert.notDeepEqual(a.arms[0][2], b.arms[0][2]);
   assert.deepEqual(exerciseRig(0, 'Lying leg raise').shoulder, exerciseRig(2, 'Lying leg raise').shoulder);
   assert.equal(exerciseRig(0, 'Unknown custom exercise'), null);
-  assert.equal(exerciseRecipe('HIIT circuit: squat jumps, mountain climbers'), null);
   assert.notEqual(exerciseRecipe('Bicycle crunch'), exerciseRecipe('Bike intervals'));
+});
+test('circuits play each listed movement in turn', () => {
+  const name = 'HIIT circuit: squat jumps, mountain climbers';
+  assert.equal(exerciseRecipe(name), 'seq:jumpsquat=Squat jumps|climber=Mountain climbers');
+  assert.match(exerciseRig(1, name).cue, /^Squat jumps \(1 of 2\)/);
+  assert.match(exerciseRig(9, name).cue, /^Mountain climbers \(2 of 2\)/);
+  assert.equal(exerciseRecipe('Roundhouse kick drills'), 'roundhouse');
+  assert.equal(exerciseRecipe('Flying sprints'), 'run');
+  assert.equal(exerciseRecipe('Medicine ball rotational throw'), 'rotthrow');
+});
+test('every exercise the app can prescribe has a working demo', () => {
+  const read = (file) => fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+  const names = new Set();
+  for (const file of ['src/data/workouts.ts', 'src/lib/plan.ts']) {
+    for (const m of read(file).matchAll(/\b(?:name|easier|lowImpact):\s*(['"])((?:(?!\1).)+)\1/g)) if (!m[2].includes('${')) names.add(m[2]);
+    for (const m of read(file).matchAll(/\/i,\s*'([^']+)'\]/g)) names.add(m[1]); // kid-friendly swaps
+  }
+  for (const m of read('src/lib/plan.ts').matchAll(/'((?:Steady bike|Zone 2 cardio)[^']*)'/g)) names.add(m[1]);
+  // Backup plan engine: exercise banks only (its day titles also use `name:`).
+  for (const m of read('src/lib/baseline-engine.ts').matchAll(/name: '([^']+)', defaultSets/g)) names.add(m[1]);
+  assert.ok(names.size > 150);
+  const missing = [...names].filter((name) => !exerciseRecipe(name));
+  assert.deepEqual(missing, [], `No movement demo for: ${missing.join(', ')}`);
+  for (const name of names) for (let t = 0; t < 24; t += .25) {
+    const pose = exerciseRig(t, name);
+    for (const chain of [...pose.arms, ...pose.legs]) {
+      for (const pt of chain) assert.ok(Number.isFinite(pt.x) && Number.isFinite(pt.y), name);
+      assert.ok(distance(chain[0], chain[1]) > 20 && distance(chain[1], chain[2]) > 20, `${name} at ${t}s`);
+    }
+    for (const chain of pose.arms) assert.deepEqual(chain[0], pose.shoulder, name);
+    for (const chain of pose.legs) assert.deepEqual(chain[0], pose.hip, name);
+    assert.ok(pose.cue, name);
+    if (pose.prop) assert.ok(Number.isFinite(pose.prop.at.x) && Number.isFinite(pose.prop.at.y), name);
+  }
 });
 test('supported roster exercises have finite connected joints over a full rep', () => {
   const source = fs.readFileSync(path.resolve(__dirname, '../src/data/workouts.ts'), 'utf8');

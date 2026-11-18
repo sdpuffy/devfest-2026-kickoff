@@ -11,7 +11,7 @@ const TAB_BAR_HEIGHT = 56;
 // Screens without the button: the settings screens themselves, the coach session (its send
 // button and workout controls sit in the bottom-right corner), and the questionnaire (its
 // answers are in progress, and changing the theme there would reset them).
-const HIDDEN_ON = new Set(['settings', 'voice-settings', 'workout', 'plan', 'chat', 'questionnaire']);
+const HIDDEN_ON = new Set(['settings', 'workout', 'plan', 'chat', 'questionnaire']);
 
 /** The floating gear in the bottom-right corner that opens Settings. */
 export function SettingsButton() {

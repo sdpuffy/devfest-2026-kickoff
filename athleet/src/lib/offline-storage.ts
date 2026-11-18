@@ -58,9 +58,9 @@ export function getEmergencyFallbackPlan(coachId: string): GeneratePlanResponse 
   const cid = coachId.toLowerCase();
 
   let coachQuote = "Lock in! Spotty reception won't stop our gains. Here is your battle-tested 3-day routine.";
-  if (cid === 'ronnie') coachQuote = "YEAH BUDDY! No WiFi? Ain't nothin' to it! We lift heavy regardless! Let's get to work!";
-  if (cid === 'bolt') coachQuote = "Fast doesn't need internet! Strike fast, stay light on your feet, and own these sets!";
-  if (cid === 'serena') coachQuote = "Champions adapt to every condition. Focus on kinetic power and execute this 3-day split.";
+  if (cid === 'ironside') coachQuote = "No WiFi? No problem! We lift heavy regardless! Let's get to work!";
+  if (cid === 'blaze') coachQuote = "Fast doesn't need internet! Strike fast, stay light on your feet, and own these sets!";
+  if (cid === 'rally') coachQuote = "Champions adapt to every condition. Focus on kinetic power and execute this 3-day split.";
 
   return {
     title: `${coachId.toUpperCase()} • Offline Contingency Routine`,

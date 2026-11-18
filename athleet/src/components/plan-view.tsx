@@ -16,7 +16,10 @@ import { CoachAvatar } from '@/components/coach-avatar';
 import { StreakBadge } from '@/components/streak-badge';
 import { NutritionBlueprint } from '@/components/nutrition-blueprint';
 import { WeeklyRecapView } from '@/components/weekly-recap';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
+import { needsPartner } from '@/data/partner-drills';
+import { getPosition, programForPosition } from '@/data/positions';
+import { PROGRAMS } from '@/data/workouts';
 import { generatePlan, type GeneratePlanResponse } from '@/lib/api';
 import { defaultPlanDayIndex, planWarnings, trainingWeekdays } from '@/lib/plan';
 import { getProfile, updateProfile } from '@/lib/profile-store';
@@ -47,6 +50,8 @@ export type PlanParams = {
   sessionMinutes?: string;
   equipment?: string;
   injuries?: string;
+  /** Position, event or style for sport coaches. */
+  position?: string;
 };
 
 /**
@@ -64,7 +69,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
   const saved = mode === 'saved' ? selected : null;
   const logs = useWorkoutLogs();
 
-  const coachId = saved?.coachId || params.coachId || 'lebron';
+  const coachId = saved?.coachId || params.coachId || 'atlas';
   const coach = getCoach(coachId);
 
   const age = saved?.request?.age || Number(params.age) || profile?.age || 26;
@@ -79,6 +84,11 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
   const [sessionMinutes, setSessionMinutes] = useState(initialMinutes);
   const equipment = saved?.request?.equipment || (params.equipment as any) || profile?.equipment || 'full_gym';
   const injuries = saved?.request?.injuries || params.injuries || profile?.injuries || 'none';
+  const position = saved?.request?.position || params.position || profile?.positions?.[coachId];
+  // Workout partner (set on the Your Plan tab only). Unset means training solo, except plans
+  // saved before this setting existed: those were built with the partner drills in them.
+  const [partner, setPartner] = useState<boolean>(saved ? saved.request?.partner ?? true : profile?.hasPartner ?? false);
+  const partnerMatters = !!PROGRAMS[coachId] && needsPartner(programForPosition(coachId, PROGRAMS[coachId], getPosition(coachId, position)));
 
   const [plan, setPlan] = useState<GeneratePlanResponse | null>(saved?.plan ?? null);
   const [loading, setLoading] = useState(!saved);
@@ -131,6 +141,8 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
           sessionMinutes,
           equipment,
           injuries,
+          position,
+          partner,
         },
         currentSeed
       );
@@ -138,7 +150,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
       onPlanChanged?.();
       setPlan(result);
       if (mode === 'saved') {
-        selectPlan({ coachId, daysPerWeek, sessionMinutes, seed: currentSeed, plan: result, request: { coachId, age, sex, heightCm, weightKg, goal, level, daysPerWeek, sessionMinutes, equipment, injuries } });
+        selectPlan({ coachId, daysPerWeek, sessionMinutes, seed: currentSeed, plan: result, request: { coachId, age, sex, heightCm, weightKg, goal, level, daysPerWeek, sessionMinutes, equipment, injuries, position, partner } });
       }
       if (currentSeed > 0) {
         setToastMessage(`Variation #${currentSeed + 1} generated!`);
@@ -150,7 +162,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
     } finally {
       if (token === generation.current) { setLoading(false); setRegenerating(false); }
     }
-  }, [mode, coachId, age, sex, heightCm, weightKg, goal, level, daysPerWeek, sessionMinutes, equipment, injuries, onPlanChanged]);
+  }, [mode, coachId, age, sex, heightCm, weightKg, goal, level, daysPerWeek, sessionMinutes, equipment, injuries, position, partner, onPlanChanged]);
 
   useEffect(() => {
     if (skipFirstFetch.current) {
@@ -166,6 +178,13 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
     setDaysPerWeek(n);
     setSeed(0);
     updateProfile({ daysPerWeek: n });
+  }
+
+  function changePartner(next: boolean) {
+    if (workoutInProgress || next === partner) return;
+    setPartner(next);
+    setSeed(0);
+    updateProfile({ hasPartner: next });
   }
 
   function changeMinutes(n: number) {
@@ -184,7 +203,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
 
   function handleSelect() {
     if (!plan) return;
-    selectPlan({ coachId, daysPerWeek, sessionMinutes, seed, plan, request: { coachId, age, sex, heightCm, weightKg, goal, level, daysPerWeek, sessionMinutes, equipment, injuries } });
+    selectPlan({ coachId, daysPerWeek, sessionMinutes, seed, plan, request: { coachId, age, sex, heightCm, weightKg, goal, level, daysPerWeek, sessionMinutes, equipment, injuries, position, partner } });
     if (onSelected) { onSelected(); return; }
     // Leave the coach chat and land on the Your Plan tab.
     if (router.canDismiss()) router.dismissAll();
@@ -205,7 +224,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
           <View style={styles.loadingCard}>
             <ActivityIndicator size="large" color={colors.accent} />
             <Text style={styles.loadingTitle}>
-              {coach ? `Coach ${coach.name.split(' ')[0]} is crafting your routine...` : 'Building your routine...'}
+              {coach ? `Coach ${coachShortName(coach)} is crafting your routine...` : 'Building your routine...'}
             </Text>
             <Text style={styles.loadingSubtitle}>
               Personalizing sets, rest periods, and volume to your baseline
@@ -314,8 +333,8 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                 <View style={styles.quoteCoach}>
                   <CoachAvatar coach={coach} size={44} />
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.quoteCoachName}>Coach {coach.name}</Text>
-                    <Text style={styles.quoteCoachSub}>{coach.category} • Authentic Athlete Routine</Text>
+                    <Text style={styles.quoteCoachName}>{coach.name}</Text>
+                    <Text style={styles.quoteCoachSub}>{coach.category} • Signature Routine</Text>
                   </View>
                   {seed > 0 && (
                     <View style={styles.variationBadge}>
@@ -408,6 +427,31 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                 ))}
               </View>
             </View>
+
+            {/* Workout partner: only on Your Plan, and only for plans with partner drills */}
+            {mode === 'saved' && partnerMatters && (
+              <View style={styles.daysPicker}>
+                <Text style={styles.daysPickerLabel}>WORKOUT PARTNER</Text>
+                <View style={styles.daysPickerRow}>
+                  {([[false, 'Training solo'], [true, 'I have a partner']] as const).map(([value, label]) => (
+                    <Pressable
+                      key={label}
+                      disabled={workoutInProgress}
+                      onPress={() => changePartner(value)}
+                      style={[styles.daysChip, styles.partnerChip, partner === value && styles.daysChipActive]}
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: partner === value, disabled: workoutInProgress }}>
+                      <Text style={[styles.daysChipText, partner === value && styles.daysChipTextActive]}>{label}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+                <Text style={styles.partnerHint}>
+                  {partner
+                    ? 'Partner drills are in: your partner throws, catches and feeds.'
+                    : 'Drills that need a second person are swapped for wall, net or self-toss versions.'}
+                </Text>
+              </View>
+            )}
 
             {/* Warnings: not enough to reach the goal, or not enough rest */}
             {planWarnings({ age, level, goal: goal as any, daysPerWeek, sessionMinutes }).map((w) => (
@@ -653,7 +697,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                 onPress={() => router.push({ pathname: '/chat/[id]' as any, params: { id: coachId } })}
                 accessibilityRole="button"
               >
-                <Text style={styles.chatBtnText}>{emoji('💬')}Chat with {coach?.name.split(' ')[0]}</Text>
+                <Text style={styles.chatBtnText}>{emoji('💬')}Chat with {coach && coachShortName(coach)}</Text>
               </Pressable>}
             </View>
 
@@ -699,7 +743,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                     style={[styles.venuePill, active && styles.venuePillActive]}
                     onPress={() => setSelectedVenueId(v.id)}>
                     <Text style={[styles.venuePillText, active && styles.venuePillTextActive]}>
-                      {v.category === 'track' ? '🏃 ' : v.category === 'gym' ? '🏋️ ' : v.category === 'park' ? '🌳 ' : '🧗 '}
+                      {v.category === 'track' ? '🏃 ' : v.category === 'gym' ? '🏋️ ' : v.category === 'park' ? '🌳 ' : v.category === 'pool' ? '🏊 ' : '🧗 '}
                       {v.name.split(' (')[0].replace(' Santa Cruz', '')}
                     </Text>
                   </Pressable>
@@ -735,7 +779,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
                     isTarget && styles.mapPinActive,
                   ]}>
                   <Text style={styles.mapPinEmoji}>
-                    {v.category === 'track' ? '🏃' : v.category === 'gym' ? '🏋️' : v.category === 'park' ? '🌳' : '🧗'}
+                    {v.category === 'track' ? '🏃' : v.category === 'gym' ? '🏋️' : v.category === 'park' ? '🌳' : v.category === 'pool' ? '🏊' : '🧗'}
                   </Text>
                   {isTarget && (
                     <View style={styles.mapPinCallout}>
@@ -810,6 +854,8 @@ const styles = themedStyles(() => ({
   daysPickerLabel: { color: colors.textMuted, fontSize: 12, fontWeight: '700', letterSpacing: 1 },
   daysPickerRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   minutesChip: { width: 'auto', minWidth: 40, paddingHorizontal: 8 },
+  partnerChip: { width: 'auto', paddingHorizontal: 14, flexGrow: 1 },
+  partnerHint: { color: colors.textSubtle, fontSize: 12, lineHeight: 17, marginTop: 8 },
   warnCard: { borderRadius: 8, borderWidth: 1, padding: 14, marginTop: 12, gap: 4 },
   warnLow: { backgroundColor: colors.accentSoft, borderColor: colors.accentBorder },
   warnHigh: { backgroundColor: colors.dangerBg, borderColor: colors.dangerBorder },

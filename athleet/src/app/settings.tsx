@@ -3,8 +3,9 @@ import type { ReactNode } from 'react';
 import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AccountSettings } from '@/components/account-settings';
 import { ResetOnboarding } from '@/components/reset-onboarding';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
 import {
   resetAppearance,
   setAppearance,
@@ -91,6 +92,9 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Keyed by theme version so the form pieces redraw with the current look. */}
+        <AccountSettings key={`account-${version}`} />
+
         <Preview colors={colors} styles={styles} />
 
         {/* ── Theme ── */}
@@ -161,7 +165,7 @@ export default function SettingsScreen() {
             style={[styles.coachChip, settings.accent === 'coach' && styles.chipOn, !coach && styles.disabled]}>
             <View style={[styles.coachDot, { backgroundColor: accentBase({ ...settings, accent: 'coach' }) }]} />
             <Text style={[styles.chipText, settings.accent === 'coach' && styles.chipTextOn]}>
-              {coach ? `Match ${coach.name.split(' ')[0]}'s color` : "Match my coach's color"}
+              {coach ? `Match ${coachShortName(coach)}'s color` : "Match my coach's color"}
             </Text>
           </Pressable>
           <Text style={styles.hint}>
@@ -256,10 +260,6 @@ export default function SettingsScreen() {
 
         {/* ── More ── */}
         <Section title="More" styles={styles}>
-          <Pressable style={styles.rowLink} onPress={() => router.push('/voice-settings' as any)} accessibilityRole="button">
-            <Text style={styles.rowLinkText}>Coach voice settings</Text>
-            <Text style={styles.rowLinkArrow}>›</Text>
-          </Pressable>
           <Pressable
             style={({ pressed }) => [styles.resetBtn, pressed && styles.pressed]}
             onPress={resetAppearance}
@@ -439,9 +439,6 @@ function makeStyles({ colors: c }: StyleContext) {
 
     toggleRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 },
 
-    rowLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 },
-    rowLinkText: { color: c.text, fontSize: 15, fontWeight: '600' },
-    rowLinkArrow: { color: c.textFaint, fontSize: 22 },
     resetBtn: { minHeight: 44, borderRadius: 8, borderWidth: 1, borderColor: c.dangerBorder, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
     resetText: { color: c.danger, fontSize: 14, fontWeight: '700' },
     pressed: { opacity: 0.6 },

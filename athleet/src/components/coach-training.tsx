@@ -5,16 +5,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { exerciseRecipe } from '@/lib/exercise-rig';
 import { AnimatedCoach } from '@/components/animated-coach';
 import { PlanView, type PlanParams } from '@/components/plan-view';
+import { coachShortName } from '@/data/coaches';
 import { CoachWorkout } from '@/components/coach-workout';
-import { useCoachSpeech } from '@/hooks/use-coach-speech';
 import { sendChat } from '@/lib/api';
 import { getProfile } from '@/lib/profile-store';
 import { useSelectedPlan } from '@/lib/selected-plan';
 import type { ChatMessage, Coach } from '@/lib/types';
 import { colors, themedStyles } from '@/lib/theme';
 
-export function CoachTraining({ coach, parameters, newPlan = false, initialDay, voiceEnabled = false }: {
-  coach: Coach; parameters: PlanParams; newPlan?: boolean; initialDay?: number; voiceEnabled?: boolean;
+export function CoachTraining({ coach, parameters, newPlan = false, initialDay }: {
+  coach: Coach; parameters: PlanParams; newPlan?: boolean; initialDay?: number;
 }) {
   const selected = useSelectedPlan();
   const [mode] = useState<'saved' | 'preview'>(!newPlan && selected?.coachId === coach.id ? 'saved' : 'preview');
@@ -36,23 +36,20 @@ export function CoachTraining({ coach, parameters, newPlan = false, initialDay, 
   const [busy, setBusy] = useState(false);
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const request = useRef(0);
-  const speech = useCoachSpeech(voiceEnabled, coach.id);
-  const { enabled, speak, stop } = speech;
-  useFocusEffect(useCallback(() => () => { stop(); request.current++; }, [stop]));
+  useFocusEffect(useCallback(() => () => { request.current++; }, []));
   const cue = useCallback((text: string, finished: boolean) => {
     if (!workout) return;
     request.current++; setBusy(false); setMessage(text); setComplete(finished);
-    if (enabled) void speak(text);
-  }, [enabled, speak, workout]);
+  }, [workout]);
   const resetWorkout = useCallback(() => { setDay(null); setWorkout(false); setComplete(false); }, []);
   function showPlan() {
     setPlaying(false);
-    stop(); request.current++; setBusy(false); setWorkout(false);
+    request.current++; setBusy(false); setWorkout(false);
     setMessage('Let’s look at your week. Your current workout stays here if you want to resume it.');
   }
   function startWorkout(index: number) {
     if (day !== null && day !== index && !complete) { setMessage('You have a workout in progress. Resume it and save your sets before starting another day.'); return; }
-    stop(); request.current++; setBusy(false); setAsking(false);
+    request.current++; setBusy(false); setAsking(false);
     if (day !== index || complete) { setWorkoutKey(key => key + 1); setComplete(false); }
     setDay(index); setWorkout(true);
   }
@@ -60,21 +57,20 @@ export function CoachTraining({ coach, parameters, newPlan = false, initialDay, 
     if (!input.trim() || busy) return;
     const token = ++request.current;
     const next: ChatMessage[] = [...history, { role: 'user', content: input.trim() }];
-    setInput(''); setBusy(true); stop();
+    setInput(''); setBusy(true);
     try {
       const reply = await sendChat(coach, getProfile(), [
         { role: 'user', content: `We are in my training session. ${message} My plan: ${JSON.stringify(selected?.plan.days[day ?? 0] ?? {})}. Keep the next answer short and relevant to my current exercise.` }, ...next,
       ]);
       if (token !== request.current) return;
       setHistory([...next, { role: 'assistant', content: reply }]); setMessage(reply);
-      if (enabled) void speak(reply);
     } catch { if (token === request.current) setMessage('I couldn’t answer just now. Try again; your workout is still here.'); }
     finally { if (token === request.current) setBusy(false); }
   }
   return <SafeAreaView style={styles.screen} edges={['bottom']}>
-    <Stack.Screen options={{ headerShown: true, title: `${coach.name.split(' ')[0]} · Train together`, headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.accent, headerBackTitle: 'Coaches' }} />
+    <Stack.Screen options={{ headerShown: true, title: `${coachShortName(coach)} · Train together`, headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.accent, headerBackTitle: 'Coaches' }} />
     <KeyboardAvoidingView style={styles.shell} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
-      <AnimatedCoach key={workout ? demo.name : 'plan'} coach={coach} compact exercise={demo.name ?? undefined} paused={!playing || demo.resting} motion={workout && !complete && demo.name ? 'exercise' : speech.speaking ? 'talking' : busy ? 'thinking' : complete && workout ? 'celebrate' : 'idle'} speechAnimation={speech.animation} />
+      <AnimatedCoach key={workout ? demo.name : 'plan'} coach={coach} compact exercise={demo.name ?? undefined} paused={!playing || demo.resting} motion={workout && !complete && demo.name ? 'exercise' : busy ? 'thinking' : complete && workout ? 'celebrate' : 'idle'} />
       {workout && !complete && demo.name && <View style={styles.demoControls}>
         <Text style={styles.demoCaption}>Illustrated movement · {demo.name}</Text>
         <Pressable accessibilityRole="button" accessibilityLabel={playing ? 'Pause exercise animation' : 'Play exercise animation'} disabled={demo.resting || !exerciseRecipe(demo.name)} onPress={() => setPlaying(value => !value)} style={[styles.demoButton, demo.resting && { opacity: .5 }]}>
@@ -84,19 +80,16 @@ export function CoachTraining({ coach, parameters, newPlan = false, initialDay, 
       <View style={styles.coachBar}>
         <Text style={styles.message} accessibilityLiveRegion="polite" numberOfLines={asking ? undefined : 3}>{busy ? 'Coach is thinking…' : message}</Text>
         <View style={styles.row}>
-          <Pressable accessibilityRole="button" onPress={() => { if (enabled) stop(); else void speak(message); speech.setEnabled(!enabled); }}><Text style={styles.link}>{enabled ? 'Voice on' : 'Voice off'}</Text></Pressable>
-          <Pressable accessibilityRole="button" onPress={() => speech.speaking ? stop() : void speak(message)}><Text style={styles.link}>{speech.speaking ? 'Stop audio' : 'Listen'}</Text></Pressable>
           <Pressable accessibilityRole="button" onPress={() => setAsking(!asking)}><Text style={styles.link}>{asking ? 'Close question' : 'Ask coach'}</Text></Pressable>
           {workout && <Pressable accessibilityRole="button" onPress={showPlan}><Text style={styles.link}>Your plan</Text></Pressable>}
         </View>
-        {!!speech.error && <Text style={styles.message}>{speech.error}</Text>}
         {asking && <View style={styles.row}><TextInput accessibilityLabel="Question for your coach" style={styles.input} placeholder="Ask about this exercise…" placeholderTextColor={colors.textSubtle} value={input} onChangeText={setInput} onSubmitEditing={ask} /><Pressable disabled={busy || !input.trim()} accessibilityRole="button" onPress={ask}><Text style={styles.link}>Send</Text></Pressable></View>}
       </View>
-      {!workout && day !== null && !complete && <Pressable accessibilityRole="button" style={styles.resume} onPress={() => setWorkout(true)}><Text style={styles.link}>Resume workout with {coach.name.split(' ')[0]} →</Text></Pressable>}
+      {!workout && day !== null && !complete && <Pressable accessibilityRole="button" style={styles.resume} onPress={() => setWorkout(true)}><Text style={styles.link}>Resume workout with {coachShortName(coach)} →</Text></Pressable>}
       <View style={[styles.panel, workout && styles.hidden]}>
         <PlanView key={mode} embedded parameters={parameters} mode={mode} onStartWorkout={startWorkout} onPlanChanged={resetWorkout} workoutInProgress={day !== null && !complete} />
       </View>
-      {day !== null && <View style={[styles.panel, !workout && styles.hidden]}><CoachWorkout key={`${day}:${workoutKey}`} dayIndex={day} onExit={showPlan} onCancelEmpty={() => { stop(); resetWorkout(); }} onCue={cue} onExerciseChange={exerciseChanged} /></View>}
+      {day !== null && <View style={[styles.panel, !workout && styles.hidden]}><CoachWorkout key={`${day}:${workoutKey}`} dayIndex={day} onExit={showPlan} onCancelEmpty={resetWorkout} onCue={cue} onExerciseChange={exerciseChanged} /></View>}
     </KeyboardAvoidingView>
   </SafeAreaView>;
 }

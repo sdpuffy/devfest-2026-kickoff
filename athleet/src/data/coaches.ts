@@ -1,10 +1,11 @@
+import { canonicalCoachId } from '../lib/coach-ids';
 import type { Coach } from '@/lib/types';
 
-// Coach roster. Training details are based on publicly reported routines.
+// Coach roster: original, fan-made characters. Training styles draw on common, publicly known methods.
 export const COACHES: Coach[] = [
   {
-    "id": "lebron",
-    "name": "LeBron James",
+    "id": "atlas",
+    "name": "Coach Atlas",
     "sport": "basketball",
     "category": "Basketball",
     "trainingTypes": [
@@ -60,14 +61,14 @@ export const COACHES: Coach[] = [
         "deload when legs feel heavy"
       ]
     },
-    "avatar": "lebron.png",
+    "avatar": "atlas.png",
     "icon": "🏀",
-    "color": "#552583",
-    "greeting": "What's good! I'm your LeBron-style coach. We train for the long game here: strength, conditioning and recovery. Tell me what you want to work on and I'll build your week."
+    "color": "#1f8a8a",
+    "greeting": "What's good! I'm Coach Atlas. We train for the long game here: strength, conditioning and recovery. Tell me what you want to work on and I'll build your week."
   },
   {
-    "id": "ronnie",
-    "name": "Ronnie Coleman",
+    "id": "ironside",
+    "name": "Coach Ironside",
     "sport": "bodybuilding",
     "category": "Bodybuilding",
     "trainingTypes": [
@@ -121,14 +122,14 @@ export const COACHES: Coach[] = [
         "one full rest day"
       ]
     },
-    "avatar": "ronnie.png",
+    "avatar": "ironside.png",
     "icon": "💪",
-    "color": "#8B1E1E",
-    "greeting": "Yeah buddy! Ready to build some serious size? I'm your Ronnie-style coach. Tell me how many days you can train and let's get to work!"
+    "color": "#3d4f8a",
+    "greeting": "Let's go! Ready to build some serious size? I'm Coach Ironside. Tell me how many days you can train and let's get to work!"
   },
   {
-    "id": "bolt",
-    "name": "Usain Bolt",
+    "id": "blaze",
+    "name": "Coach Blaze",
     "sport": "track",
     "category": "Track & Speed",
     "trainingTypes": [
@@ -184,14 +185,14 @@ export const COACHES: Coach[] = [
         "never sprint tired"
       ]
     },
-    "avatar": "bolt.png",
+    "avatar": "blaze.png",
     "icon": "⚡",
-    "color": "#007A3D",
-    "greeting": "Hey hey! Your Bolt-style speed coach here. Fast is a skill, and we're gonna practice it. What do you want: speed, explosiveness, or getting lean?"
+    "color": "#e2462f",
+    "greeting": "Hey hey! Coach Blaze here, your speed coach. Fast is a skill, and we're gonna practice it. What do you want: speed, explosiveness, or getting lean?"
   },
   {
-    "id": "ronaldo",
-    "name": "Cristiano Ronaldo",
+    "id": "vanguard",
+    "name": "Coach Vanguard",
     "sport": "soccer",
     "category": "Soccer",
     "trainingTypes": [
@@ -248,14 +249,14 @@ export const COACHES: Coach[] = [
         "avoid sugary foods"
       ]
     },
-    "avatar": "ronaldo.png",
+    "avatar": "vanguard.png",
     "icon": "⚽",
-    "color": "#B8860B",
-    "greeting": "Welcome. I'm your Ronaldo-style coach. Discipline every day, that's how we win. Tell me your goal and how many days you can train."
+    "color": "#2f6fd0",
+    "greeting": "Welcome. I'm Coach Vanguard. Discipline every day, that's how we win. Tell me your goal and how many days you can train."
   },
   {
-    "id": "serena",
-    "name": "Serena Williams",
+    "id": "rally",
+    "name": "Coach Rally",
     "sport": "tennis",
     "category": "Tennis",
     "trainingTypes": [
@@ -312,14 +313,14 @@ export const COACHES: Coach[] = [
         "variety to avoid burnout"
       ]
     },
-    "avatar": "serena.png",
+    "avatar": "rally.png",
     "icon": "🎾",
-    "color": "#C2185B",
-    "greeting": "Hey champ! I'm your Serena-style coach. We'll build power you can repeat and keep your joints happy. What are we working toward?"
+    "color": "#7b3fa0",
+    "greeting": "Hey champ! I'm Coach Rally. We'll build power you can repeat and keep your joints happy. What are we working toward?"
   },
   {
-    "id": "callina",
-    "name": "Callina Liang",
+    "id": "strike",
+    "name": "Coach Strike",
     "sport": "martial_arts",
     "category": "Martial Arts & Legs",
     "trainingTypes": [
@@ -341,7 +342,7 @@ export const COACHES: Coach[] = [
       55
     ],
     "intensity": 3,
-    "tagline": "From cardio girl to strength girl.",
+    "tagline": "From cardio to strength, one kick at a time.",
     "bio": "Leg-focused strength plus kicking and striking skills. Great if you're new to lifting.",
     "bestFor": [
       "leg and glute strength",
@@ -371,14 +372,14 @@ export const COACHES: Coach[] = [
         "eat enough protein"
       ]
     },
-    "avatar": "callina.png",
+    "avatar": "strike.png",
     "icon": "🥋",
-    "color": "#1565C0",
-    "greeting": "Hi! I'm your Callina-style coach. I used to be a cardio girl too, now I love lifting. Want to build strong legs and learn some kicks?"
+    "color": "#d63a3a",
+    "greeting": "Hi! I'm Coach Strike. Cardio got me started, lifting made me strong. Want to build strong legs and learn some kicks?"
   },
   {
-    "id": "patty",
-    "name": "Lean Beef Patty",
+    "id": "anvil",
+    "name": "Coach Anvil",
     "sport": "fitness",
     "category": "Gym & Physique",
     "trainingTypes": [
@@ -432,13 +433,272 @@ export const COACHES: Coach[] = [
         "foam rolling"
       ]
     },
-    "avatar": "patty.png",
+    "avatar": "anvil.png",
     "icon": "🏋️",
-    "color": "#E65100",
-    "greeting": "Hey! Your Patty-style coach here. Simple lifts, done hard, done consistently. What's your goal and how often can you get to the gym?"
+    "color": "#d9a21b",
+    "greeting": "Hey! Coach Anvil here. Simple lifts, done hard, done consistently. What's your goal and how often can you get to the gym?"
+  },
+  {
+    "id": "blitz",
+    "name": "Coach Blitz",
+    "sport": "football",
+    "category": "American Football",
+    "trainingTypes": [
+      "strength",
+      "athletic",
+      "conditioning"
+    ],
+    "goals": [
+      "sport_performance",
+      "get_stronger",
+      "build_muscle",
+      "bulk"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      13,
+      60
+    ],
+    "intensity": 5,
+    "tagline": "Win the first step. Own the fourth quarter.",
+    "bio": "Football strength and speed: explosive hips, a strong frame, quick feet and conditioning that lasts all game.",
+    "bestFor": [
+      "football",
+      "explosive power",
+      "getting bigger and faster",
+      "team-sport conditioning"
+    ],
+    "signature": {
+      "split": "2 strength days + 1 speed/agility day + 1 conditioning day (+ football skills)",
+      "staples": [
+        "back squat",
+        "bench press",
+        "power clean",
+        "Romanian deadlift",
+        "3-point starts",
+        "pro agility shuttle",
+        "sled push",
+        "farmer's carry"
+      ],
+      "methods": [
+        "heavy compound lifts",
+        "Olympic-style power work",
+        "short sprints with full rest",
+        "agility and change of direction"
+      ],
+      "recovery": [
+        "eat enough to grow",
+        "sleep 8+ hours",
+        "foam roll and stretch hips after practice"
+      ]
+    },
+    "avatar": "blitz.png",
+    "icon": "🏈",
+    "color": "#2e7d4f",
+    "greeting": "Let's work! I'm Coach Blitz. We build football strength and speed: explosive hips, quick feet and gas in the tank for the fourth quarter. What position do you play, and how many days can you train?"
+  },
+  {
+    "id": "apex",
+    "name": "Coach Apex",
+    "sport": "calisthenics",
+    "category": "Calisthenics",
+    "trainingTypes": [
+      "strength",
+      "hypertrophy",
+      "mobility"
+    ],
+    "goals": [
+      "get_stronger",
+      "build_muscle",
+      "general_fitness",
+      "lose_fat",
+      "cut"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      12,
+      65
+    ],
+    "intensity": 4,
+    "tagline": "Your body is the gym. Earn every skill.",
+    "bio": "Bodyweight strength and control: strict pull-ups, dips and pistols, building up to handstands, L-sits and levers.",
+    "bestFor": [
+      "training anywhere",
+      "relative strength",
+      "bodyweight skills",
+      "lean, athletic physique"
+    ],
+    "signature": {
+      "split": "pull / push / legs + a skill day, 4-5 days",
+      "staples": [
+        "pull-up",
+        "dips",
+        "pike push-up",
+        "pistol squat",
+        "L-sit hold",
+        "wall handstand hold",
+        "tuck front lever hold",
+        "muscle-up negatives"
+      ],
+      "methods": [
+        "strict form before progressions",
+        "progressive skill steps",
+        "isometric holds",
+        "short bodyweight conditioning circuits"
+      ],
+      "recovery": [
+        "wrist and shoulder prep every session",
+        "mobility for hips, hamstrings and lats",
+        "rest days are part of skill work"
+      ]
+    },
+    "avatar": "apex.png",
+    "icon": "🤸",
+    "color": "#e0457b",
+    "greeting": "Hey! I'm Coach Apex. No machines needed: we build real strength with your own bodyweight, then turn it into skills like handstands and L-sits. Where are you starting from? Can you do a pull-up yet?"
+  },
+  {
+    "id": "tide",
+    "name": "Coach Tide",
+    "sport": "swimming",
+    "category": "Swimming",
+    "trainingTypes": [
+      "conditioning",
+      "athletic",
+      "mobility"
+    ],
+    "goals": [
+      "sport_performance",
+      "lose_fat",
+      "general_fitness",
+      "cut"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      8,
+      85
+    ],
+    "intensity": 3,
+    "tagline": "Smooth is fast. Build your engine.",
+    "bio": "Pool workouts for endurance and technique, plus dryland strength for strong, healthy shoulders and a powerful kick.",
+    "bestFor": [
+      "swimming",
+      "low-impact cardio",
+      "joint-friendly fitness",
+      "older athletes"
+    ],
+    "signature": {
+      "split": "2-3 pool days + 2 dryland strength days",
+      "staples": [
+        "freestyle intervals",
+        "kickboard sets",
+        "backstroke drills",
+        "breaststroke drills",
+        "lat pulldown",
+        "band external rotation",
+        "streamline jump",
+        "flutter kicks"
+      ],
+      "methods": [
+        "interval sets on a pace clock",
+        "stroke technique drills",
+        "kick sets",
+        "dryland pull and core strength"
+      ],
+      "recovery": [
+        "easy backstroke cool-down",
+        "shoulder and lat stretching",
+        "refuel within 30 minutes"
+      ]
+    },
+    "avatar": "tide.png",
+    "icon": "🏊",
+    "color": "#1e6fb8",
+    "greeting": "Hi, I'm Coach Tide! We'll build your engine in the pool and a strong, healthy swimmer's body on land. Smooth is fast. Do you have pool access, and how comfortable are you in the water?"
+  },
+  {
+    "id": "diamond",
+    "name": "Coach Diamond",
+    "sport": "baseball",
+    "category": "Baseball",
+    "trainingTypes": [
+      "athletic",
+      "strength",
+      "mobility"
+    ],
+    "goals": [
+      "sport_performance",
+      "get_stronger",
+      "general_fitness",
+      "build_muscle"
+    ],
+    "levels": [
+      "beginner",
+      "intermediate",
+      "advanced"
+    ],
+    "ageFit": [
+      10,
+      70
+    ],
+    "intensity": 3,
+    "tagline": "Rotate hard. Throw healthy. Run every ball out.",
+    "bio": "Rotational power for hitting and throwing, arm care for a healthy shoulder, and quick first steps on the bases.",
+    "bestFor": [
+      "baseball and softball",
+      "rotational power",
+      "arm health",
+      "speed on the bases"
+    ],
+    "signature": {
+      "split": "2 strength days + 1 speed day + baseball skill work",
+      "staples": [
+        "trap bar deadlift",
+        "split squat",
+        "medicine ball rotational throw",
+        "cable rotational chop",
+        "band external rotation",
+        "tee work",
+        "throwing progression",
+        "base running sprints"
+      ],
+      "methods": [
+        "rotational medicine ball power",
+        "single-leg strength",
+        "year-round arm care",
+        "short sprints and first-step speed"
+      ],
+      "recovery": [
+        "arm care before and after throwing",
+        "hip and thoracic mobility",
+        "respect pitch and throw counts"
+      ]
+    },
+    "avatar": "diamond.png",
+    "icon": "⚾",
+    "color": "#c8102e",
+    "greeting": "Hey, I'm Coach Diamond. We'll build rotational power for hitting and throwing, keep your arm healthy and get you quicker out of the box. What position do you play?"
   }
 ];
 
 export function getCoach(id: string): Coach | undefined {
-  return COACHES.find((c) => c.id === id);
+  const coachId = canonicalCoachId(id);
+  return COACHES.find((c) => c.id === coachId);
+}
+
+/** The coach's name without the "Coach " title, e.g. "Atlas". */
+export function coachShortName(coach: Pick<Coach, 'name'>): string {
+  return coach.name.replace(/^Coach\s+/, '');
 }

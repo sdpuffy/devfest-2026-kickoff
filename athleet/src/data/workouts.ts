@@ -23,7 +23,8 @@ export type TemplateExercise = {
   notes?: string;
 };
 
-export type DayTemplate = { focus: string; exercises: TemplateExercise[] };
+/** `venue: 'pool'` keeps pool and land exercises on separate days when the plan fills a session. */
+export type DayTemplate = { focus: string; exercises: TemplateExercise[]; venue?: 'pool' };
 
 export type CoachProgram = {
   warmup: string;
@@ -39,7 +40,7 @@ export type CoachProgram = {
 };
 
 export const PROGRAMS: Record<string, CoachProgram> = {
-  lebron: {
+  atlas: {
     voice: "We're playing the long game: strength, conditioning and recovery.",
     warmup: '20-min dynamic warm-up: light jog, leg swings, hip openers, band shoulder work',
     cooldown: '10-min yoga flow: down dog, pigeon, hamstring stretch',
@@ -109,8 +110,8 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  ronnie: {
-    voice: "Yeah buddy! We're building size with heavy compounds and high volume.",
+  ironside: {
+    voice: "Let's go! We're building size with heavy compounds and high volume.",
     warmup: '10 min light cardio, then 2 light warm-up sets on the first lift',
     cooldown: '5-10 min stretching for the muscles you trained',
     finisher: { name: 'Incline treadmill walk', kind: 'conditioning', reps: '15 min' },
@@ -182,7 +183,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  bolt: {
+  blaze: {
     voice: "Fast is a skill, so we'll practice it: sprint mechanics, explosive power and core every day.",
     warmup: '15-min sprint warm-up: jog, A-skips, B-skips, high knees, butt kicks, leg swings',
     cooldown: '10 min stretching: hamstrings, hip flexors, calves',
@@ -250,7 +251,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  ronaldo: {
+  vanguard: {
     voice: 'Discipline every day. We mix circuits, sprints, power and core.',
     warmup: '10 min: jump rope + dynamic stretches',
     cooldown: 'Stretch and foam roll; get 8 hours of sleep tonight',
@@ -318,6 +319,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
       6: ['circuit', 'power', 'legs', 'upper', 'circuit', 'cardio'],
     },
     sportOrder: {
+      3: ['circuit', 'skills', 'power'],
       4: ['circuit', 'power', 'legs', 'skills'],
       5: ['circuit', 'power', 'legs', 'skills', 'cardio'],
       6: ['circuit', 'power', 'legs', 'skills', 'upper', 'cardio'],
@@ -330,7 +332,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  serena: {
+  rally: {
     voice: "We build power you can repeat for a whole match, and we protect your joints.",
     warmup: '10 min fun cardio (dance, bike or swim), then hamstring and side stretches',
     cooldown: 'Foam roll + stretch shoulders, hips and knees',
@@ -393,6 +395,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
       6: ['lower', 'agility', 'upper', 'circuit', 'lower', 'agility'],
     },
     sportOrder: {
+      3: ['lower', 'tennis', 'upper'],
       4: ['lower', 'agility', 'upper', 'tennis'],
       5: ['lower', 'agility', 'upper', 'tennis', 'circuit'],
       6: ['lower', 'agility', 'upper', 'tennis', 'circuit', 'tennis'],
@@ -405,8 +408,8 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  callina: {
-    voice: 'I was a cardio girl before I fell in love with lifting. We build strong legs and real kicks.',
+  strike: {
+    voice: 'Cardio got me started, then I fell in love with lifting. We build strong legs and real kicks.',
     warmup: 'Jump rope + hip openers + leg swings (10 min)',
     cooldown: 'Flexibility work: hamstrings, hip flexors, adductors',
     finisher: { name: 'Heavy bag rounds', kind: 'conditioning', reps: '4 x 2 min' },
@@ -471,7 +474,7 @@ export const PROGRAMS: Record<string, CoachProgram> = {
     ],
   },
 
-  patty: {
+  anvil: {
     voice: 'Simple lifts, done hard, done consistently. That is the whole secret.',
     warmup: '5-10 min jump rope, then light warm-up sets',
     cooldown: '10 min stretching + 5-10 min foam rolling',
@@ -537,6 +540,319 @@ export const PROGRAMS: Record<string, CoachProgram> = {
       'Plan your meals so you are not guessing',
       'Carbs around your workouts for energy',
       'Consistency beats a perfect diet',
+    ],
+  },
+
+  blitz: {
+    voice: 'We build football strength: explosive hips, a strong frame and speed that still shows up in the fourth quarter.',
+    warmup: 'Dynamic warm-up: high knees, butt kicks, carioca, leg swings and build-up sprints (10 min)',
+    cooldown: 'Foam roll quads, hips and upper back + hamstring and hip-flexor stretch',
+    finisher: { name: 'Sled push', kind: 'conditioning', lowImpact: 'Bike sprints (20s hard / 40s easy)', reps: '6 x 20m' },
+    days: {
+      lower: {
+        focus: 'Lower-body strength + power',
+        exercises: [
+          { name: 'Back squat', kind: 'main', easier: 'Goblet squat' },
+          { name: 'Power clean', kind: 'power', easier: 'Kettlebell swing', lowImpact: 'Kettlebell deadlift', notes: 'Fast elbows; catch in a quarter squat' },
+          { name: 'Romanian deadlift', kind: 'accessory' },
+          { name: 'Bulgarian split squat', kind: 'accessory', easier: 'Reverse lunge' },
+          { name: 'Box jump', kind: 'power', lowImpact: 'Medicine ball chest pass', notes: 'Land soft, step down' },
+          { name: 'Plank', kind: 'core', reps: '45s' },
+        ],
+      },
+      upper: {
+        focus: 'Upper-body strength',
+        exercises: [
+          { name: 'Bench press', kind: 'main', easier: 'Dumbbell bench press' },
+          { name: 'Pull-up', kind: 'accessory', easier: 'Assisted pull-up' },
+          { name: 'Dumbbell shoulder press', kind: 'accessory' },
+          { name: 'Single-arm dumbbell row', kind: 'accessory', reps: '10 each side' },
+          { name: 'Medicine ball chest pass', kind: 'power', reps: '8' },
+          { name: "Farmer's carry", kind: 'accessory', reps: '3 x 30m' },
+        ],
+      },
+      speed: {
+        focus: 'Speed + agility',
+        exercises: [
+          { name: '3-point starts', kind: 'sprint', lowImpact: 'Bike sprint starts', reps: { beginner: '4 x 10 yards', intermediate: '6 x 10 yards', advanced: '8 x 10 yards' } },
+          { name: '40-yard sprints', kind: 'sprint', lowImpact: 'Bike sprints', reps: { beginner: '3 reps', intermediate: '5 reps', advanced: '6 reps' }, notes: 'Full rest between reps' },
+          { name: 'Pro agility shuttle (5-10-5)', kind: 'skill', lowImpact: 'Lateral band walk', reps: '6 reps' },
+          { name: 'Backpedal and break', kind: 'skill', lowImpact: 'Defensive slides', reps: '6 x 15 yards' },
+          { name: 'Broad jump', kind: 'power', lowImpact: 'Kettlebell swing', reps: '5' },
+        ],
+      },
+      conditioning: {
+        focus: 'Football conditioning',
+        exercises: [
+          { name: 'Sled push', kind: 'conditioning', lowImpact: 'Bike intervals', reps: '6 x 20m' },
+          { name: 'Shuttle runs', kind: 'conditioning', lowImpact: 'Rowing intervals', reps: { beginner: '4 reps', intermediate: '6 reps', advanced: '8 reps' } },
+          { name: 'Bear crawl', kind: 'conditioning', reps: '4 x 15m' },
+          { name: "Farmer's carry", kind: 'accessory', reps: '4 x 30m' },
+          { name: 'Dead bug', kind: 'core', reps: '10 each side' },
+        ],
+      },
+      football: {
+        focus: 'Football skills',
+        exercises: [
+          { name: '3-point starts', kind: 'skill', reps: '8 x 5 yards', notes: 'Stance and get-off' },
+          { name: 'Catching drills', kind: 'skill', reps: '15 min', notes: 'Hands catch away from your body, then tuck' },
+          { name: 'Backpedal and break', kind: 'skill', reps: '6 x 15 yards' },
+          { name: 'Blocking sled drive', kind: 'skill', reps: '6 x 10 yards', notes: 'Low pad level, short powerful steps' },
+          { name: 'Agility ladder', kind: 'skill', reps: '8 runs' },
+        ],
+      },
+    },
+    order: {
+      3: ['lower', 'speed', 'upper'],
+      4: ['lower', 'speed', 'upper', 'conditioning'],
+      5: ['lower', 'speed', 'upper', 'conditioning', 'lower'],
+      6: ['lower', 'speed', 'upper', 'conditioning', 'lower', 'upper'],
+    },
+    sportOrder: {
+      3: ['lower', 'football', 'upper'],
+      4: ['lower', 'speed', 'upper', 'football'],
+      5: ['lower', 'speed', 'upper', 'football', 'conditioning'],
+      6: ['lower', 'speed', 'upper', 'football', 'conditioning', 'lower'],
+    },
+    nutritionTips: [
+      'Big breakfast before training: eggs, oats and fruit',
+      'Protein at every meal; add a shake if you are trying to gain',
+      'Carbs around practice: rice, potatoes and pasta',
+      'Electrolytes and water on hot practice days',
+    ],
+  },
+
+  apex: {
+    voice: 'We master your bodyweight first: strict reps, real control, then skills you earn step by step.',
+    warmup: 'Wrist circles, scapular pulls, scapular push-ups, cat-cow and a deep squat hold (10 min)',
+    cooldown: 'Stretch lats, chest and hamstrings; pike and pancake stretch; wrist stretches',
+    finisher: { name: 'HIIT finisher: burpees, jump squats, mountain climbers', kind: 'conditioning', lowImpact: 'Low-impact circuit: squats, slow mountain climbers', reps: '8 min' },
+    days: {
+      pull: {
+        focus: 'Pull strength',
+        exercises: [
+          { name: 'Pull-up', kind: 'main', easier: 'Assisted pull-up' },
+          { name: 'Australian pull-up', kind: 'accessory', easier: 'Band-assisted inverted row' },
+          { name: 'Tuck front lever hold', kind: 'skill', easier: 'Hollow body hold', reps: '5 x 8-12s' },
+          { name: 'Muscle-up negatives', kind: 'skill', easier: 'Assisted pull-up', reps: '4 x 3 slow reps', notes: 'Use a box to get to the top' },
+          { name: 'Hanging leg raise', kind: 'core', easier: 'Lying leg raise' },
+        ],
+      },
+      push: {
+        focus: 'Push strength',
+        exercises: [
+          { name: 'Dips', kind: 'main', easier: 'Bench dips' },
+          { name: 'Pike push-up', kind: 'accessory', easier: 'Incline push-up' },
+          { name: 'Archer push-up', kind: 'accessory', easier: 'Push-up', reps: '6 each side' },
+          { name: 'Wall handstand hold', kind: 'skill', easier: 'Pike push-up', reps: '5 x 20-30s' },
+          { name: 'L-sit hold', kind: 'core', easier: 'Hollow body hold', reps: '5 x 10-20s' },
+        ],
+      },
+      legs: {
+        focus: 'Legs + core',
+        exercises: [
+          { name: 'Pistol squat', kind: 'main', easier: 'Bulgarian split squat', notes: 'Hold a post for balance at first' },
+          { name: 'Squat jumps', kind: 'power', lowImpact: 'Bodyweight squat', reps: '8' },
+          { name: 'Walking lunge', kind: 'accessory' },
+          { name: 'Single-leg glute bridge', kind: 'accessory', reps: '12 each leg' },
+          { name: 'Calf raise', kind: 'accessory', reps: '15 each leg' },
+          { name: 'Hollow body hold', kind: 'core', reps: '30s' },
+        ],
+      },
+      skills: {
+        focus: 'Skill practice',
+        exercises: [
+          { name: 'Wall handstand hold', kind: 'skill', reps: '10 min', notes: 'Quality holds, rest between' },
+          { name: 'L-sit hold', kind: 'skill', reps: '6 x 10s' },
+          { name: 'Tuck front lever hold', kind: 'skill', reps: '6 x 8s' },
+          { name: 'Muscle-up negatives', kind: 'skill', reps: '5 x 2' },
+          { name: 'Yoga flow', kind: 'mobility', reps: '10 min' },
+        ],
+      },
+      conditioning: {
+        focus: 'Bodyweight conditioning',
+        exercises: [
+          { name: 'HIIT circuit: burpees, jump squats, mountain climbers', kind: 'conditioning', lowImpact: 'Low-impact circuit: squats, slow mountain climbers', reps: '15 min' },
+          { name: 'Bear crawl', kind: 'conditioning', reps: '4 x 15m' },
+          { name: 'Jump rope intervals', kind: 'conditioning', lowImpact: 'Easy walk or bike', reps: '6 x 1 min' },
+          { name: 'Plank', kind: 'core', reps: '45s' },
+        ],
+      },
+    },
+    order: {
+      3: ['pull', 'push', 'legs'],
+      4: ['pull', 'push', 'legs', 'conditioning'],
+      5: ['pull', 'push', 'legs', 'skills', 'conditioning'],
+      6: ['pull', 'push', 'legs', 'skills', 'pull', 'conditioning'],
+    },
+    sportOrder: {
+      4: ['pull', 'push', 'legs', 'skills'],
+      5: ['pull', 'push', 'legs', 'skills', 'conditioning'],
+      6: ['pull', 'push', 'legs', 'skills', 'pull', 'skills'],
+    },
+    nutritionTips: [
+      'Lean protein with every meal to stay light and strong',
+      'Plenty of fruit and veg for recovery',
+      'Eat carbs before skill sessions so you have focus and energy',
+      'Sleep 8 hours: skills improve when you are rested',
+    ],
+  },
+
+  tide: {
+    voice: "We build an engine in the water and a strong, healthy swimmer's body on land. Smooth is fast.",
+    warmup: 'Arm swings and band pull-aparts on deck, then an easy 200-400m mixed swim',
+    cooldown: 'Easy 200m backstroke + shoulder, lat and hip-flexor stretches',
+    // Only added to dryland days (pool days already have conditioning).
+    finisher: { name: 'Jump rope intervals', kind: 'conditioning', lowImpact: 'Easy walk or bike', reps: '6 x 1 min' },
+    days: {
+      endurance: {
+        focus: 'Pool: aerobic endurance',
+        venue: 'pool',
+        exercises: [
+          { name: 'Freestyle intervals', kind: 'conditioning', reps: { beginner: '8 x 25m', intermediate: '10 x 50m', advanced: '10 x 100m' }, notes: 'Rest 15-20s between' },
+          { name: 'Kickboard sets', kind: 'conditioning', reps: '6 x 25m' },
+          { name: 'Backstroke drills', kind: 'skill', reps: '4 x 25m' },
+          { name: 'Pull buoy freestyle', kind: 'conditioning', reps: '4 x 50m', notes: 'Arms only; keep hips high' },
+        ],
+      },
+      technique: {
+        focus: 'Pool: stroke technique',
+        venue: 'pool',
+        exercises: [
+          { name: 'Streamline push-offs', kind: 'skill', reps: '8 reps' },
+          { name: 'Breaststroke drills', kind: 'skill', reps: '6 x 25m' },
+          { name: 'Butterfly drills', kind: 'skill', easier: 'Kickboard sets', reps: '6 x 25m', notes: 'One-arm fly first' },
+          { name: 'Backstroke drills', kind: 'skill', reps: '4 x 25m' },
+          { name: 'Freestyle intervals', kind: 'conditioning', reps: '4 x 50m easy' },
+        ],
+      },
+      dryland: {
+        focus: 'Dryland: pull strength + shoulder care',
+        exercises: [
+          { name: 'Lat pulldown', kind: 'main', easier: 'Band row' },
+          { name: 'Pull-up', kind: 'accessory', easier: 'Assisted pull-up' },
+          { name: 'Band external rotation', kind: 'accessory', reps: '15 each arm', notes: 'Shoulder pre-hab' },
+          { name: 'Medicine ball slam', kind: 'power', lowImpact: 'Medicine ball chest pass', reps: '10' },
+          { name: 'Flutter kicks', kind: 'core', reps: '30s' },
+          { name: 'Plank', kind: 'core', reps: '30-45s' },
+        ],
+      },
+      legs: {
+        focus: 'Dryland: legs, starts + core',
+        exercises: [
+          { name: 'Goblet squat', kind: 'main' },
+          { name: 'Streamline jump', kind: 'power', lowImpact: 'Bodyweight squat', reps: '6', notes: 'Like a start off the blocks' },
+          { name: 'Walking lunge', kind: 'accessory' },
+          { name: 'Rear delt fly', kind: 'accessory' },
+          { name: 'Hollow body hold', kind: 'core', reps: '30s' },
+          { name: 'Dead bug', kind: 'core', reps: '10 each side' },
+        ],
+      },
+      sprint: {
+        focus: 'Pool: speed',
+        venue: 'pool',
+        exercises: [
+          { name: 'Freestyle sprints', kind: 'conditioning', reps: { beginner: '6 x 25m', intermediate: '8 x 25m', advanced: '10 x 50m' }, notes: 'Full effort, long rest' },
+          { name: 'Streamline push-offs', kind: 'skill', reps: '6 reps' },
+          { name: 'Kickboard sets', kind: 'conditioning', reps: '4 x 25m fast' },
+          { name: 'Backstroke drills', kind: 'skill', reps: '200m easy' },
+        ],
+      },
+    },
+    order: {
+      3: ['endurance', 'dryland', 'technique'],
+      4: ['endurance', 'dryland', 'technique', 'legs'],
+      5: ['endurance', 'dryland', 'technique', 'legs', 'sprint'],
+      6: ['endurance', 'dryland', 'technique', 'legs', 'sprint', 'endurance'],
+    },
+    sportOrder: {
+      4: ['endurance', 'technique', 'dryland', 'sprint'],
+      5: ['endurance', 'technique', 'dryland', 'sprint', 'legs'],
+      6: ['endurance', 'technique', 'dryland', 'sprint', 'legs', 'technique'],
+    },
+    nutritionTips: [
+      'Carbs fuel the pool: oats, rice, pasta and fruit',
+      'Snack within 30 minutes after swimming',
+      'You sweat in the pool too: drink water before and after',
+      'Iron-rich foods like lean red meat, beans and spinach support endurance',
+    ],
+  },
+
+  diamond: {
+    voice: 'We build rotational power, a healthy throwing arm and a quick first step.',
+    warmup: 'Jog, arm circles and a band shoulder series, then a progressive throwing warm-up',
+    cooldown: 'Sleeper stretch, hip-flexor and hamstring stretches, easy band work for the shoulder',
+    finisher: { name: 'Base running sprints', kind: 'conditioning', lowImpact: 'Bike intervals', reps: '6 x home to first' },
+    days: {
+      lower: {
+        focus: 'Lower body + rotational power',
+        exercises: [
+          { name: 'Trap bar deadlift', kind: 'main', easier: 'Kettlebell deadlift' },
+          { name: 'Split squat', kind: 'accessory', easier: 'Reverse lunge' },
+          { name: 'Lateral lunge', kind: 'accessory' },
+          { name: 'Medicine ball rotational throw', kind: 'power', reps: '8 each side' },
+          { name: 'Single-leg Romanian deadlift', kind: 'accessory' },
+          { name: 'Side plank', kind: 'core', reps: '20-30s each side' },
+        ],
+      },
+      upper: {
+        focus: 'Upper body + arm care',
+        exercises: [
+          { name: 'Dumbbell bench press', kind: 'main', easier: 'Push-up' },
+          { name: 'Single-arm dumbbell row', kind: 'accessory', reps: '10 each side' },
+          { name: 'Pull-up', kind: 'accessory', easier: 'Assisted pull-up' },
+          { name: 'Band external rotation', kind: 'accessory', reps: '15 each arm', notes: 'Arm care: do it every week' },
+          { name: 'Cable rotational chop', kind: 'power', reps: '10 each side' },
+          { name: 'Plank', kind: 'core', reps: '30-45s' },
+        ],
+      },
+      speed: {
+        focus: 'Speed + agility',
+        exercises: [
+          { name: 'Base running sprints', kind: 'sprint', lowImpact: 'Bike sprints', reps: { beginner: '4 reps', intermediate: '6 reps', advanced: '8 reps' } },
+          { name: 'Acceleration sprints', kind: 'sprint', lowImpact: 'Bike sprint starts', reps: '6 x 10 yards' },
+          { name: 'Agility ladder', kind: 'skill', reps: '8 runs' },
+          { name: 'Broad jump', kind: 'power', lowImpact: 'Kettlebell swing', reps: '5' },
+          { name: 'Russian twist', kind: 'core', reps: '12 each side' },
+        ],
+      },
+      baseball: {
+        focus: 'Baseball skills',
+        exercises: [
+          { name: 'Throwing progression', kind: 'skill', reps: '10-15 min', notes: 'Short to long distance; stop if your arm hurts' },
+          { name: 'Tee work (batting)', kind: 'skill', reps: '15 min' },
+          { name: 'Fielding ground balls', kind: 'skill', reps: '10 min' },
+          { name: 'Base running sprints', kind: 'skill', reps: '6 x home to first' },
+        ],
+      },
+      conditioning: {
+        focus: 'Conditioning + core',
+        exercises: [
+          { name: 'Jump rope intervals', kind: 'conditioning', lowImpact: 'Easy walk or bike', reps: '6 x 1 min' },
+          { name: 'Shuttle runs', kind: 'conditioning', lowImpact: 'Bike intervals', reps: '6 reps' },
+          { name: 'Dead bug', kind: 'core', reps: '10 each side' },
+          { name: 'Bird dog', kind: 'core', reps: '8 each side' },
+          { name: 'Mobility flow', kind: 'mobility', reps: '10 min' },
+        ],
+      },
+    },
+    order: {
+      3: ['lower', 'upper', 'speed'],
+      4: ['lower', 'upper', 'speed', 'conditioning'],
+      5: ['lower', 'upper', 'speed', 'conditioning', 'lower'],
+      6: ['lower', 'upper', 'speed', 'conditioning', 'lower', 'upper'],
+    },
+    sportOrder: {
+      3: ['lower', 'baseball', 'upper'],
+      4: ['lower', 'upper', 'baseball', 'speed'],
+      5: ['lower', 'upper', 'baseball', 'speed', 'baseball'],
+      6: ['lower', 'upper', 'baseball', 'speed', 'baseball', 'conditioning'],
+    },
+    nutritionTips: [
+      'Long game days: pack fruit, sandwiches and water',
+      'Protein after lifting to recover',
+      'Whole grains and veg for steady energy',
+      'Sip water between innings, not just after',
     ],
   },
 };

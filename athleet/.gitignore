@@ -44,12 +44,3 @@ example
 
 .env
 
-# shared coach voice recordings (registry.json is committed)
-voices/**/*.mp3
-voices/**/*.m4a
-voices/**/*.mp4
-voices/**/*.aac
-voices/**/*.wav
-voices/**/*.webm
-voices/**/*.ogg
-voices/**/CONSENT*

@@ -1,5 +1,5 @@
 // Coach hype lines for the workout logger.
-// A few are each athlete's well-known public catchphrases; the rest are written in their style.
+// Original lines, written in each coach's style.
 
 export type HypeLines = {
   setStart: string[]; // shown when a new set begins
@@ -7,142 +7,98 @@ export type HypeLines = {
   finish: string[];   // shown when the workout is done
 };
 
-/**
- * Each athlete's signature line, spoken out loud after every logged set.
- * Spoken with the phone's text-to-speech (not the athlete's real voice).
- * The voice is picked to fit the athlete: a male or female voice, the closest accent the
- * device has, and pitch/rate for their energy (Ronnie deep and loud, Bolt laid-back, etc.).
- */
-export type Signature = {
-  text: string;
-  pitch: number; // 1 = normal; lower is deeper
-  rate: number; // 1 = normal speed
-  gender: 'male' | 'female';
-  /** Accents to try first, best match first (BCP-47, e.g. 'en-US', 'en-GB'). */
-  langs: string[];
-  /** Device voices that suit this athlete, best first (iOS, Android, Chrome/Edge names). */
-  voices: string[];
-};
+/** Each coach's signature line, shown in the workout logger after every logged set. */
+export type Signature = { text: string };
 
 export const SIGNATURES: Record<string, Signature> = {
-  // Big, booming Texas bodybuilder.
-  ronnie: {
-    text: 'YEAH BUDDY! LIGHT WEIGHT!',
-    pitch: 0.65,
-    rate: 1.0,
-    gender: 'male',
-    langs: ['en-US'],
-    voices: ['Ralph', 'Fred', 'Evan', 'Aaron', 'Tom', 'Guy', 'David', 'en-us-x-tpd', 'en-us-x-iom'],
+  ironside: {
+    text: 'STACK THE PLATES! LIFT IT!',
   },
-  // Calm, deep, measured leader.
-  lebron: {
-    text: 'Strive for greatness!',
-    pitch: 0.8,
-    rate: 0.92,
-    gender: 'male',
-    langs: ['en-US'],
-    voices: ['Aaron', 'Evan', 'Nathan', 'Tom', 'Alex', 'Christopher', 'Guy', 'Mark', 'en-us-x-iol', 'en-us-x-tpd'],
+  atlas: {
+    text: 'Play the long game!',
   },
-  // Laid-back and playful. Devices rarely have a Jamaican voice, so a Caribbean/UK one is next best.
-  bolt: {
-    text: 'To di world!',
-    pitch: 0.9,
-    rate: 0.85,
-    gender: 'male',
-    langs: ['en-JM', 'en-TT', 'en-GB', 'en-ZA', 'en-IE'],
-    voices: ['Daniel', 'Arthur', 'Oliver', 'Ryan', 'Google UK English Male', 'en-gb-x-rjs', 'en-gb-x-gbd'],
+  blaze: {
+    text: 'Catch me if you can!',
   },
-  // Intense, stretched-out celebration.
-  ronaldo: {
-    text: 'Siuuuuuuu!',
-    pitch: 1.05,
-    rate: 0.75,
-    gender: 'male',
-    langs: ['en-US', 'en-GB'],
-    voices: ['Evan', 'Alex', 'Tom', 'Aaron', 'Guy', 'Eric', 'en-us-x-iom', 'en-us-x-iol'],
+  vanguard: {
+    text: 'Vanguard, let\'s gooo!',
   },
-  // Strong, confident American.
-  serena: {
+  rally: {
     text: 'Come on!',
-    pitch: 1.0,
-    rate: 1.0,
-    gender: 'female',
-    langs: ['en-US'],
-    voices: ['Ava', 'Allison', 'Susan', 'Samantha', 'Aria', 'Jenny', 'Zira', 'Google US English', 'en-us-x-sfg'],
   },
-  // Young, bright, upbeat; martial arts and leg days.
-  callina: {
+  strike: {
     text: 'Strong legs, strong kicks! Hi-yah!',
-    pitch: 1.25,
-    rate: 1.08,
-    gender: 'female',
-    langs: ['en-US', 'en-CA'],
-    voices: ['Nicky', 'Zoe', 'Samantha', 'Ava', 'Michelle', 'Jenny', 'Aria', 'Google US English', 'en-us-x-tpc', 'en-us-x-iob'],
   },
-  // Chill, friendly, no-nonsense.
-  patty: {
+  anvil: {
     text: "Let's get it!",
-    pitch: 1.05,
-    rate: 1.0,
-    gender: 'female',
-    langs: ['en-US'],
-    voices: ['Allison', 'Samantha', 'Susan', 'Kathy', 'Jenny', 'Michelle', 'Zira', 'Google US English', 'en-us-x-iog', 'en-us-x-tpf'],
+  },
+  blitz: {
+    text: 'Win the first step!',
+  },
+  apex: {
+    text: 'Earn the skill!',
+  },
+  tide: {
+    text: 'Smooth is fast!',
+  },
+  diamond: {
+    text: 'Rotate and drive!',
   },
 };
 
 export function signatureFor(coachId: string): Signature {
   return (
-    SIGNATURES[coachId] ?? { text: "Let's go!", pitch: 1, rate: 1, gender: 'male', langs: ['en-US'], voices: [] }
+    SIGNATURES[coachId] ?? { text: "Let's go!" }
   );
 }
 
 export const HYPE: Record<string, HypeLines> = {
-  ronnie: {
+  ironside: {
     setStart: [
-      'Yeah buddy!',
-      'Light weight, baby!',
-      "Ain't nothin' but a peanut!",
-      'Everybody wanna be big. Nobody wanna lift heavy. You do. Go!',
-      "Yeah buddy! Let's get this rep train rolling!",
-      'Light weight! Light weight! Push it!',
+      'Stack the plates!',
+      'Heavy is just a number. Lift it!',
+      "Iron doesn't lie. Move it!",
+      'Big lifts build big people. Go!',
+      "Let's get this rep train rolling!",
+      'Push it! Push it! Own the bar!',
     ],
-    rest: ['Breathe, baby. Next set we go heavier.', 'Yeah buddy, catch your breath. We ain\'t done!'],
-    finish: ['YEAH BUDDY! That\'s how you build it!', 'Light weight, baby! See you next session!'],
+    rest: ['Breathe, baby. Next set we go heavier.', 'Catch your breath. We ain\'t done!'],
+    finish: ['THAT\'S how you build it!', 'Iron day done. See you next session!'],
   },
-  lebron: {
+  atlas: {
     setStart: [
-      'Strive for greatness. This set, right now.',
+      'Long game, starting with this set.',
       "Lock in. We're playing the long game.",
       'Every rep is an investment in year 20.',
       "Stay locked in. Let's work!",
       'Greatness is a habit. Build it.',
     ],
     rest: ['Recover like a pro. Breathe, hydrate.', 'Rest is part of the work. Reset.'],
-    finish: ['That\'s a championship day. Strive for greatness!', 'Long game. You just won today.'],
+    finish: ['That\'s a championship day. Play the long game!', 'Long game. You just won today.'],
   },
-  bolt: {
+  blaze: {
     setStart: [
-      'To di world! ⚡',
+      'Catch me if you can! ⚡',
       "Relax and be fast. Let's go!",
-      "Quality reps, mon. Make 'em sharp!",
+      "Quality reps. Make 'em sharp!",
       'Easy breezy, then explode!',
       'Lightning time ⚡ Go!',
     ],
     rest: ['Full rest, no rushing. Fast needs fresh legs.', 'Chill a bit. Stay loose.'],
-    finish: ['To di world! ⚡ Great session!', 'Fast day! Now go eat something good.'],
+    finish: ['Catch me if you can! ⚡ Great session!', 'Fast day! Now go eat something good.'],
   },
-  ronaldo: {
+  vanguard: {
     setStart: [
-      'Siuuu! Let\'s go!',
+      'Lead from the front. Let\'s go!',
       'Discipline. Every set. Every day.',
       'Hard work beats talent. Show me.',
       'Focus. Make this one perfect.',
-      'Siuuu! Again!',
+      'Again! Better!',
     ],
     rest: ['Breathe. Control. Next set even better.', 'Recovery is training too. Stay focused.'],
-    finish: ['SIUUU! Workout complete!', 'That\'s discipline. Same time tomorrow.'],
+    finish: ['Workout complete! That\'s how leaders train!', 'That\'s discipline. Same time tomorrow.'],
   },
-  serena: {
+  rally: {
     setStart: [
       'Champion mindset. This set is yours.',
       "Power you can repeat. Let's go!",
@@ -153,7 +109,7 @@ export const HYPE: Record<string, HypeLines> = {
     rest: ['Reset like between points. Breathe.', 'Shake it out. Stay ready.'],
     finish: ['Game, set, match. Great work!', 'That\'s a champion\'s session.'],
   },
-  callina: {
+  strike: {
     setStart: [
       "Strong legs, strong kicks. Let's go!",
       'I used to skip leg day too. Not anymore!',
@@ -164,7 +120,7 @@ export const HYPE: Record<string, HypeLines> = {
     rest: ['Shake out those legs. Stay loose.', 'Quick breather, then back to it!'],
     finish: ['Legs of steel! Great session!', 'GG! That workout is cleared.'],
   },
-  patty: {
+  anvil: {
     setStart: [
       "Simple. Hard. Let's go!",
       'Close to failure. You can do one more.',
@@ -174,6 +130,50 @@ export const HYPE: Record<string, HypeLines> = {
     ],
     rest: ['Breathe, sip water, back at it.', 'Rest up, but not too long!'],
     finish: ['Done! Consistency over perfection!', 'Another one in the bank. Proud of you!'],
+  },
+  blitz: {
+    setStart: [
+      "Low pad level. Explode!",
+      "Win the first step. Go!",
+      "Fourth-quarter legs are built right now.",
+      "Fast hips, strong finish!",
+      "Treat this rep like third and one.",
+    ],
+    rest: ["Hands on hips, breathe. Next rep is full speed.", "Huddle up, reset, go again."],
+    finish: ["That's a winning practice!", "Strong frame, fast feet. Great work!"],
+  },
+  apex: {
+    setStart: [
+      "Strict reps. Own every inch.",
+      "Control the way down.",
+      "Your body is the gym. Let's go!",
+      "Tight core, long arms. Hold it!",
+      "One clean rep beats five messy ones.",
+    ],
+    rest: ["Shake out your wrists and breathe.", "Rest up; quality over quantity."],
+    finish: ["Skill earned today. Proud of you!", "Stronger than yesterday. Nice work!"],
+  },
+  tide: {
+    setStart: [
+      "Long and smooth. Go!",
+      "Reach, pull, kick!",
+      "Hold your streamline!",
+      "Smooth is fast. Find your rhythm.",
+      "Strong pull, quiet kick.",
+    ],
+    rest: ["Breathe easy; watch the pace clock.", "Shake out your shoulders. Next one smooth."],
+    finish: ["Great swim! Refuel and stretch those shoulders.", "Engine built. Nice work today!"],
+  },
+  diamond: {
+    setStart: [
+      "Rotate and drive through it!",
+      "Hips first, then hands.",
+      "Quick feet, quick hands. Go!",
+      "Run it out like it's a close play.",
+      "Stay balanced and explode.",
+    ],
+    rest: ["Take a breath; reset your stance.", "Shake out the arm. Next one sharp."],
+    finish: ["That's a good day at the park!", "Arm cared for, swing sharpened. Nice work!"],
   },
 };
 

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { Animated, AppState, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { sampleSpeech, emptySpeechAnimation, type SpeechAnimation } from '@/lib/speech-animation';
-import { coachPose, easeInOut, type CoachMotion, type CoachPose } from '@/lib/lebron-motion';
+import { coachPose, easeInOut, type CoachMotion, type CoachPose } from '@/lib/coach-motion';
 import { ExerciseDemo } from './exercise-demo';
 import { coachArt, type CoachArt } from './coach-art';
 import type { Coach } from '@/lib/types';
@@ -15,7 +15,7 @@ const neutral = coachPose(0, 'idle', true, restingSpeech);
 const poseKeys = Object.keys(neutral) as (keyof CoachPose)[];
 const status = { idle: 'READY WHEN YOU ARE', talking: 'COACH IS SPEAKING', exercise: 'MOVEMENT DEMO · SQUAT', celebrate: 'LET’S GO!', thinking: 'THINKING…' };
 
-export function AnimatedCoach({ coach, motion, speechAnimation, compact = false, height, showStatus = true, exercise, paused = false }: { exercise?: string; paused?: boolean; coach: Coach; compact?: boolean; height?: number; showStatus?: boolean; motion: CoachMotion; speechAnimation: RefObject<SpeechAnimation> }) {
+export function AnimatedCoach({ coach, motion, speechAnimation, compact = false, height, showStatus = true, exercise, paused = false }: { exercise?: string; paused?: boolean; coach: Coach; compact?: boolean; height?: number; showStatus?: boolean; motion: CoachMotion; speechAnimation?: RefObject<SpeechAnimation> }) {
   const current = useRef(motion);
   useEffect(() => { current.current = motion; }, [motion]);
   const playback = useRef({ exercise, paused });
@@ -53,7 +53,7 @@ export function AnimatedCoach({ coach, motion, speechAnimation, compact = false,
       }
       if (!playback.current.paused) elapsed += dt;
       if (state === 'exercise' && playback.current.paused) return;
-      const target = coachPose(elapsed, state, reduced, sampleSpeech(speechAnimation.current, Date.now()));
+      const target = coachPose(elapsed, state, reduced, speechAnimation ? sampleSpeech(speechAnimation.current, Date.now()) : restingSpeech);
       const blend = reduced ? 1 : easeInOut((now - transitionStart) / 450);
       for (const key of poseKeys) {
         // Keep word boundaries responsive, while softly settling lips between syllables.
@@ -70,7 +70,7 @@ export function AnimatedCoach({ coach, motion, speechAnimation, compact = false,
   const stageHeight = height ?? (compact ? 190 : 300);
   const size = Math.max(0, Math.min(compact ? 172 : 278, stageHeight - (showStatus ? 22 : 0)));
   const rotate = (value: Animated.Value, direction = 1) => value.interpolate({ inputRange: [-180, 180], outputRange: [`${-180 * direction}deg`, `${180 * direction}deg`] });
-  const layers = coachArt[coach.id] ?? coachArt.lebron;
+  const layers = coachArt[coach.id] ?? coachArt.atlas;
   const art = (name: keyof CoachArt) => <Image source={layers[name]} style={styles.image} contentFit="contain" accessible={false} />;
   return (
     <View style={[styles.stage, { height: stageHeight }]} accessible accessibilityLabel={`Illustrated ${coach.name} coach, ${exercise && motion === 'exercise' ? exercise : motion}`}>

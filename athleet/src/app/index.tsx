@@ -4,6 +4,8 @@ import { router } from 'expo-router';
 
 import { HomeLogo } from '@/components/home-logo';
 import { OnboardingMascot } from '@/components/onboarding-mascot';
+import { useAccount } from '@/lib/account';
+import { accountsEnabled } from '@/lib/account-api';
 import { useSelectedPlan } from '@/lib/selected-plan';
 import { colors, themedStyles } from '@/lib/theme';
 import { themed } from '@/components/themed-screen';
@@ -13,6 +15,7 @@ function HomeScreen() {
   const { height, width } = useWindowDimensions();
   // Saved on the device, so returning users can pick up where they left off.
   const selected = useSelectedPlan();
+  const account = useAccount();
 
   return (
     <SafeAreaView style={styles.screen}>
@@ -36,6 +39,14 @@ function HomeScreen() {
           <Pressable style={styles.button} onPress={() => router.push('/questionnaire' as any)} accessibilityRole="button">
             <Text style={styles.buttonText}>Start a new plan  →</Text>
           </Pressable>
+          {accountsEnabled && account.status === 'signedOut' && (
+            <Pressable style={styles.loginLink} onPress={() => router.push({ pathname: '/account', params: { mode: 'login' } })} accessibilityRole="button">
+              <Text style={styles.loginText}>Already have an account? <Text style={styles.loginStrong}>Log in</Text></Text>
+            </Pressable>
+          )}
+          {account.status === 'signedIn' && account.user && (
+            <Text style={styles.signedIn}>Signed in as @{account.user.username}</Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -53,6 +64,10 @@ const styles = themedStyles(() => ({
   welcomeTitle: { color: colors.bubbleText, fontSize: 24, fontWeight: '500', textAlign: 'center' },
   button: { backgroundColor: colors.accent, borderRadius: 6, padding: 18, alignItems: 'center', marginTop: 16 },
   buttonText: { color: colors.bg, fontWeight: '700', fontSize: 16 },
+  loginLink: { alignItems: 'center', paddingVertical: 16 },
+  loginText: { color: colors.textMuted, fontSize: 14 },
+  loginStrong: { color: colors.accent, fontWeight: '700' },
+  signedIn: { color: colors.textSubtle, fontSize: 13, textAlign: 'center', paddingVertical: 16 },
   myPlanButton: { borderWidth: 1, borderColor: colors.borderStrong, borderRadius: 6, paddingHorizontal: 14, paddingVertical: 8 },
   myPlanButtonText: { color: colors.text, fontWeight: '600', fontSize: 14 },
 }));

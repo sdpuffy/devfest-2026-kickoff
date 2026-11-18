@@ -14,7 +14,7 @@ import { Platform } from 'react-native';
 export interface TrainingVenue {
   id: string;
   name: string;
-  category: 'gym' | 'track' | 'park' | 'climbing_fitness';
+  category: 'gym' | 'track' | 'park' | 'climbing_fitness' | 'pool';
   address: string;
   distance: string;
   equipmentTags: string[];
@@ -32,7 +32,7 @@ export const SANTA_CRUZ_VENUES: TrainingVenue[] = [
     address: 'East Field House, 1156 High St, Santa Cruz, CA 95064',
     distance: '1.4 miles',
     equipmentTags: ['400m Olympic Track', 'Sprint Straights', 'Turf Infield', 'Ocean View Bleachers'],
-    bestForCoaches: ['bolt', 'ronaldo', 'lebron'],
+    bestForCoaches: ['blaze', 'vanguard', 'atlas', 'blitz', 'diamond'],
     recommendedFor: 'Sprint mechanics, bounding drills, agility ladders & stadium conditioning.',
     lat: 36.9958,
     lng: -122.0558,
@@ -44,7 +44,7 @@ export const SANTA_CRUZ_VENUES: TrainingVenue[] = [
     address: '1200 Pacific Ave, Santa Cruz, CA 95060',
     distance: '0.8 miles',
     equipmentTags: ['Power Squat Racks', 'Dumbbells to 120lbs', 'Cable Crossover', 'Deadlift Platforms'],
-    bestForCoaches: ['ronnie', 'lebron', 'patty', 'serena'],
+    bestForCoaches: ['ironside', 'atlas', 'anvil', 'rally', 'blitz', 'tide'],
     recommendedFor: 'Heavy compound barbell mass, Romanian deadlifts & high-volume hypertrophy.',
     lat: 36.9723,
     lng: -122.0258,
@@ -56,7 +56,7 @@ export const SANTA_CRUZ_VENUES: TrainingVenue[] = [
     address: '104 Bronson St, Santa Cruz, CA 95062',
     distance: '1.9 miles',
     equipmentTags: ['Pull-up Rigs', 'Grip Training Station', 'Kettlebells', 'Free Weights'],
-    bestForCoaches: ['patty', 'callina'],
+    bestForCoaches: ['anvil', 'strike', 'apex'],
     recommendedFor: 'Strict pull-ups, posterior chain endurance & functional grip stamina.',
     lat: 36.9702,
     lng: -122.0084,
@@ -68,7 +68,7 @@ export const SANTA_CRUZ_VENUES: TrainingVenue[] = [
     address: '326 Evergreen St, Santa Cruz, CA 95060',
     distance: '1.2 miles',
     equipmentTags: ['Calisthenics Bars', 'Dip Stations', 'Hill Sprint Trails', 'Open Grass'],
-    bestForCoaches: ['bolt', 'callina', 'lebron'],
+    bestForCoaches: ['blaze', 'strike', 'atlas', 'apex', 'diamond'],
     recommendedFor: 'Bodyweight progressions, plyometric hops & outdoor HIIT circuits.',
     lat: 36.9839,
     lng: -122.0366,
@@ -80,7 +80,7 @@ export const SANTA_CRUZ_VENUES: TrainingVenue[] = [
     address: '415 Walnut Ave, Santa Cruz, CA 95060',
     distance: '0.5 miles',
     equipmentTags: ['All-Weather Track', 'Long Jump Pit', 'Bleachers', 'Stair Sprints'],
-    bestForCoaches: ['bolt', 'ronaldo'],
+    bestForCoaches: ['blaze', 'vanguard', 'blitz'],
     recommendedFor: 'Top-end sprint acceleration, hurdle mobility & stair conditioning.',
     lat: 36.9735,
     lng: -122.0361,
@@ -92,10 +92,22 @@ export const SANTA_CRUZ_VENUES: TrainingVenue[] = [
     address: '900 River St, Santa Cruz, CA 95060',
     distance: '1.1 miles',
     equipmentTags: ['Full Gym Racks', 'Olympic Benches', 'Leg Press Sled', 'Sauna / Recovery'],
-    bestForCoaches: ['ronnie', 'serena', 'patty'],
+    bestForCoaches: ['ironside', 'rally', 'anvil', 'diamond', 'tide'],
     recommendedFor: 'Full body power days, pause squats, chest presses & post-workout heat recovery.',
     lat: 36.9806,
     lng: -122.0298,
+  },
+  {
+    id: 'simpkins-pool',
+    name: 'Simpkins Family Swim Center',
+    category: 'pool',
+    address: '979 17th Ave, Santa Cruz, CA 95062',
+    distance: '3.2 miles',
+    equipmentTags: ['Lap Pool', 'Lane Lines', 'Pace Clock', 'Kickboards & Pull Buoys'],
+    bestForCoaches: ['tide'],
+    recommendedFor: 'Lap swimming, stroke drills, kick sets and interval training.',
+    lat: 36.9768,
+    lng: -121.9677,
   },
 ];
 

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
+import { canonicalCoachId } from '@/lib/coach-ids';
 
 import type { GeneratePlanResponse, GeneratePlanRequest } from '@/lib/api';
 
@@ -16,6 +17,10 @@ export type SelectedPlan = {
 
 const STORAGE_KEY = 'athleet_selected_plan_v1';
 
+function migrate(p: SelectedPlan): SelectedPlan {
+  return { ...p, coachId: canonicalCoachId(p.coachId) };
+}
+
 function isSelectedPlan(v: unknown): v is SelectedPlan {
   return !!v && typeof v === 'object' && typeof (v as SelectedPlan).coachId === 'string' && !!(v as SelectedPlan).plan;
 }
@@ -26,7 +31,7 @@ function loadInitial(): SelectedPlan | null {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (isSelectedPlan(parsed)) return parsed;
+        if (isSelectedPlan(parsed)) return migrate(parsed);
       }
     } catch {}
   }
@@ -47,7 +52,7 @@ AsyncStorage.getItem(STORAGE_KEY)
     if (!raw || current || changedBeforeLoad) return;
     const saved = JSON.parse(raw);
     if (isSelectedPlan(saved)) {
-      current = saved;
+      current = migrate(saved);
       notify();
     }
   })

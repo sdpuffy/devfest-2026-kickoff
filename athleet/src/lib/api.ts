@@ -1,8 +1,9 @@
 import type { ChatMessage, Coach, UserProfile , NutritionTargets } from '@/lib/types';
-import { getCoach } from '@/data/coaches';
+import { coachShortName, getCoach } from '@/data/coaches';
 import { hypeLine } from '@/data/hype';
 import { SUGGESTION_ANSWERS } from '@/data/suggestions';
 import { PROGRAMS } from '@/data/workouts';
+import { getPosition, programForPosition } from '@/data/positions';
 import { adaptationsFor, generatePlan as buildCoachPlan, recommendedDays } from '@/lib/plan';
 import { buildMealPlan, type MealPlan } from '@/lib/meal-plan';
 import { computeTargets } from '@/lib/nutrition';
@@ -30,6 +31,10 @@ export interface GeneratePlanRequest {
   sessionMinutes?: number;
   equipment?: 'full_gym' | 'home_dumbbells' | 'bodyweight' | 'court_or_track';
   injuries?: string;
+  /** Position, event or style for sport coaches (see data/positions.ts). */
+  position?: string;
+  /** Has a training partner for partner drills (Your Plan tab). */
+  partner?: boolean;
 }
 
 export interface GeneratePlanResponse {
@@ -150,6 +155,8 @@ function profileFromRequest(req: GeneratePlanRequest): UserProfile {
     sessionMinutes: req.sessionMinutes ?? 60,
     equipment: req.equipment ?? 'full_gym',
     injuries: req.injuries ?? 'none',
+    position: req.position,
+    hasPartner: req.partner,
   };
 }
 
@@ -165,13 +172,16 @@ export function withMealPlan(
   budget: BudgetSetting = getBudget()
 ): GeneratePlanResponse {
   const profile = profileFromRequest(req);
-  const targets = plan.nutrition.targets ?? computeTargets(profile);
+  const position = getPosition(req.coachId, req.position);
+  const program = PROGRAMS[req.coachId] && programForPosition(req.coachId, PROGRAMS[req.coachId], position);
+  const targets = plan.nutrition.targets ?? computeTargets(profile, position?.calories);
   const mealPlan = buildMealPlan({
     goal: profile.goal,
     coachId: req.coachId,
     targets,
     seed,
-    coachTips: PROGRAMS[req.coachId]?.nutritionTips ?? plan.nutrition.tips,
+    coachTips: program?.nutritionTips ?? plan.nutrition.tips,
+    focus: position?.meals,
     restrictions,
     budget: effectiveBudget(budget),
   });
@@ -187,7 +197,7 @@ function localPlan(req: GeneratePlanRequest, seed: number): GeneratePlanResponse
   const program = PROGRAMS[coach.id];
 
   return {
-    title: `${coach.name.split(' ')[0]}'s week for you`,
+    title: `${coachShortName(coach)}'s week for you`,
     coachId: coach.id,
     coachMessage: plan.why,
     why: plan.why,
@@ -205,7 +215,7 @@ function localPlan(req: GeneratePlanRequest, seed: number): GeneratePlanResponse
       tips: ['Sleep 8+ hours', 'Light walk or mobility on rest days', 'If something hurts, back off and see a professional'],
     },
     restDays: plan.restDays,
-    notes: adaptationsFor(profile).join(' | '),
+    notes: adaptationsFor(profile, coach.id).join(' | '),
   };
 }
 
@@ -260,12 +270,20 @@ function normalizePlanResponse(raw: any, req: GeneratePlanRequest): GeneratePlan
 async function demoReply(coach: Coach, profile: UserProfile | null, messages: ChatMessage[]) {
   await new Promise((r) => setTimeout(r, 700));
   const last = messages[messages.length - 1]?.content.toLowerCase() ?? '';
-  const first = coach.name.split(' ')[0];
+  const first = coachShortName(coach);
+  const position = getPosition(coach.id, profile?.position ?? profile?.positions?.[coach.id]);
+  const forPosition = position ? ` ${position.why}` : '';
 
+  if (position && /position|role|event|style|play/.test(last)) {
+    return `${position.why} ${position.nutritionTips[0]}.`;
+  }
   if (/plan|week|routine|program|workout/.test(last)) {
     const days = coach.signature.split;
     const staples = coach.signature.staples.slice(0, 3).join(', ');
-    return `Here's how we structure your training: ${days}. Our bread and butter will be ${staples}. Tap Plan at the top anytime to see every set and rep, scaled to you.`;
+    return `Here's how we structure your training: ${days}. Our bread and butter will be ${staples}.${forPosition} Tap Plan at the top anytime to see every set and rep, scaled to you.`;
+  }
+  if (position && /eat|food|diet|meal|protein|calorie/.test(last)) {
+    return `Eat for your role: ${position.nutritionTips.join('. ').toLowerCase()}. ${capitalize(coach.signature.recovery[0])}.`;
   }
   if (/eat|food|diet|meal|protein|calorie/.test(last)) {
     return `Nutrition is key. Focus on lean protein at every meal, complex carbs for training fuel, and lots of water. ${capitalize(coach.signature.recovery[0])}.`;

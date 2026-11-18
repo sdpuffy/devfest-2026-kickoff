@@ -2,12 +2,11 @@ import { Image } from 'expo-image';
 import { Text, View } from 'react-native';
 
 import { coachPortraits } from './coach-art';
-import { AVATAR_IMAGES } from '@/data/avatars';
 import type { Coach } from '@/lib/types';
 import { themedStyles } from '@/lib/theme';
 
 export function CoachAvatar({ coach, size = 64 }: { coach: Coach; size?: number }) {
-  const image = coachPortraits[coach.id] ?? AVATAR_IMAGES[coach.id];
+  const image = coachPortraits[coach.id];
   const box = { width: size, height: size, borderRadius: size / 2 };
 
   if (image) {

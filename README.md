@@ -27,14 +27,21 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 
 ## Features
 
-- **Find your coach.** A short questionnaire (age, body stats, goal, schedule) ranks seven
+- **Find your coach.** A short questionnaire (age, body stats, goal, schedule) ranks eleven
   coaches by how well they fit you.
 - **A plan that's yours.** Training days, session length, warm-ups, cool-downs and exercise
   notes are tailored to your answers. Don't like it? Generate a new variation.
+- **Train for your position.** Sport coaches ask for your position, event or style
+  (quarterback or lineman, goalkeeper or striker, sprint or distance freestyle…) and reshape
+  your drills, sprint distances and meal plan around it.
 - **Guided workouts.** Log sets, reps and weight, follow the rest timer, and watch an animated
-  movement demo. Your coach cheers you on, out loud.
+  movement demo. Your coach cheers you on every set.
 - **Meals that fit.** A weekly meal plan built on your nutrition targets, with dietary
   restrictions, a weekly budget, prep-ahead tips and a grocery list.
+- **Your account, every device.** Sign up with just a username and password (no email or
+  phone). Your plan, workout history and settings sync across devices, and a recovery code
+  gets you back in if you forget your password. Requires the accounts server in
+  [`server/`](server/README.md).
 - **Stay on track.** Workout calendar, weekly recap and a streak badge.
 - **Make it yours.** Themes (dark, dimmed, OLED, light, high contrast), accent colors,
   text size, big workout mode, reduced motion, colorblind-friendly status colors and more.
@@ -52,16 +59,20 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 
 | | Coach | Style | Best for |
 | --- | --- | --- | --- |
-| 🏀 | LeBron James | *Train for the long game.* | Athleticism, longevity, older athletes |
-| 💪 | Ronnie Coleman | *Heavy weight, high volume, no excuses.* | Building mass, classic bodybuilding |
-| ⚡ | Usain Bolt | *Fast is a skill. Let's practice it.* | Speed, explosiveness, vertical jump |
-| ⚽ | Cristiano Ronaldo | *Discipline every day. Mix it up.* | Soccer fitness, getting lean, conditioning |
-| 🎾 | Serena Williams | *Power you can repeat for three sets.* | Lower-body power, joint health, new to strength |
-| 🥋 | Callina Liang | *From cardio girl to strength girl.* | Leg and glute strength, martial arts basics |
-| 🏋️ | Lean Beef Patty | *Simple, hard, consistent.* | General gym-goers, getting lean and strong |
+| 🏀 | Coach Atlas | *Train for the long game.* | Athleticism, longevity, older athletes |
+| 💪 | Coach Ironside | *Heavy weight, high volume, no excuses.* | Building mass, classic bodybuilding |
+| ⚡ | Coach Blaze | *Fast is a skill. Let's practice it.* | Speed, explosiveness, vertical jump |
+| ⚽ | Coach Vanguard | *Discipline every day. Mix it up.* | Soccer fitness, getting lean, conditioning |
+| 🎾 | Coach Rally | *Power you can repeat for three sets.* | Lower-body power, joint health, new to strength |
+| 🥋 | Coach Strike | *From cardio to strength, one kick at a time.* | Leg and glute strength, martial arts basics |
+| 🏋️ | Coach Anvil | *Simple, hard, consistent.* | General gym-goers, getting lean and strong |
+| 🏈 | Coach Blitz | *Win the first step. Own the fourth quarter.* | Football, explosive power, getting bigger and faster |
+| 🤸 | Coach Apex | *Your body is the gym. Earn every skill.* | Training anywhere, pull-ups to handstands, bodyweight strength |
+| 🏊 | Coach Tide | *Smooth is fast. Build your engine.* | Swimming, low-impact cardio, joint-friendly fitness |
+| ⚾ | Coach Diamond | *Rotate hard. Throw healthy. Run every ball out.* | Baseball and softball, rotational power, arm health |
 
-> Coaches are fan-made characters inspired by these athletes' public training styles.
-> Athleet is a hackathon project and isn't affiliated with or endorsed by any of them.
+> All coaches are original, fan-made characters built around common training styles.
+> They aren't based on, affiliated with, or endorsed by any real athlete.
 
 ## Getting started
 
@@ -77,9 +88,6 @@ npx expo start
 Then press **w** for the web, or scan the QR code with [Expo Go](https://expo.dev/go) on your
 phone.
 
-**Optional: custom coach voices.** Copy `athleet/.env.example` to `athleet/.env` and add an
-ElevenLabs API key. Without it, coaches speak with your device's built-in voices.
-
 | Command | What it does |
 | --- | --- |
 | `npm start` | Start the dev server |
@@ -93,14 +101,12 @@ ElevenLabs API key. Without it, coaches speak with your device's built-in voices
   and the **React Compiler**.
 - **Runs offline-first.** Plans, meals and progress are generated and saved on the device; a
   hosted backend is optional.
-- **Expo API routes** proxy text-to-speech for custom coach voices, keeping the API key on the
-  server.
 - **GitHub Actions** type-checks, lints, tests and deploys the website to GitHub Pages on
   every push to `main`.
 
 ```
 athleet/
-├── src/app/          screens (file-based routes) and API routes
+├── src/app/          screens (file-based routes)
 ├── src/components/   UI: coach, plan, workout, meals, settings
 ├── src/data/         coaches, workouts, foods
 ├── src/lib/          plan and meal generation, storage, theme

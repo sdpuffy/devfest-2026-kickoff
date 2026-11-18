@@ -82,6 +82,9 @@ function subscribe(listener: () => void) {
   };
 }
 
+/** Calls `listener` when the profile changes (used by account sync). */
+export const subscribeProfile = subscribe;
+
 /** Re-renders when the profile changes or finishes loading from storage. */
 export function useProfile(): UserProfile | null {
   return useSyncExternalStore(subscribe, getProfile, getProfile);

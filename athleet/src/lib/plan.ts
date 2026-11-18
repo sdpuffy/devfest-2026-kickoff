@@ -1,5 +1,8 @@
-import { PROGRAMS, type DayTemplate, type ExerciseKind, type TemplateExercise } from '@/data/workouts';
-import { computeTargets } from '@/lib/nutrition';
+// Relative imports so the node tests can load this module.
+import { needsPartner, soloProgram } from '../data/partner-drills';
+import { getPosition, positionsFor, programForPosition, type Position } from '../data/positions';
+import { PROGRAMS, type CoachProgram, type DayTemplate, type ExerciseKind, type TemplateExercise } from '../data/workouts';
+import { computeTargets } from './nutrition';
 import type { Coach, Goal, Level, PlanDay, PlanExercise, UserProfile, WeeklyPlan } from '@/lib/types';
 
 // Builds a weekly plan from the coach's themed days, scaled to the user.
@@ -395,9 +398,9 @@ function estimateMinutes(exercises: PlanExercise[], base = 15): number {
   return Math.round(mins / 5) * 5;
 }
 
-function whyText(coach: Coach, p: UserProfile, c: Context, days: number): string {
-  const program = PROGRAMS[coach.id];
+function whyText(program: CoachProgram, p: UserProfile, c: Context, days: number, position?: Position): string {
   const parts: string[] = [program.voice];
+  if (position) parts.push(position.why);
   const levelWord = p.level === 'beginner' ? 'a beginner' : p.level === 'intermediate' ? 'an intermediate lifter' : 'an advanced athlete';
   const suggested = recommendedDays(p.level, p.age);
   parts.push(`You're ${p.age} and ${levelWord}, training ${days} ${days === 1 ? 'day' : 'days'} a week for ${p.sessionMinutes || 60} minutes.`);
@@ -413,14 +416,18 @@ function whyText(coach: Coach, p: UserProfile, c: Context, days: number): string
 
   if (isFatLoss(p.goal)) parts.push('For fat loss, we keep lifting and add conditioning finishers.');
   else if (isMuscle(p.goal)) parts.push('For muscle, we use moderate reps and progressive overload: add a little weight each week.');
-  else if (p.goal === 'sport_performance') parts.push('For your sport, we focus on power, speed and skill work.');
+  else if (p.goal === 'sport_performance' && !position) parts.push('For your sport, we focus on power, speed and skill work.');
   return parts.join(' ');
 }
 
 /** Short labels describing how the plan was adapted (shown as pills). */
-export function adaptationsFor(profile: UserProfile): string[] {
+/** Pass the coach id to include the position pill. */
+export function adaptationsFor(profile: UserProfile, coachId?: string): string[] {
   const c = contextFor(profile);
   const out: string[] = [];
+  const position = coachId ? getPosition(coachId, profile.position) : undefined;
+  if (position) out.push(position.label);
+  if (coachId && PROGRAMS[coachId] && needsPartner(programForPosition(coachId, PROGRAMS[coachId], position))) out.push(profile.hasPartner ? 'Partner drills' : 'Solo drills');
   if (c.kid) out.push('Kid-friendly, light loads');
   else if (c.minor) out.push('Youth technique focus');
   if (c.senior) out.push('70+ gentle volume');
@@ -470,8 +477,10 @@ const FALLBACK: Record<'push' | 'pull' | 'core', TemplateExercise> = {
  * Real full-body days (legs, push, pull, core + one coach-style extra), used for 1-2 day plans.
  * Day A and day B use different exercises where the coach has them.
  */
-function fullBodyDays(program: (typeof PROGRAMS)[string], count: 1 | 2, sportPick: boolean, seed: number): DayTemplate[] {
-  const keys = Object.keys(program.days).filter((k) => k !== 'recovery');
+/** `prefer`: the position day, whose drills come first as the sport extra. */
+function fullBodyDays(program: (typeof PROGRAMS)[string], count: 1 | 2, sportPick: boolean, seed: number, prefer?: string): DayTemplate[] {
+  // Land days only: a full-body day can't mix pool and gym work.
+  const keys = Object.keys(program.days).filter((k) => k !== 'recovery' && program.days[k].venue !== 'pool');
   const pool: TemplateExercise[] = [];
   for (const k of keys) {
     for (const e of program.days[k].exercises) if (!pool.some((p) => p.name === e.name)) pool.push(e);
@@ -487,7 +496,10 @@ function fullBodyDays(program: (typeof PROGRAMS)[string], count: 1 | 2, sportPic
   const push = of('push');
   const pull = of('pull');
   const core = of('core');
-  const extras = sportPick ? [...of('skill'), ...of('power'), ...of('cardio')] : [...of('power'), ...of('cardio'), ...of('skill')];
+  // Pool drills can't go on a land day.
+  const own = (prefer && program.days[prefer]?.venue !== 'pool' ? program.days[prefer].exercises : []).filter((e) => ['skill', 'power', 'cardio'].includes(regionOf(e)));
+  const extras = [...own, ...(sportPick ? [...of('skill'), ...of('power'), ...of('cardio')] : [...of('power'), ...of('cardio'), ...of('skill')])]
+    .filter((e, i, all) => all.findIndex((x) => x.name === e.name) === i);
 
   return Array.from({ length: count }, (_, d) => {
     const exercises = [
@@ -505,11 +517,15 @@ function fullBodyDays(program: (typeof PROGRAMS)[string], count: 1 | 2, sportPic
 }
 
 /** Day templates for 1-7 training days, keeping the coach's style. */
-function dayTemplates(program: (typeof PROGRAMS)[string], days: number, sportPick: boolean, seed: number): DayTemplate[] {
+/** `prefer`: the position day, kept first when a pool week only has room for one pool day. */
+function dayTemplates(program: (typeof PROGRAMS)[string], days: number, sportPick: boolean, seed: number, prefer?: string): DayTemplate[] {
   const pick = (n: 3 | 4 | 5 | 6) => rotate((sportPick && program.sportOrder?.[n]) || program.order[n], seed).map((k) => program.days[k]);
   if (days >= 3 && days <= 6) return pick(days as 3 | 4 | 5 | 6);
   if (days === 7) return [...pick(6), RECOVERY_DAY];
-  return fullBodyDays(program, days as 1 | 2, sportPick, seed);
+  // Pool-based programs keep a pool day even on a 1-2 day week.
+  const poolKey = [prefer, ...program.order[3]].find((k) => !!k && program.days[k]?.venue === 'pool');
+  if (poolKey) return days === 1 ? [program.days[poolKey]] : [program.days[poolKey], ...fullBodyDays(program, 1, sportPick, seed, prefer)];
+  return fullBodyDays(program, days as 1 | 2, sportPick, seed, prefer);
 }
 
 /** Minutes the coach's warm-up text asks for, e.g. "20-min dynamic warm-up" -> 20. */
@@ -551,6 +567,7 @@ function fitToTime(
   base: number,
   extras: Item[],
   c: Context,
+  pool = false,
 ): PlanExercise[] {
   const est = (l: Item[]) => base + l.reduce((sum, x) => sum + exerciseMinutes(x.e), 0);
   let list = [...items];
@@ -636,7 +653,10 @@ function fitToTime(
   addSets(() => Infinity);
 
   // 4) whatever is left: a timed block (conditioning, then mobility) sized to the remainder
-  const blocks: { name: string; kind: ExerciseKind; max: number }[] = [
+  const blocks: { name: string; kind: ExerciseKind; max: number }[] = pool ? [
+    { name: 'Easy freestyle swim', kind: 'conditioning', max: 40 },
+    { name: 'Easy backstroke drills', kind: 'mobility', max: 15 },
+  ] : [
     { name: c.lowImpact || c.senior ? 'Steady bike or incline walk (zone 2)' : 'Zone 2 cardio (bike, row or jog)', kind: 'conditioning', max: 40 },
     { name: 'Mobility and stretching circuit', kind: 'mobility', max: 25 },
   ];
@@ -651,14 +671,19 @@ function fitToTime(
 }
 
 export function generatePlan(coach: Coach, profile: UserProfile, seed = 0): WeeklyPlan {
-  const program = PROGRAMS[coach.id];
-  if (!program) throw new Error(`No program for coach ${coach.id}`);
+  if (!PROGRAMS[coach.id]) throw new Error(`No program for coach ${coach.id}`);
+  // A sport coach's week is reshaped around the user's position, event or style.
+  const position = getPosition(coach.id, profile.position);
+  const forPosition = programForPosition(coach.id, PROGRAMS[coach.id], position);
+  // Training alone: drills that need a thrower, catcher or feeder become solo versions.
+  const partnerDrills = needsPartner(forPosition);
+  const program = profile.hasPartner ? forPosition : soloProgram(forPosition);
 
   const c = contextFor(profile);
   const days = Math.min(MAX_DAYS, Math.max(MIN_DAYS, Math.round(profile.daysPerWeek || recommendedDays(profile.level, profile.age))));
   const minutes = Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, Math.round(profile.sessionMinutes || 60)));
-  const playsThisSport = profile.goal === 'sport_performance' && profile.sport === coach.sport;
-  const templates = dayTemplates(program, days, playsThisSport, seed);
+  const playsThisSport = !!position || profile.goal === 'sport_performance' && profile.sport === coach.sport;
+  const templates = dayTemplates(program, days, playsThisSport, seed, position && positionsFor(coach.id)?.skillDay);
   const weekdays = WEEKDAYS[days];
 
   const planDays: PlanDay[] = templates.map((template, i) => {
@@ -678,14 +703,15 @@ export function generatePlan(coach: Coach, profile: UserProfile, seed = 0): Week
     // Spare exercises from the coach's other days, for when this day is too short.
     const extras: Item[] = rotate(
       Object.entries(program.days)
-        .filter(([k]) => k !== 'recovery')
+        // Only borrow from days in the same place (pool vs. land).
+        .filter(([k, d]) => k !== 'recovery' && (d.venue === 'pool') === (template.venue === 'pool'))
         .flatMap(([, d]) => d.exercises)
         .filter((t, idx, all) => all.findIndex((y) => y.name === t.name) === idx)
         .filter((t) => t.kind !== 'conditioning' && t.kind !== 'mobility')
         .map((t) => ({ t, e: buildExercise(t, c) })),
       seed + i,
     );
-    const exercises = isRecovery ? unique.map((x) => x.e) : fitToTime(unique, minutes, fullBody ? 4 : 2, base, extras, c);
+    const exercises = isRecovery ? unique.map((x) => x.e) : fitToTime(unique, minutes, fullBody ? 4 : 2, base, extras, c, template.venue === 'pool');
 
     let warmup = profile.age >= 45 ? `${program.warmup} (take an extra 5 min)` : program.warmup;
     if (minutes < 30) warmup = '5-min quick warm-up: easy cardio + a light set of your first exercise';
@@ -699,13 +725,15 @@ export function generatePlan(coach: Coach, profile: UserProfile, seed = 0): Week
     };
   });
 
-  const targets = computeTargets({ ...profile, daysPerWeek: Math.max(1, days) });
+  const targets = computeTargets({ ...profile, daysPerWeek: Math.max(1, days) }, position?.calories);
   const summary = targets.showNumbers
     ? `Aim for about ${targets.calories} calories and ${targets.proteinG}g protein a day (${targets.carbsG}g carbs, ${targets.fatG}g fat). ${targets.note}`
     : targets.note;
 
   return {
-    why: whyText(coach, profile, c, days),
+    why: whyText(program, profile, c, days, position) + (!partnerDrills ? '' : profile.hasPartner
+      ? ' Bring your training partner: they throw, catch and feed for the partner drills.'
+      : ' You train solo, so drills that need a second person use a wall, net or self-toss instead.'),
     days: planDays,
     restDays: ALL_DAYS.filter((d) => !weekdays.includes(d)),
     warnings: planWarnings({ ...profile, daysPerWeek: days, sessionMinutes: minutes }),

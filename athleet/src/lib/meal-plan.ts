@@ -1,5 +1,6 @@
 import { INGREDIENTS, PANTRY_COST_PER_SERVING, priceFor, type IngredientId } from '@/data/ingredients';
 import { getRestriction, recipeAllowed, recipeFlags, type RestrictionId } from '@/data/dietary';
+import type { MealFocus } from '@/data/positions';
 import { RECIPES, type MealSlot, type Recipe, type RecipeTag } from '@/data/recipes';
 import type { BudgetSetting } from '@/lib/budget-store';
 import type { Goal, NutritionTargets } from '@/lib/types';
@@ -189,7 +190,7 @@ export function buildMeal(recipe: Recipe, servings: number, coachId?: string): P
 /** Rank recipes for a slot by coach style and goal. */
 const PLANT_BASED: RestrictionId[] = ['vegetarian', 'vegan', 'pescatarian'];
 
-function rankRecipes(slot: MealSlot, goal: Goal, coachId: string, restrictions: RestrictionId[]): Recipe[] {
+function rankRecipes(slot: MealSlot, goal: Goal, coachId: string, restrictions: RestrictionId[], focus?: MealFocus): Recipe[] {
   // Meat-eaters: favor recipes with chicken, turkey, beef or pork so the plant-based
   // library doesn't crowd them out.
   const eatsMeat = !restrictions.some((r) => PLANT_BASED.includes(r));
@@ -221,6 +222,10 @@ function rankRecipes(slot: MealSlot, goal: Goal, coachId: string, restrictions: 
       default:
         score += proteinShare * 4;
     }
+    // The position's demands: linemen need calorie-dense meals, distance athletes carbs, sprinters lean protein.
+    if (focus === 'mass') score += Math.min(n.kcal, 900) / 450;
+    else if (focus === 'fuel') score += (n.carbs * 4) / Math.max(1, n.kcal) * 2;
+    else if (focus === 'lean') score += proteinShare * 3;
     return { r, score };
   });
   return scored.sort((a, b) => b.score - a.score).map((s) => s.r);
@@ -360,12 +365,14 @@ export function buildMealPlan(opts: {
   coachTips?: string[];
   restrictions?: RestrictionId[];
   budget?: BudgetSetting;
+  /** Recipe bias for the user's sport position. */
+  focus?: MealFocus;
 }): MealPlan {
-  const { goal, coachId, targets, seed = 0, coachTips = [], restrictions = [], budget = { mode: 'none' } } = opts;
+  const { goal, coachId, targets, seed = 0, coachTips = [], restrictions = [], budget = { mode: 'none' }, focus } = opts;
   const calories = targets.showNumbers ? targets.calories : undefined;
 
   const draft = SLOTS.map(({ slot, label, timing, share }, slotIndex) => {
-    const ranked = rankRecipes(slot, goal, coachId, restrictions);
+    const ranked = rankRecipes(slot, goal, coachId, restrictions, focus);
     // Regenerating the plan rotates through the ranked list so each variation
     // leads with a different recipe while keeping the best fits near the top.
     const offset = ranked.length ? (seed + slotIndex * seed) % ranked.length : 0;

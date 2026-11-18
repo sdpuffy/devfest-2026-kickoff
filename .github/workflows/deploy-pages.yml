@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'athleet/**'
+      - 'server/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
@@ -47,12 +48,18 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Accounts server tests
+        run: npm test
+        working-directory: server
+
       - name: Build static site
         run: npm run build:pages
         # Optional: point the app at a hosted backend. Add these under
         # Settings → Secrets and variables → Actions → Variables.
         env:
           EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
+          # The deployed accounts server (see server/README.md). Accounts stay hidden when unset.
+          EXPO_PUBLIC_ACCOUNTS_URL: ${{ vars.EXPO_PUBLIC_ACCOUNTS_URL }}
 
       - uses: actions/configure-pages@v5
 

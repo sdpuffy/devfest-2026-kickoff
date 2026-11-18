@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
+import { canonicalCoachId } from '@/lib/coach-ids';
 
 // Finished workouts, saved on the device (phone storage on iOS/Android, localStorage on web)
 // so the weekly recap and streaks survive restarts.
@@ -23,7 +24,7 @@ function loadInitialLogs(): WorkoutLog[] {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) return parsed.map(migrate);
       }
     } catch {}
   }
@@ -38,6 +39,9 @@ function notify() {
   listeners.forEach((l) => l());
 }
 
+function migrate(l: WorkoutLog): WorkoutLog {
+  return { ...l, coachId: canonicalCoachId(l.coachId) };
+}
 const logId = (l: WorkoutLog) => `${l.coachId}|${l.dayIndex}|${l.finishedAt}`;
 
 // Load saved history (needed on iOS/Android, where localStorage doesn't exist).
@@ -48,7 +52,7 @@ AsyncStorage.getItem(STORAGE_KEY)
     if (!Array.isArray(saved)) return;
     // Merge without duplicates (on web the instant load may already have them).
     const seen = new Set(logs.map(logId));
-    const missing = (saved as WorkoutLog[]).filter((l) => !seen.has(logId(l)));
+    const missing = (saved as WorkoutLog[]).map(migrate).filter((l) => !seen.has(logId(l)));
     if (missing.length) {
       logs = [...missing, ...logs].sort((a, b) => a.finishedAt - b.finishedAt);
       notify();
@@ -78,12 +82,25 @@ function getLogs() {
   return logs;
 }
 
+/** Workout history, oldest first (used by account sync). */
+export const getWorkoutLogs = getLogs;
+
+/** Replace the whole history, e.g. with the merged history from your account. */
+export function replaceWorkoutLogs(next: WorkoutLog[]) {
+  logs = next.map(migrate);
+  persistLogs();
+  notify();
+}
+
 function subscribe(listener: () => void) {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
   };
 }
+
+/** Calls `listener` when the history changes (used by account sync). */
+export const subscribeWorkoutLogs = (listener: () => void) => subscribe(listener);
 
 export function useWorkoutLogs(): WorkoutLog[] {
   return useSyncExternalStore(subscribe, getLogs, getLogs);

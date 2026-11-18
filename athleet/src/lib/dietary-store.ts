@@ -69,6 +69,9 @@ function subscribe(listener: () => void) {
   };
 }
 
+/** Calls `listener` when restrictions change (used by account sync). */
+export const subscribeDietary = subscribe;
+
 function getServerSnapshot(): RestrictionId[] {
   return EMPTY;
 }

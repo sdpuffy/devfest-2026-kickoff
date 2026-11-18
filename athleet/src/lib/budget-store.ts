@@ -84,6 +84,9 @@ function subscribe(listener: () => void) {
   };
 }
 
+/** Calls `listener` when the budget changes (used by account sync). */
+export const subscribeBudget = subscribe;
+
 function getServerSnapshot(): BudgetSetting {
   return DEFAULT;
 }

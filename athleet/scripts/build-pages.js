@@ -28,8 +28,6 @@ const result = spawnSync('npx', ['expo', 'export', '--platform', 'web', '--clear
   env: {
     ...process.env,
     EXPO_BASE_URL: baseUrl,
-    // Turns off the voice server calls (GitHub Pages can't run API routes).
-    EXPO_PUBLIC_STATIC_SITE: '1',
     NODE_ENV: 'production',
   },
 });

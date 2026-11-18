@@ -4,17 +4,33 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, StyleSheet, Text, View } from 'react-native';
 import { exerciseRig, type Point } from '@/lib/exercise-rig';
 import type { Coach } from '@/lib/types';
-import { coachArt } from './coach-art';
+import { COACH_LOOKS, coachArt } from './coach-art';
 import { useReduceMotion } from '@/lib/appearance';
 import { themedStyles } from '@/lib/theme';
 
-const looks: Record<string, [string, string]> = {
-  lebron: ['#985b3c', '#ffcf32'], ronnie: ['#945436', '#bc4941'], bolt: ['#875336', '#ffcf32'],
-  ronaldo: ['#d79a70', '#bf4142'], serena: ['#a8673e', '#294267'], callina: ['#ecc09a', '#3879b3'], patty: ['#e6b18b', '#424f60'],
-};
 function Bone({ a, b, color, width, opacity = 1 }: { a: Point; b: Point; color: string; width: number; opacity?: number }) {
   return <View style={{ position: 'absolute', left: a.x - width / 2, top: a.y - width / 2, width: Math.hypot(b.x - a.x, b.y - a.y) + width, height: width, borderRadius: width / 2, backgroundColor: color, opacity, transformOrigin: `${width / 2}px 50%`, transform: [{ rotate: `${Math.atan2(b.y - a.y, b.x - a.x)}rad` }] }} />;
 }
+/** A racket held in the hand, pointing along the forearm. */
+function Racket({ elbow, hand }: { elbow: Point; hand: Point }) {
+  const angle = Math.atan2(hand.y - elbow.y, hand.x - elbow.x);
+  const at = (length: number) => ({ x: hand.x + Math.cos(angle) * length, y: hand.y + Math.sin(angle) * length });
+  const head = at(24);
+  return <>
+    <Bone a={hand} b={at(12)} color="#d9d4c5" width={3} />
+    <View style={{ position: 'absolute', left: head.x - 12, top: head.y - 8, width: 24, height: 16, borderRadius: 12, borderWidth: 3, borderColor: '#d9d4c5', transform: [{ rotate: `${angle}rad` }] }} />
+  </>;
+}
+/** A bat held in the hands: knob at the hands, barrel along the forearm. */
+function Bat({ elbow, hand }: { elbow: Point; hand: Point }) {
+  const angle = Math.atan2(hand.y - elbow.y, hand.x - elbow.x);
+  const at = (length: number) => ({ x: hand.x + Math.cos(angle) * length, y: hand.y + Math.sin(angle) * length });
+  return <>
+    <Bone a={hand} b={at(24)} color="#c79a5b" width={4} />
+    <Bone a={at(22)} b={at(50)} color="#c79a5b" width={7} />
+  </>;
+}
+const PROP_SIZE = { ball: [12, 12], medball: [18, 18], football: [18, 11], board: [28, 9] } as const;
 export function ExerciseDemo({ coach, exercise, paused, height = 210 }: { coach: Coach; exercise: string; paused: boolean; height?: number }) {
   const [time, setTime] = useState(0);
   const elapsed = useRef(0);
@@ -43,8 +59,8 @@ export function ExerciseDemo({ coach, exercise, paused, height = 210 }: { coach:
   }, [paused, reduced, focused, active, exercise]);
   const pose = exerciseRig(reduced ? 0 : time, exercise);
   if (!pose) return <View style={[styles.stage, { height }]}><Text style={styles.cue}>A movement demo isn’t available for this exercise yet.</Text></View>;
-  const [skin, kit] = looks[coach.id] ?? looks.lebron;
-  const art = coachArt[coach.id] ?? coachArt.lebron;
+  const { skin, kit } = COACH_LOOKS[coach.id] ?? COACH_LOOKS.atlas;
+  const art = coachArt[coach.id] ?? coachArt.atlas;
   const scale = Math.min(width / 360, (height - 32) / 200);
   const angle = Math.atan2(pose.shoulder.y - pose.hip.y, pose.shoulder.x - pose.hip.x);
   const head = { x: pose.shoulder.x + Math.cos(angle) * 19, y: pose.shoulder.y + Math.sin(angle) * 19 };
@@ -55,6 +71,20 @@ export function ExerciseDemo({ coach, exercise, paused, height = 210 }: { coach:
       {pose.equipment === 'bench' && <View style={styles.bench} />}
       {pose.equipment === 'bar' && <View style={styles.bar} />}
       {/step-up/i.test(exercise) && <View style={styles.step} />}
+      {pose.equipment === 'box' && <View style={styles.box} />}
+      {pose.equipment === 'handbench' && <View style={styles.handbench} />}
+      {pose.equipment === 'wall' && <View style={styles.wall} />}
+      {pose.equipment === 'climber' && <View style={styles.climber} />}
+      {pose.equipment === 'roller' && <View style={styles.roller} />}
+      {pose.equipment === 'bag' && <><View style={styles.bagChain} /><View style={styles.bag} /></>}
+      {pose.equipment === 'sled' && <><View style={styles.sledPost} /><View style={styles.sled} /></>}
+      {pose.equipment === 'ladder' && <>{[0, 1].map(rail => <View key={rail} style={[styles.ladderRail, { top: 184 + rail * 5 }]} />)}{[0, 1, 2, 3, 4, 5].map(rung => <View key={rung} style={[styles.ladderRung, { left: 110 + rung * 30 }]} />)}</>}
+      {pose.equipment === 'cones' && [244, 300].map(x => <View key={x} style={[styles.cone, { left: x }]} />)}
+      {pose.equipment === 'pool' && <><View style={styles.water} /><View style={styles.waterline} /></>}
+      {pose.equipment === 'mubar' && <View style={styles.mubar} />}
+      {pose.equipment === 'tee' && <View style={styles.tee} />}
+      {pose.equipment === 'hurdle' && <><View style={styles.hurdleBar} /><View style={styles.hurdlePost} /></>}
+      {pose.equipment === 'parallettes' && <><View style={styles.parallette} /><View style={[styles.paralletteLeg, { left: 162 }]} /><View style={[styles.paralletteLeg, { left: 190 }]} /></>}
       {([1, 0] as const).map(side => <View key={side} style={StyleSheet.absoluteFill}>
         {[pose.legs[side], pose.arms[side]].map((chain, index) => <View key={index} style={StyleSheet.absoluteFill}>
           <Bone a={chain[0]} b={chain[1]} color={index === 0 ? kit : skin} width={index === 0 ? 14 : 10} opacity={side === 1 ? .55 : 1} />
@@ -67,6 +97,11 @@ export function ExerciseDemo({ coach, exercise, paused, height = 210 }: { coach:
       <View style={{ position: 'absolute', left: head.x - 22, top: head.y - 23, width: 44, height: 46, overflow: 'hidden', transform: [{ rotate: `${angle + Math.PI / 2}rad` }] }}>
         {(['head', 'eyes', 'brows', 'detail', 'mouth'] as const).map(layer => <Image key={layer} source={art[layer]} contentFit="contain" style={{ position: 'absolute', width: 100, height: 100, left: -28, top: -19 }} />)}
       </View>
+      {pose.held === 'racket' && <Racket elbow={pose.arms[0][1]} hand={pose.arms[0][2]} />}
+      {pose.held === 'bat' && <Bat elbow={pose.arms[0][1]} hand={pose.arms[0][2]} />}
+      {pose.prop && <View style={[styles.ball, styles[pose.prop.kind], { width: PROP_SIZE[pose.prop.kind][0], height: PROP_SIZE[pose.prop.kind][1], left: pose.prop.at.x - PROP_SIZE[pose.prop.kind][0] / 2, top: pose.prop.at.y - PROP_SIZE[pose.prop.kind][1] / 2 }]} />}
+      {/* Tint everything below the surface so the swimmer reads as in the water. */}
+      {pose.equipment === 'pool' && <View style={styles.underwater} />}
     </View>
     <Text numberOfLines={2} style={styles.cue}>{pose.cue}</Text>
   </View>;
@@ -78,5 +113,30 @@ const styles = themedStyles(() => ({
   bench: { position: 'absolute', left: 100, top: 150, width: 108, height: 10, borderRadius: 3, backgroundColor: '#5c646a' },
   bar: { position: 'absolute', left: 130, top: 12, width: 100, height: 5, backgroundColor: '#9cabb7' },
   step: { position: 'absolute', left: 205, top: 163, width: 40, height: 26, backgroundColor: '#5c646a' },
+  box: { position: 'absolute', left: 214, top: 152, width: 48, height: 38, borderRadius: 3, backgroundColor: '#5c646a' },
+  handbench: { position: 'absolute', left: 112, top: 150, width: 72, height: 40, borderRadius: 3, backgroundColor: '#5c646a' },
+  wall: { position: 'absolute', left: 312, top: 30, width: 10, height: 160, backgroundColor: '#5c646a' },
+  climber: { position: 'absolute', left: 214, top: 0, width: 6, height: 190, borderRadius: 3, backgroundColor: '#9cabb7' },
+  roller: { position: 'absolute', left: 203, top: 167, width: 18, height: 18, borderRadius: 9, backgroundColor: '#3f6f86' },
+  bagChain: { position: 'absolute', left: 250, top: 0, width: 2, height: 22, backgroundColor: '#9cabb7' },
+  bag: { position: 'absolute', left: 238, top: 22, width: 26, height: 92, borderRadius: 10, backgroundColor: '#8a3b2f' },
+  sledPost: { position: 'absolute', left: 260, top: 100, width: 5, height: 30, backgroundColor: '#9cabb7' },
+  sled: { position: 'absolute', left: 262, top: 128, width: 56, height: 57, borderRadius: 3, backgroundColor: '#5c646a' },
+  ladderRail: { position: 'absolute', left: 110, width: 150, height: 2, backgroundColor: '#c9a227' },
+  ladderRung: { position: 'absolute', top: 184, width: 2, height: 7, backgroundColor: '#c9a227' },
+  cone: { position: 'absolute', top: 176, width: 10, height: 14, borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: '#e67e22' },
+  ball: { position: 'absolute', borderRadius: 9, backgroundColor: '#e67e22' },
+  medball: { backgroundColor: '#7a6a55' },
+  football: { borderRadius: 6, backgroundColor: '#7a4a24' },
+  board: { borderRadius: 4, backgroundColor: '#f2efe6' },
+  water: { position: 'absolute', left: 0, right: 0, top: 100, height: 90, backgroundColor: '#1d4f73' },
+  waterline: { position: 'absolute', left: 0, right: 0, top: 99, height: 2, backgroundColor: '#7fd3ef' },
+  underwater: { position: 'absolute', left: 0, right: 0, top: 104, height: 86, backgroundColor: '#2a7fb3', opacity: .28 },
+  mubar: { position: 'absolute', left: 130, top: 30, width: 100, height: 5, borderRadius: 2, backgroundColor: '#9cabb7' },
+  tee: { position: 'absolute', left: 266, top: 104, width: 4, height: 86, backgroundColor: '#3a3a3a' },
+  hurdleBar: { position: 'absolute', left: 190, top: 140, width: 26, height: 6, borderRadius: 1, backgroundColor: '#e74c3c' },
+  hurdlePost: { position: 'absolute', left: 201, top: 146, width: 4, height: 37, backgroundColor: '#9cabb7' },
+  parallette: { position: 'absolute', left: 158, top: 152, width: 40, height: 4, borderRadius: 2, backgroundColor: '#c9a227' },
+  paralletteLeg: { position: 'absolute', top: 154, width: 4, height: 36, backgroundColor: '#c9a227' },
   cue: { color: '#c9bea3', fontSize: 12, lineHeight: 16, textAlign: 'center', paddingHorizontal: 18, marginTop: 4 },
 }));

@@ -36,6 +36,7 @@ import {
   lastLogForDay,
   useWorkoutLogs,
 } from '@/lib/workout-log';
+import { getWorkoutPrefs } from '@/lib/workout-prefs';
 import { colors, emoji, themedStyles } from '@/lib/theme';
 
 export type PlanParams = {
@@ -114,7 +115,7 @@ export function PlanView({ mode = 'preview', embedded = false, parameters, onSel
     SANTA_CRUZ_VENUES.find((v) => v.id === selectedVenueId) || SANTA_CRUZ_VENUES[0];
 
   const currentWeekLogs = useMemo(() => {
-    const { start, end } = getWeekBounds();
+    const { start, end } = getWeekBounds(new Date(), getWorkoutPrefs().weekStart);
     return getLogsForWeek(logs, start, end);
   }, [logs]);
   const weekCompletedCount = currentWeekLogs.length;

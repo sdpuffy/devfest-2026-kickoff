@@ -77,7 +77,8 @@ export function NutritionBlueprint({ summary, tips, targets, mealPlan, trainingD
 
   const weeks = useMemo(() => (mealPlan ? buildPlanWeeks(mealPlan, choices, planLength) : []), [mealPlan, choices, planLength]);
   const groceries = useMemo(() => splitGroceries(weeks), [weeks]);
-  const start = useMemo(() => getWeekBounds().start, []);
+  // Meal weeks are always Monday-Sunday, whatever the calendar's week start.
+  const start = useMemo(() => getWeekBounds(new Date(), 'monday').start, []);
   const wi = Math.min(weekIndex, weeks.length - 1);
   const week = weeks[wi] ?? null;
   const dates = WEEKDAYS.map((_, i) => planDate(start, wi, i));

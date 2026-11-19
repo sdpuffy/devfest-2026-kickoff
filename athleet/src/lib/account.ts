@@ -12,7 +12,8 @@ import { clearSelectedPlan, getSelectedPlan, selectPlan, subscribeSelectedPlan, 
 import { decide, mergeLogs, type SyncItem } from '@/lib/sync-merge';
 import type { RestrictionId } from '@/data/dietary';
 import type { UserProfile } from '@/lib/types';
-import { getWorkoutLogs, replaceWorkoutLogs, subscribeWorkoutLogs, type WorkoutLog } from '@/lib/workout-log';
+import { getLogsClearedAt, getWorkoutLogs, replaceWorkoutLogs, resetLogsClearedAt, setLogsClearedAt, subscribeWorkoutLogs, type WorkoutLog } from '@/lib/workout-log';
+import { DEFAULT_WORKOUT_PREFS, getWorkoutPrefs, replaceWorkoutPrefs, resetWorkoutPrefs, subscribeWorkoutPrefs } from '@/lib/workout-prefs';
 
 // The signed-in account and data sync.
 // - Session token: SecureStore on phones, localStorage on web. Never in AsyncStorage.
@@ -42,6 +43,8 @@ type Adapter = { get: () => unknown; set: (v: unknown) => void; subscribe: (l: (
 const ADAPTERS = {
   profile: { get: getProfile, set: (v) => (v ? setProfile(v as UserProfile) : clearProfile()), subscribe: subscribeProfile, empty: (v) => !v },
   selectedPlan: { get: getSelectedPlan, set: (v) => (v ? selectPlan(v as SelectedPlan) : clearSelectedPlan()), subscribe: subscribeSelectedPlan, empty: (v) => !v },
+  // Before workoutLogs: when history was cleared, so a synced device can't bring old workouts back.
+  historyClearedAt: { get: getLogsClearedAt, set: (v) => setLogsClearedAt(Number(v)), subscribe: subscribeWorkoutLogs, empty: (v) => !v },
   workoutLogs: { get: getWorkoutLogs, set: (v) => replaceWorkoutLogs(Array.isArray(v) ? v : []), subscribe: subscribeWorkoutLogs, empty: (v) => !Array.isArray(v) || !v.length },
   appearance: {
     get: getAppearance,
@@ -50,10 +53,14 @@ const ADAPTERS = {
     empty: (v) => JSON.stringify(v) === JSON.stringify(DEFAULT_APPEARANCE),
   },
   dietary: { get: getDietaryRestrictions, set: (v) => setDietaryRestrictions(Array.isArray(v) ? (v as RestrictionId[]) : []), subscribe: subscribeDietary, empty: (v) => !Array.isArray(v) || !v.length },
+  workoutPrefs: { get: getWorkoutPrefs, set: replaceWorkoutPrefs, subscribe: subscribeWorkoutPrefs, empty: (v) => JSON.stringify(v) === JSON.stringify(DEFAULT_WORKOUT_PREFS) },
   budget: { get: getBudget, set: (v) => v && typeof v === 'object' && setBudget(v as BudgetSetting), subscribe: subscribeBudget, empty: (v) => (v as BudgetSetting)?.mode === 'none' },
 } satisfies Record<string, Adapter>;
 type SyncKey = keyof typeof ADAPTERS;
 const KEYS = Object.keys(ADAPTERS) as SyncKey[];
+/** What servers stored before they listed their keys in /api/health. */
+const BASE_KEYS = ['profile', 'selectedPlan', 'workoutLogs', 'appearance', 'dietary', 'budget'];
+let serverKeys: string[] | null = null;
 
 /** Per-account sync bookkeeping, saved on the device. */
 type Meta = {
@@ -165,15 +172,18 @@ async function runSync() {
   const { token } = session;
   update({ syncing: true, syncError: undefined });
   try {
+    // Only sync what this server stores, so a newer app keeps working with an older server.
+    serverKeys ??= (await accountApi.health()).syncKeys ?? BASE_KEYS;
     const { data: server } = await accountApi.pull(token);
     const first = meta.firstSync;
     const changes: Record<string, SyncItem> = {};
     for (const key of KEYS) {
+      if (!serverKeys.includes(key)) continue;
       const remote = server[key];
       if (key === 'workoutLogs' && !(first && remote)) {
         // History merges both ways, so neither device loses a workout.
         const local = getWorkoutLogs();
-        const merged = mergeLogs(local, (remote?.value as WorkoutLog[]) ?? []);
+        const merged = mergeLogs(local, (remote?.value as WorkoutLog[]) ?? []).filter((l) => l.finishedAt > getLogsClearedAt());
         if (JSON.stringify(merged) !== JSON.stringify(local)) apply(key, merged, remote?.updatedAt ?? Date.now());
         if (!remote || JSON.stringify(merged) !== JSON.stringify(remote.value)) {
           if (merged.length || remote) changes[key] = { value: merged, updatedAt: Date.now() };
@@ -229,7 +239,11 @@ async function startSession(next: StoredSession) {
   session = next;
   await writeSession(next);
   // A different account than last time on this device: start sync bookkeeping over.
-  if (meta.userId !== next.user.id) meta = freshMeta(next.user.id);
+  if (meta.userId !== next.user.id) {
+    meta = freshMeta(next.user.id);
+    // The previous account's "history cleared" time must not hide this account's workouts.
+    resetLogsClearedAt();
+  }
   else meta.firstSync = true; // a fresh login always lets the account's data win first
   saveMeta();
   update({ status: 'signedIn', user: next.user, sessionId: next.sessionId, syncEnabled: meta.enabled, lastSyncedAt: meta.lastSyncedAt, notice: undefined });
@@ -269,6 +283,8 @@ async function endSession(notice?: string, clearDevice = false) {
       setDietaryRestrictions([]);
       setBudget({ mode: 'none' });
       resetAppearance();
+      resetWorkoutPrefs();
+      resetLogsClearedAt();
     } finally {
       applying = false;
     }

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { Platform, Pressable, Share, Switch, Text, View } from 'react-native';
+import { Pressable, Switch, Text, View } from 'react-native';
 
 import { Button, Field, FormError } from '@/components/account-fields';
 import { RecoveryCode } from '@/components/recovery-code';
@@ -9,6 +9,7 @@ import {
 } from '@/lib/account';
 import { accountApi, accountsEnabled, type DeviceSession } from '@/lib/account-api';
 import { DISPLAY_NAME_MAX, passwordProblem, USERNAME_MAX, usernameProblem } from '@/lib/account-rules';
+import { datedFileName, shareJson } from '@/lib/share-json';
 import { useTheme, useThemedStyles, type StyleContext } from '@/lib/theme';
 
 // Settings → Account: sign up / log in when signed out; profile, security, sync, devices,
@@ -313,19 +314,7 @@ function ExportData({ styles }: { styles: Styles }) {
   const [done, setDone] = useState(false);
   const download = () => run(async () => {
     await syncNow();
-    const data = await accountApi.exportData(accountToken());
-    const json = JSON.stringify(data, null, 2);
-    const name = `athleet-data-${new Date().toISOString().slice(0, 10)}.json`;
-    if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = name;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } else {
-      await Share.share({ title: name, message: json });
-    }
+    await shareJson(datedFileName('athleet-account-data'), await accountApi.exportData(accountToken()));
     setDone(true);
   });
   return (

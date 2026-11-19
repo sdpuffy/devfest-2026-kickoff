@@ -14,7 +14,7 @@ const SMALL_BODY = 16 * 1024;
 const SYNC_BODY = 3 * 1024 * 1024;
 const SYNC_TOTAL = 2 * 1024 * 1024;
 /** What the app may store. Anything else is rejected. */
-export const SYNC_KEYS = ['profile', 'selectedPlan', 'workoutLogs', 'appearance', 'dietary', 'budget'];
+export const SYNC_KEYS = ['profile', 'selectedPlan', 'workoutLogs', 'historyClearedAt', 'appearance', 'dietary', 'budget', 'workoutPrefs'];
 
 class HttpError extends Error {
   constructor(status, code, message, extra = {}) {
@@ -92,7 +92,8 @@ export async function createApp({
 
   // ── Routes ──
   const routes = {
-    'GET /api/health': async () => ({ ok: true }),
+    // syncKeys lets apps skip data this server doesn't store yet (e.g. a newer app, older server).
+    'GET /api/health': async () => ({ ok: true, syncKeys: SYNC_KEYS }),
 
     'POST /api/auth/signup': async (req, body) => {
       limit(`signup:${clientIp(req)}`, signupsPerHour, 60 * 60 * 1000, 'Too many new accounts from this network. Try again later.');

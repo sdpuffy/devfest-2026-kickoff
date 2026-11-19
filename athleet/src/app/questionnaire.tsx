@@ -7,6 +7,7 @@ import { HomeLogo } from '@/components/home-logo';
 import { OnboardingMascot } from '@/components/onboarding-mascot';
 import { recommendedDays } from '@/lib/plan';
 import { setProfile } from '@/lib/profile-store';
+import { getWorkoutPrefs, setWorkoutPrefs } from '@/lib/workout-prefs';
 import type { Goal, Sex } from '@/lib/types';
 import { colors, keyboardAppearance, themedStyles } from '@/lib/theme';
 
@@ -39,7 +40,9 @@ export default function QuestionnaireScreen() {
   const mascotSize = Math.min(180, height * 0.23);
   const [step, setStep] = useState<Step>('age');
   const [error, setError] = useState('');
-  const [units, setUnits] = useState<Units>('imperial');
+  // Starts from Settings → Workouts → Units, and remembers what you pick here.
+  const [units, setUnitsState] = useState<Units>(() => getWorkoutPrefs().units);
+  const setUnits = (u: Units) => { setUnitsState(u); setWorkoutPrefs({ units: u }); };
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const isNumericStep = step === 'age' || step === 'height' || step === 'weight';
   const isEditingNumber = isNumericStep && keyboardVisible;

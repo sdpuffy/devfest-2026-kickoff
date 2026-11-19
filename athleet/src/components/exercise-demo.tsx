@@ -7,6 +7,7 @@ import type { Coach } from '@/lib/types';
 import { COACH_LOOKS, coachArt } from './coach-art';
 import { useReduceMotion } from '@/lib/appearance';
 import { themedStyles } from '@/lib/theme';
+import { getWorkoutPrefs } from '@/lib/workout-prefs';
 
 function Bone({ a, b, color, width, opacity = 1 }: { a: Point; b: Point; color: string; width: number; opacity?: number }) {
   return <View style={{ position: 'absolute', left: a.x - width / 2, top: a.y - width / 2, width: Math.hypot(b.x - a.x, b.y - a.y) + width, height: width, borderRadius: width / 2, backgroundColor: color, opacity, transformOrigin: `${width / 2}px 50%`, transform: [{ rotate: `${Math.atan2(b.y - a.y, b.x - a.x)}rad` }] }} />;
@@ -51,7 +52,8 @@ export function ExerciseDemo({ coach, exercise, paused, height = 210 }: { coach:
       frame = requestAnimationFrame(tick);
       if (!previous) previous = now;
       if (now - previous < 1000 / 24) return;
-      elapsed.current += Math.min((now - previous) / 1000, .1);
+      // Settings → Workouts → Demo speed (slow motion to study the form).
+      elapsed.current += Math.min((now - previous) / 1000, .1) * getWorkoutPrefs().demoSpeed;
       previous = now; setTime(elapsed.current);
     };
     frame = requestAnimationFrame(tick);

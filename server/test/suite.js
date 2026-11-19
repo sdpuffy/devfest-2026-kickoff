@@ -145,6 +145,19 @@ export function accountSuite(label, options = async () => ({})) {
     assert.deepEqual((await call('GET', '/api/sync', { token: stranger })).body.data, {});
   });
 
+  test('health lists the sync keys; workout settings and history-cleared time sync', async () => {
+    const health = await call('GET', '/api/health');
+    for (const key of ['workoutPrefs', 'historyClearedAt', 'workoutLogs']) assert.ok(health.body.syncKeys.includes(key), key);
+    const { body } = await signup();
+    const res = await call('PUT', '/api/sync', { token: body.token, body: { changes: {
+      workoutPrefs: { value: { units: 'metric', weekStart: 'sunday' }, updatedAt: 10 },
+      historyClearedAt: { value: 1234567890, updatedAt: 10 },
+    } } });
+    assert.equal(res.status, 200);
+    assert.equal(res.body.data.workoutPrefs.value.units, 'metric');
+    assert.equal(res.body.data.historyClearedAt.value, 1234567890);
+  });
+
   test('sync rejects data over the size limit', async () => {
     const { body } = await signup();
     const big = 'x'.repeat(2.1 * 1024 * 1024);

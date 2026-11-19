@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { exerciseRecipe } from '@/lib/exercise-rig';
+import { getWorkoutPrefs } from '@/lib/workout-prefs';
 import { AnimatedCoach } from '@/components/animated-coach';
 import { PlanView, type PlanParams } from '@/components/plan-view';
 import { coachShortName } from '@/data/coaches';
@@ -27,7 +28,8 @@ export function CoachTraining({ coach, parameters, newPlan = false, initialDay }
     setDemo(previous => {
       return previous.name === name && previous.resting === resting ? previous : { name, resting };
     });
-    setPlaying(false);
+    // Settings → Workouts → Autoplay demos.
+    setPlaying(getWorkoutPrefs().autoplayDemos && !!name && !resting);
   }, []);
   const [complete, setComplete] = useState(false);
   const [message, setMessage] = useState('Your plan and your training, right here with me. Choose a day and we’ll take it one set at a time.');

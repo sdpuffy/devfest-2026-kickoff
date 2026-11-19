@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
-import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SettingsHeader } from '@/components/settings-header';
+import { Section, Segmented, ToggleRow, type Option } from '@/components/settings-ui';
 import { coachShortName, getCoach } from '@/data/coaches';
 import {
   resetAppearance,
@@ -29,8 +29,6 @@ import {
 
 // Settings → Appearance & feel. This screen stays mounted while you change things, so it
 // reads everything through hooks (useAppearance / useTheme / useThemedStyles) and updates live.
-
-type Option<T> = { value: T; label: string };
 
 const MODES: Option<AppearanceSettings['mode']>[] = [
   { value: 'system', label: 'System' },
@@ -87,8 +85,8 @@ export default function AppearanceSettingsScreen() {
         <Preview colors={colors} styles={styles} />
 
         {/* ── Theme ── */}
-        <Section title="Theme" styles={styles}>
-          <Segmented options={MODES} value={settings.mode} onChange={(mode) => set({ mode })} styles={styles} label="Theme mode" />
+        <Section title="Theme">
+          <Segmented options={MODES} value={settings.mode} onChange={(mode) => set({ mode })} label="Theme mode" />
           <Text style={styles.hint}>
             {settings.mode === 'system'
               ? `Following your device: ${dark ? 'dark' : 'light'} right now. Pick a theme for each below.`
@@ -129,7 +127,7 @@ export default function AppearanceSettingsScreen() {
         </Section>
 
         {/* ── Accent ── */}
-        <Section title="Accent color" styles={styles}>
+        <Section title="Accent color">
           <View style={styles.swatches} accessibilityRole="radiogroup">
             {(Object.keys(ACCENTS) as Exclude<AccentId, 'coach'>[]).map((id) => {
               const on = settings.accent === id;
@@ -163,13 +161,13 @@ export default function AppearanceSettingsScreen() {
         </Section>
 
         {/* ── Text & layout ── */}
-        <Section title="Text & layout" styles={styles}>
+        <Section title="Text & layout">
           <Text style={styles.label}>Text size</Text>
-          <Segmented options={TEXT_SIZES} value={settings.textSize} onChange={(textSize) => set({ textSize })} styles={styles} label="Text size" />
+          <Segmented options={TEXT_SIZES} value={settings.textSize} onChange={(textSize) => set({ textSize })} label="Text size" />
           <Text style={styles.hint}>Your device’s text size still applies on top of this.</Text>
 
           <Text style={styles.label}>Layout density</Text>
-          <Segmented options={DENSITIES} value={settings.density} onChange={(density) => set({ density })} styles={styles} label="Layout density" />
+          <Segmented options={DENSITIES} value={settings.density} onChange={(density) => set({ density })} label="Layout density" />
           <Text style={styles.hint}>Compact tightens spacing so more fits on screen.</Text>
 
           <ToggleRow
@@ -177,15 +175,13 @@ export default function AppearanceSettingsScreen() {
             hint="Huge timers, rep counts and buttons you can read from across the room."
             value={settings.bigWorkout}
             onChange={(bigWorkout) => set({ bigWorkout })}
-            styles={styles}
-            colors={colors}
           />
         </Section>
 
         {/* ── Motion & feedback ── */}
-        <Section title="Motion & feedback" styles={styles}>
+        <Section title="Motion & feedback">
           <Text style={styles.label}>Reduce motion</Text>
-          <Segmented options={MOTION} value={settings.reduceMotion} onChange={(reduceMotion) => set({ reduceMotion })} styles={styles} label="Reduce motion" />
+          <Segmented options={MOTION} value={settings.reduceMotion} onChange={(reduceMotion) => set({ reduceMotion })} label="Reduce motion" />
           <Text style={styles.hint}>Stops mascot and coach animations and screen transitions.</Text>
 
           <Text style={styles.label}>Haptics</Text>
@@ -196,7 +192,6 @@ export default function AppearanceSettingsScreen() {
               set({ haptics });
               if (haptics !== 'off') feedback('preview');
             }}
-            styles={styles}
             label="Haptics"
           />
           <Text style={styles.hint}>Vibrates when you finish a set, a rest ends, or the workout is done.</Text>
@@ -209,15 +204,13 @@ export default function AppearanceSettingsScreen() {
               set({ sounds });
               if (sounds) feedback('preview');
             }}
-            styles={styles}
-            colors={colors}
           />
         </Section>
 
         {/* ── Accessibility ── */}
-        <Section title="Accessibility" styles={styles}>
+        <Section title="Accessibility">
           <Text style={styles.label}>Color vision</Text>
-          <Segmented options={COLOR_VISION} value={settings.colorVision} onChange={(colorVision) => set({ colorVision })} styles={styles} label="Color vision" />
+          <Segmented options={COLOR_VISION} value={settings.colorVision} onChange={(colorVision) => set({ colorVision })} label="Color vision" />
           <Text style={styles.hint}>
             Swaps the green / red / orange status colors for ones that stay distinct with red-green
             (protanopia, deuteranopia) or blue-yellow (tritanopia) color blindness.
@@ -227,28 +220,24 @@ export default function AppearanceSettingsScreen() {
             hint="So links stand out by more than color."
             value={settings.underlineLinks}
             onChange={(underlineLinks) => set({ underlineLinks })}
-            styles={styles}
-            colors={colors}
           />
         </Section>
 
         {/* ── Personality ── */}
-        <Section title="Personality" styles={styles}>
+        <Section title="Personality">
           <Text style={styles.label}>Mascot</Text>
-          <Segmented options={MASCOT} value={settings.mascot} onChange={(mascot) => set({ mascot })} styles={styles} label="Mascot" />
+          <Segmented options={MASCOT} value={settings.mascot} onChange={(mascot) => set({ mascot })} label="Mascot" />
           <Text style={styles.hint}>Minimal shows a smaller, still mascot on the welcome screens.</Text>
           <ToggleRow
             label="Emoji in headings"
             hint="Like 🔥 Warm-up and 🥗 Nutrition Blueprint."
             value={settings.headingEmoji}
             onChange={(headingEmoji) => set({ headingEmoji })}
-            styles={styles}
-            colors={colors}
           />
         </Section>
 
         {/* ── More ── */}
-        <Section title="More" styles={styles}>
+        <Section title="More">
           <Pressable
             style={({ pressed }) => [styles.resetBtn, pressed && styles.pressed]}
             onPress={resetAppearance}
@@ -289,37 +278,6 @@ function Preview({ colors, styles }: { colors: Palette; styles: Styles }) {
   );
 }
 
-function Section({ title, children, styles }: { title: string; children: ReactNode; styles: Styles }) {
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle} accessibilityRole="header">{title}</Text>
-      <View style={styles.card}>{children}</View>
-    </View>
-  );
-}
-
-function Segmented<T extends string>({
-  options, value, onChange, styles, label,
-}: { options: Option<T>[]; value: T; onChange: (v: T) => void; styles: Styles; label: string }) {
-  return (
-    <View style={styles.segmented} accessibilityRole="radiogroup" accessibilityLabel={label}>
-      {options.map((o) => {
-        const on = o.value === value;
-        return (
-          <Pressable
-            key={o.value}
-            onPress={() => onChange(o.value)}
-            style={[styles.segment, on && styles.segmentOn]}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: on }}>
-            <Text style={[styles.segmentText, on && styles.segmentTextOn]} numberOfLines={1}>{o.label}</Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
 function ThemeTile({
   label, hint, palette, selected, active, onPress, styles,
 }: { label: string; hint: string; palette: Palette; selected: boolean; active: boolean; onPress: () => void; styles: Styles }) {
@@ -342,27 +300,6 @@ function ThemeTile({
       <Text style={styles.tileLabel} numberOfLines={1}>{selected ? `✓ ${label}` : label}</Text>
       <Text style={styles.tileHint} numberOfLines={2}>{active ? 'In use now' : hint}</Text>
     </Pressable>
-  );
-}
-
-function ToggleRow({
-  label, hint, value, onChange, styles, colors,
-}: { label: string; hint: string; value: boolean; onChange: (v: boolean) => void; styles: Styles; colors: Palette }) {
-  return (
-    <View style={styles.toggleRow}>
-      <View style={styles.flex}>
-        <Text style={styles.label}>{label}</Text>
-        <Text style={styles.hint}>{hint}</Text>
-      </View>
-      <Switch
-        value={value}
-        onValueChange={onChange}
-        accessibilityLabel={label}
-        trackColor={{ false: colors.borderStrong, true: colors.accent }}
-        thumbColor={value ? colors.onAccent : colors.surfaceRaised}
-        ios_backgroundColor={colors.borderStrong}
-      />
-    </View>
   );
 }
 

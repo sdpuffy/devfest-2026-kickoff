@@ -7,10 +7,15 @@ import { useAccount } from '@/lib/account';
 import { accountsEnabled } from '@/lib/account-api';
 import { useAppearance } from '@/lib/appearance';
 import { ACCENTS, DARK_THEMES, LIGHT_THEMES, accentBase, useTheme, useThemedStyles, type StyleContext } from '@/lib/theme';
+import { useWorkoutLogs } from '@/lib/workout-log';
+import { useWorkoutPrefs, weightUnit } from '@/lib/workout-prefs';
 
-// Settings hub: two separate areas, each with a one-line summary of where things stand.
-//   Account            → who you are, sync, devices, your data
+// Settings hub: separate areas, each with a one-line summary of where things stand.
+//   Account            → who you are, sync, devices, your account's data
+//   Workouts           → units, rest timer, keep-awake, weight steps, demos, week start
 //   Appearance & feel  → theme, colors, text, motion, haptics, accessibility, mascot
+//   Data & privacy     → this device's data: download, clear history, erase
+//   About & help       → version, FAQ, report a problem
 
 const TEXT_SIZE_LABEL = { small: 'Small text', default: 'Default text', large: 'Large text', xl: 'XL text' } as const;
 
@@ -19,6 +24,8 @@ export default function SettingsHub() {
   const { dark } = useTheme();
   const settings = useAppearance();
   const account = useAccount();
+  const prefs = useWorkoutPrefs();
+  const logCount = useWorkoutLogs().length;
 
   const signedIn = account.status === 'signedIn' && account.user;
   const accountTitle = signedIn ? account.user!.displayName || account.user!.username : 'Account';
@@ -34,6 +41,9 @@ export default function SettingsHub() {
   const mode = settings.mode === 'system' ? `System (${dark ? 'dark' : 'light'})` : settings.mode === 'dark' ? 'Dark' : 'Light';
   const accent = settings.accent === 'coach' ? 'Coach color' : ACCENTS[settings.accent].label;
   const appearanceSummary = `${mode} · ${theme} · ${accent} · ${TEXT_SIZE_LABEL[settings.textSize]}`;
+  const rest = !prefs.autoRest ? 'manual rest' : prefs.rest === 'planned' ? 'rest as planned' : `${prefs.rest} rest`;
+  const workoutSummary = `${weightUnit(prefs.units)} · ${rest} · screen ${prefs.keepAwake ? 'stays on' : 'can lock'} · week from ${prefs.weekStart === 'monday' ? 'Mon' : 'Sun'}`;
+  const dataSummary = `${logCount ? `${logCount} workout${logCount === 1 ? '' : 's'} logged` : 'No workouts logged yet'} · ${signedIn ? 'synced to your account' : 'on this device only'}`;
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
@@ -51,12 +61,36 @@ export default function SettingsHub() {
         />
         <Card
           styles={styles}
+          title="Workouts"
+          summary={workoutSummary}
+          detail="Units, rest timer, countdown, keep screen on, weight steps, demos, week start"
+          badge="🏋"
+          onPress={() => router.push('/settings/workouts')}
+        />
+        <Card
+          styles={styles}
           title="Appearance & feel"
           summary={appearanceSummary}
           detail="Theme, colors, text size, layout, motion, haptics, sound, accessibility, mascot"
           badge="◐"
           swatch={accentBase(settings)}
           onPress={() => router.push('/settings/appearance')}
+        />
+        <Card
+          styles={styles}
+          title="Data & privacy"
+          summary={dataSummary}
+          detail="Where your data lives, download it, clear history, erase this device"
+          badge="🔒"
+          onPress={() => router.push('/settings/data')}
+        />
+        <Card
+          styles={styles}
+          title="About & help"
+          summary={'Questions, report a problem, about the coaches'}
+          detail="Version, FAQ, how your data is handled"
+          badge="?"
+          onPress={() => router.push('/settings/about')}
         />
       </ScrollView>
     </SafeAreaView>

@@ -7,13 +7,15 @@ import { getAppearance } from '@/lib/appearance';
 // settings. Uses React Native's built-in Vibration API so no extra native module is needed.
 // (For finer taptic feedback on iPhone, swap `vibrate` below for expo-haptics.)
 
-export type FeedbackEvent = 'set' | 'rest-over' | 'finish' | 'preview';
+export type FeedbackEvent = 'set' | 'rest-over' | 'finish' | 'preview' | 'tick';
 
 const SOUNDS = {
   set: require('@/assets/sounds/set-done.wav'),
   'rest-over': require('@/assets/sounds/rest-over.wav'),
   finish: require('@/assets/sounds/workout-done.wav'),
   preview: require('@/assets/sounds/set-done.wav'),
+  // The last 3 seconds of a rest (Settings → Workouts → Countdown).
+  tick: require('@/assets/sounds/set-done.wav'),
 } as const;
 
 // Vibration lengths in ms on Android and web: [subtle, strong].
@@ -22,6 +24,7 @@ const PATTERNS: Record<FeedbackEvent, [number | number[], number | number[]]> = 
   'rest-over': [[0, 20, 80, 20], [0, 45, 90, 45]],
   finish: [[0, 25, 70, 25, 70, 40], [0, 60, 80, 60, 80, 120]],
   preview: [12, 35],
+  tick: [8, 20],
 };
 
 function vibrate(event: FeedbackEvent) {

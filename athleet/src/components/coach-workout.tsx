@@ -1,3 +1,4 @@
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
@@ -8,6 +9,7 @@ import { hypeLine, signatureFor } from '@/data/hype';
 import { useSelectedPlan } from '@/lib/selected-plan';
 import { restSeconds, saveWorkout, type LoggedSet } from '@/lib/workout-log';
 import { feedback } from '@/lib/feedback';
+import { adjustRest, useWorkoutPrefs, weightStepValue, weightUnit } from '@/lib/workout-prefs';
 import { colors, emoji, keyboardAppearance, themedStyles } from '@/lib/theme';
 
 type SetEntry = { reps: string; weight: string; done: boolean };
@@ -15,6 +17,12 @@ type SetEntry = { reps: string; weight: string; done: boolean };
 /** Timed or distance work ("10 min", "6 x 30m") is logged as a single "done" row. */
 function isTimed(sets: number, reps: string) {
   return sets <= 1 && /min|x|rounds|runs|m\b|s\b/i.test(reps);
+}
+
+/** The weight after a − / + press: never below zero, no float noise (e.g. 2.5 + 1.25). */
+function stepWeight(weight: string, by: number): string {
+  const next = Math.max(0, Math.round(((Number(weight) || 0) + by) * 100) / 100);
+  return next ? String(next) : '';
 }
 
 function clock(totalSeconds: number) {
@@ -40,6 +48,15 @@ export function CoachWorkout({ dayIndex, onExit, onCue, onCancelEmpty, onExercis
   const [shoutUntil, setShoutUntil] = useState(0);
   const saved = useRef(false);
   const lastCompleted = useRef('');
+  const prefs = useWorkoutPrefs();
+  const unit = weightUnit(prefs.units);
+
+  // Settings → Workouts → Keep screen on: no auto-lock mid-set.
+  useEffect(() => {
+    if (!prefs.keepAwake || finished) return;
+    activateKeepAwakeAsync('workout').catch(() => {});
+    return () => { deactivateKeepAwake('workout').catch(() => {}); };
+  }, [prefs.keepAwake, finished]);
 
   // One clock drives the elapsed time and the rest countdown.
   useEffect(() => {
@@ -55,6 +72,9 @@ export function CoachWorkout({ dayIndex, onExit, onCue, onCancelEmpty, onExercis
   // Buzz / chime when a rest runs out on its own (not when it's skipped).
   const restRanOut = restEnd !== null && !resting;
   useEffect(() => { if (restRanOut) feedback('rest-over'); }, [restRanOut]);
+  // 3-2-1 before the rest ends (Settings → Workouts → Countdown).
+  const secondsLeft = resting ? Math.ceil((restEnd! - now) / 1000) : 0;
+  useEffect(() => { if (prefs.countdown && secondsLeft >= 1 && secondsLeft <= 3) feedback('tick'); }, [secondsLeft, prefs.countdown]);
 
   // The next set to do: first one not done yet.
   let current: { ex: number; set: number } | null = null;
@@ -89,8 +109,9 @@ export function CoachWorkout({ dayIndex, onExit, onCue, onCancelEmpty, onExercis
     feedback('set');
     setShoutUntil(Date.now() + 2500);
     const isLastOverall = doneCount + 1 >= total;
-    const rest = restSeconds(planDay!.exercises[ex].rest);
-    setRestEnd(!isLastOverall && rest > 0 ? Date.now() + rest * 1000 : null);
+    // Settings → Workouts: rest shorter / longer than planned, or no automatic timer at all.
+    const rest = adjustRest(restSeconds(planDay!.exercises[ex].rest), prefs.rest);
+    setRestEnd(prefs.autoRest && !isLastOverall && rest > 0 ? Date.now() + rest * 1000 : null);
   }
 
   function undoLastSet() {
@@ -109,7 +130,7 @@ export function CoachWorkout({ dayIndex, onExit, onCue, onCancelEmpty, onExercis
     const sets: LoggedSet[] = [];
     entries.forEach((list, i) =>
       list.forEach((s, j) => {
-        if (s.done) sets.push({ exercise: planDay!.exercises[i].name, set: j + 1, reps: s.reps || planDay!.exercises[i].reps, weight: s.weight });
+        if (s.done) sets.push({ exercise: planDay!.exercises[i].name, set: j + 1, reps: s.reps || planDay!.exercises[i].reps, weight: s.weight, ...(s.weight ? { unit } : {}) });
       })
     );
     saveWorkout({
@@ -163,7 +184,7 @@ export function CoachWorkout({ dayIndex, onExit, onCue, onCancelEmpty, onExercis
             <View style={styles.statsRow}>
               <Stat value={`${doneCount}/${total}`} label="sets" />
               <Stat value={clock((now - startedAt) / 1000)} label="time" />
-              <Stat value={volume ? `${Math.round(volume).toLocaleString()}` : '—'} label="lb lifted" />
+              <Stat value={volume ? `${Math.round(volume).toLocaleString()}` : '—'} label={`${unit} lifted`} />
             </View>
           </View>
           <StreakBadge />
@@ -206,17 +227,33 @@ export function CoachWorkout({ dayIndex, onExit, onCue, onCancelEmpty, onExercis
                             accessibilityLabel={`${e.name} set ${j + 1} reps`}
                             editable={!s.done}
                           />
+                          <Pressable
+                            disabled={s.done}
+                            onPress={() => update(i, j, { weight: stepWeight(s.weight, -weightStepValue(prefs)) })}
+                            style={styles.stepBtn}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Less weight, minus ${weightStepValue(prefs)} ${unit}`}>
+                            <Text style={styles.stepText}>−</Text>
+                          </Pressable>
                           <TextInput
                             style={styles.input}
                             value={s.weight}
                             onChangeText={(v) => update(i, j, { weight: v.replace(/[^0-9.]/g, '') })}
-                            placeholder="lb"
+                            placeholder={unit}
                             placeholderTextColor={colors.textFaint}
                             keyboardType="decimal-pad"
                             keyboardAppearance={keyboardAppearance()}
-                            accessibilityLabel={`${e.name} set ${j + 1} weight`}
+                            accessibilityLabel={`${e.name} set ${j + 1} weight in ${unit}`}
                             editable={!s.done}
                           />
+                          <Pressable
+                            disabled={s.done}
+                            onPress={() => update(i, j, { weight: stepWeight(s.weight, weightStepValue(prefs)) })}
+                            style={styles.stepBtn}
+                            accessibilityRole="button"
+                            accessibilityLabel={`More weight, plus ${weightStepValue(prefs)} ${unit}`}>
+                            <Text style={styles.stepText}>+</Text>
+                          </Pressable>
                         </>
                       )}
                       <Pressable
@@ -291,6 +328,8 @@ const styles = themedStyles(({ big }) => ({
   setRowDone: { opacity: 0.55 },
   setLabel: { color: colors.textSecondary, fontSize: big ? 20 : 14, fontWeight: '600', width: big ? 72 : 52 },
   input: { flex: 1, minWidth: 0, height: big ? 60 : 40, borderRadius: 8, borderWidth: 1, borderColor: colors.borderStrong, backgroundColor: colors.bg, color: colors.accent, textAlign: 'center', fontSize: big ? 26 : 15 },
+  stepBtn: { width: big ? 52 : 34, height: big ? 60 : 40, borderRadius: 8, borderWidth: 1, borderColor: colors.borderStrong, alignItems: 'center', justifyContent: 'center' },
+  stepText: { color: colors.text, fontSize: big ? 26 : 18, fontWeight: '700' },
   check: { width: big ? 68 : 44, height: big ? 60 : 40, borderRadius: 8, borderWidth: 1, borderColor: colors.borderStrong, alignItems: 'center', justifyContent: 'center', marginLeft: 'auto' },
   checkDone: { backgroundColor: colors.successBorder, borderColor: colors.successBorder },
   checkText: { color: colors.textFaint, fontSize: big ? 28 : 18, fontWeight: '800' },

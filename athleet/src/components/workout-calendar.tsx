@@ -6,12 +6,15 @@ import { moveTrainingDay, planDayIndexForDate, trainingWeekdays, weekdayName } f
 import { selectPlan, useSelectedPlan } from '@/lib/selected-plan';
 import { colors, themedStyles } from '@/lib/theme';
 import { isSameDay, useStreak, useWorkoutLogs, type WorkoutLog } from '@/lib/workout-log';
+import { useWorkoutPrefs } from '@/lib/workout-prefs';
 
 // Full-month calendar for the Workout Plan tab: which days you trained, which days are
 // scheduled, and a way to move workouts to different weekdays.
 
 const WEEK_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WEEK_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+/** Column order (indexes into the Monday-first lists above) for Settings → Week starts on. */
+const COLUMNS = { monday: [0, 1, 2, 3, 4, 5, 6], sunday: [6, 0, 1, 2, 3, 4, 5] } as const;
 
 /** Local calendar day key, e.g. "2026-11-16". */
 function dayKey(d: Date | number): string {
@@ -19,10 +22,10 @@ function dayKey(d: Date | number): string {
     return `${x.getFullYear()}-${x.getMonth()}-${x.getDate()}`;
 }
 
-/** Every cell of a Monday-first month grid; null for blanks before the 1st / after the last day. */
-function monthCells(year: number, month: number): (Date | null)[] {
+/** Every cell of a month grid starting on Monday or Sunday; null for blanks before the 1st / after the last day. */
+function monthCells(year: number, month: number, weekStart: 'monday' | 'sunday'): (Date | null)[] {
     const first = new Date(year, month, 1);
-    const lead = (first.getDay() + 6) % 7;
+    const lead = weekStart === 'sunday' ? first.getDay() : (first.getDay() + 6) % 7;
     const count = new Date(year, month + 1, 0).getDate();
     const cells: (Date | null)[] = Array.from({ length: lead }, () => null);
     for (let d = 1; d <= count; d++) cells.push(new Date(year, month, d));
@@ -35,6 +38,7 @@ type Props = { visible: boolean; onClose: () => void };
 export function WorkoutCalendarModal({ visible, onClose }: Props) {
     const selected = useSelectedPlan();
     const logs = useWorkoutLogs();
+    const { weekStart } = useWorkoutPrefs();
     const streak = useStreak();
 
     const today = useMemo(() => new Date(), []);
@@ -44,7 +48,7 @@ export function WorkoutCalendarModal({ visible, onClose }: Props) {
     const view = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
     const viewYear = view.getFullYear();
     const viewMonth = view.getMonth();
-    const cells = monthCells(viewYear, viewMonth); // cheap; React Compiler memoizes it
+    const cells = monthCells(viewYear, viewMonth, weekStart); // cheap; React Compiler memoizes it
 
     // Workouts grouped by calendar day.
     const logsByDay = useMemo(() => {
@@ -134,11 +138,11 @@ export function WorkoutCalendarModal({ visible, onClose }: Props) {
                         </View>
 
                         <View style={styles.weekRow}>
-                            {WEEK_HEADERS.map((h, i) => {
+                            {COLUMNS[weekStart].map((i) => {
                                 const training = weekdays.includes(WEEK_ORDER[i]);
                                 return (
-                                    <Text key={h} style={[styles.weekHeader, training && styles.weekHeaderTraining]}>
-                                        {h}
+                                    <Text key={WEEK_HEADERS[i]} style={[styles.weekHeader, training && styles.weekHeaderTraining]}>
+                                        {WEEK_HEADERS[i]}
                                     </Text>
                                 );
                             })}

@@ -12,6 +12,7 @@ import { DISPLAY_NAME_MAX, passwordProblem, USERNAME_MAX, usernameProblem } from
 import { getProfile } from '@/lib/profile-store';
 import { getSelectedPlan } from '@/lib/selected-plan';
 import { colors, themedStyles } from '@/lib/theme';
+import { useHydrated } from '@/lib/use-hydrated';
 
 // Sign up, log in, or get back in with a recovery code. Username + password only:
 // no email or phone number is ever asked for.
@@ -40,6 +41,8 @@ export default function AccountScreen() {
     const timer = setTimeout(() => setSlow(true), 4000);
     return () => { clearTimeout(timer); setSlow(false); };
   }, [busy]);
+  // The static web build pre-renders the log-in form; ?mode=signup only exists in the browser.
+  const hydrated = useHydrated();
 
   const creating = mode === 'signup' || mode === 'recover';
   const nameError = mode === 'signup' && touched ? usernameProblem(username.trim()) : null;
@@ -89,6 +92,8 @@ export default function AccountScreen() {
       setBusy(false);
     }
   }
+
+  if (!hydrated) return <SafeAreaView style={styles.screen} />;
 
   return (
     <SafeAreaView style={styles.screen}>

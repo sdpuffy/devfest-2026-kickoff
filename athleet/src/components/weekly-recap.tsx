@@ -15,6 +15,7 @@ import {
   useWorkoutLogs,
 } from '@/lib/workout-log';
 import { colors, emoji, themedStyles } from '@/lib/theme';
+import { useWorkoutPrefs } from '@/lib/workout-prefs';
 
 interface WeeklyRecapProps {
   coachId: string;
@@ -22,11 +23,12 @@ interface WeeklyRecapProps {
   daysPerWeek: number;
 }
 
-const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; // by Date.getDay()
 
 export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps) {
   const router = useRouter();
   const allLogs = useWorkoutLogs();
+  const { weekStart: firstDay } = useWorkoutPrefs();
   const coach = getCoach(coachId);
 
   // Offset in weeks: 0 = current week, -1 = last week, etc.
@@ -41,8 +43,8 @@ export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps
   }, [weekOffset]);
 
   const { start: weekStart, end: weekEnd, weekDays } = useMemo(
-    () => getWeekBounds(referenceDate),
-    [referenceDate]
+    () => getWeekBounds(referenceDate, firstDay),
+    [referenceDate, firstDay]
   );
 
   // Logs strictly within this week's bounds
@@ -220,9 +222,9 @@ export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps
                   isToday && styles.dayColumnToday,
                 ]}
                 accessibilityRole="button"
-                accessibilityLabel={`${DAY_NAMES[i]} ${dayDate.getDate()}`}>
+                accessibilityLabel={`${DAY_NAMES[dayDate.getDay()]} ${dayDate.getDate()}`}>
                 <Text style={[styles.dayName, isSelected && styles.dayNameSelected]}>
-                  {DAY_NAMES[i]}
+                  {DAY_NAMES[dayDate.getDay()]}
                 </Text>
                 <View
                   style={[
@@ -315,7 +317,7 @@ export function WeeklyRecapView({ coachId, plan, daysPerWeek }: WeeklyRecapProps
                         {set.exercise}
                       </Text>
                       <Text style={styles.setVal}>
-                        Set {set.set}: {set.reps} reps {set.weight ? `@ ${set.weight}` : ''}
+                        Set {set.set}: {set.reps} reps {set.weight ? `@ ${set.weight} ${set.unit ?? 'lb'}` : ''}
                       </Text>
                     </View>
                   ))}

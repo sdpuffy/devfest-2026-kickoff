@@ -74,6 +74,8 @@ export const accountApi = {
   exportData: (token: string) => request<Record<string, unknown>>('GET', '/api/account/export', { token }),
   deleteAccount: (token: string, password: string, confirm: string) => request<void>('DELETE', '/api/account', { token, body: { password, confirm } }),
 
+  /** `syncKeys` is missing on servers from before it was added: they store the original six keys. */
+  health: () => request<{ ok: boolean; syncKeys?: string[] }>('GET', '/api/health'),
   pull: (token: string) => request<{ data: Record<string, SyncItem> }>('GET', '/api/sync', { token }),
   push: (token: string, changes: Record<string, SyncItem>) => request<{ data: Record<string, SyncItem> }>('PUT', '/api/sync', { token, body: { changes } }),
 };

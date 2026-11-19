@@ -5,7 +5,8 @@ import { canonicalCoachId } from '@/lib/coach-ids';
 // Finished workouts, saved on the device (phone storage on iOS/Android, localStorage on web)
 // so the weekly recap and streaks survive restarts.
 
-export type LoggedSet = { exercise: string; set: number; reps: string; weight: string };
+/** `unit` is the weight unit when the set was logged (older logs have none and are in lb). */
+export type LoggedSet = { exercise: string; set: number; reps: string; weight: string; unit?: 'lb' | 'kg' };
 
 export type WorkoutLog = {
   coachId: string;
@@ -17,6 +18,7 @@ export type WorkoutLog = {
 };
 
 const STORAGE_KEY = 'athleet_workout_logs_v1';
+const CLEARED_KEY = 'athleet_workout_logs_cleared_v1';
 
 function loadInitialLogs(): WorkoutLog[] {
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -52,7 +54,7 @@ AsyncStorage.getItem(STORAGE_KEY)
     if (!Array.isArray(saved)) return;
     // Merge without duplicates (on web the instant load may already have them).
     const seen = new Set(logs.map(logId));
-    const missing = (saved as WorkoutLog[]).map(migrate).filter((l) => !seen.has(logId(l)));
+    const missing = (saved as WorkoutLog[]).map(migrate).filter((l) => !seen.has(logId(l)) && l.finishedAt > clearedAt);
     if (missing.length) {
       logs = [...missing, ...logs].sort((a, b) => a.finishedAt - b.finishedAt);
       notify();
@@ -64,6 +66,58 @@ AsyncStorage.getItem(STORAGE_KEY)
 
 function persistLogs() {
   AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(logs)).catch(() => {});
+}
+
+// ── "Clear workout history" ──
+// Remembered as a time, not just an empty list, so a synced device that still has older
+// workouts doesn't bring them back: anything finished before it is dropped everywhere.
+
+function loadClearedAt(): number {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) return Number(window.localStorage.getItem(CLEARED_KEY)) || 0;
+  } catch {}
+  return 0;
+}
+let clearedAt = loadClearedAt();
+AsyncStorage.getItem(CLEARED_KEY)
+  .then((raw) => {
+    const saved = Number(raw) || 0;
+    if (saved > clearedAt) setLogsClearedAt(saved);
+  })
+  .catch(() => {});
+
+export function getLogsClearedAt(): number {
+  return clearedAt;
+}
+
+/** Drop every workout finished at or before `time` (from this device or a synced one). */
+export function setLogsClearedAt(time: number) {
+  if (!Number.isFinite(time) || time <= clearedAt) return;
+  clearedAt = time;
+  AsyncStorage.setItem(CLEARED_KEY, String(time)).catch(() => {});
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try { window.localStorage.setItem(CLEARED_KEY, String(time)); } catch {}
+  }
+  const kept = logs.filter((l) => l.finishedAt > time);
+  if (kept.length !== logs.length) { logs = kept; persistLogs(); }
+  notify();
+}
+
+/** Settings → Data & privacy → Clear workout history (synced devices follow). */
+/**
+ * Forget the cleared-at time (a different account on this device, or the device was wiped),
+ * so it can't hide someone else's older workouts.
+ */
+export function resetLogsClearedAt() {
+  clearedAt = 0;
+  AsyncStorage.removeItem(CLEARED_KEY).catch(() => {});
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try { window.localStorage.removeItem(CLEARED_KEY); } catch {}
+  }
+}
+
+export function clearWorkoutHistory() {
+  setLogsClearedAt(Date.now());
 }
 
 export function saveWorkout(log: WorkoutLog) {
@@ -87,7 +141,7 @@ export const getWorkoutLogs = getLogs;
 
 /** Replace the whole history, e.g. with the merged history from your account. */
 export function replaceWorkoutLogs(next: WorkoutLog[]) {
-  logs = next.map(migrate);
+  logs = next.map(migrate).filter((l) => l.finishedAt > clearedAt);
   persistLogs();
   notify();
 }
@@ -128,15 +182,16 @@ export function restSeconds(rest: string): number {
 }
 
 /**
- * Returns Monday 00:00:00 and Sunday 23:59:59 for the given date.
+ * The week containing the date: Monday-Sunday by default, or Sunday-Saturday
+ * (Settings → Workouts → Week starts on). Meal weeks always pass 'monday'.
  */
-export function getWeekBounds(referenceDate = new Date()): { start: Date; end: Date; weekDays: Date[] } {
+export function getWeekBounds(referenceDate = new Date(), weekStart: 'monday' | 'sunday' = 'monday'): { start: Date; end: Date; weekDays: Date[] } {
   const d = new Date(referenceDate);
   const day = d.getDay(); // 0 is Sunday, 1 is Monday
-  const diffToMonday = (day + 6) % 7; // Monday is 0
+  const diffToStart = weekStart === 'sunday' ? day : (day + 6) % 7;
 
   const start = new Date(d);
-  start.setDate(d.getDate() - diffToMonday);
+  start.setDate(d.getDate() - diffToStart);
   start.setHours(0, 0, 0, 0);
 
   const end = new Date(start);

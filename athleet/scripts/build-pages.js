@@ -14,7 +14,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 
-const DEFAULT_REPO = 'devfest-2026-kickoff---harlem-globesluggers';
+const DEFAULT_REPO = 'devfest-2026-kickoff';
 const repo = (process.env.GITHUB_REPOSITORY ?? '').split('/')[1] || DEFAULT_REPO;
 const baseUrl = process.env.EXPO_BASE_URL ?? `/${repo}`;
 const root = path.join(__dirname, '..');

@@ -3,14 +3,15 @@
 </p>
 
 <p align="center">
-  <a href="https://bloxxyis.github.io/devfest-2026-kickoff---harlem-globesluggers/"><b>Live demo</b></a> ·
+  <a href="https://sdpuffy.github.io/devfest-2026-kickoff/"><b>Live demo</b></a> ·
   <a href="#features">Features</a> ·
   <a href="#getting-started">Getting started</a> ·
-  <a href="#team">Team</a>
+  <a href="#team">Team</a> ·
+  <a href="https://github.com/sdpuffy/devfest-2026-kickoff/releases">Releases</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/bloxxyis/devfest-2026-kickoff---harlem-globesluggers/actions/workflows/deploy-pages.yml"><img src="https://github.com/bloxxyis/devfest-2026-kickoff---harlem-globesluggers/actions/workflows/deploy-pages.yml/badge.svg" alt="Deploy status"></a>
+  <a href="https://github.com/sdpuffy/devfest-2026-kickoff/actions/workflows/deploy-pages.yml"><img src="https://github.com/sdpuffy/devfest-2026-kickoff/actions/workflows/deploy-pages.yml/badge.svg" alt="Deploy status"></a>
   <img src="https://img.shields.io/badge/Expo-SDK%2058-000020?logo=expo&logoColor=white" alt="Expo SDK 58">
   <img src="https://img.shields.io/badge/React%20Native-0.88-61dafb?logo=react&logoColor=black" alt="React Native 0.88">
   <img src="https://img.shields.io/badge/TypeScript-6-3178c6?logo=typescript&logoColor=white" alt="TypeScript">
@@ -19,9 +20,12 @@
 
 ---
 
-**Athleet** matches you with a coach modeled on a star athlete, then builds everything around
-you: a weekly training plan, guided workouts with rest timers, a meal plan that fits your diet
-and budget, and a coach you can chat with. One codebase runs on iPhone, Android and the web.
+**Athleet** matches you with one of eleven original coach characters, each with their own sport and
+training style, then builds everything around you: a weekly training plan, guided workouts with rest
+timers and animated movement demos, a meal plan that fits your diet and budget, and a coach you can
+chat with. One codebase runs on iPhone, Android and the web.
+
+**[Try the live demo](https://sdpuffy.github.io/devfest-2026-kickoff/)**: it runs in your browser, no install needed.
 
 Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 
@@ -35,7 +39,9 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
   (quarterback or lineman, goalkeeper or striker, sprint or distance freestyle…) and reshape
   your drills, sprint distances and meal plan around it.
 - **Guided workouts.** Log sets, reps and weight, follow the rest timer, and watch an animated
-  movement demo. Your coach cheers you on every set.
+  movement demo for every exercise. Your coach cheers you on every set.
+- **Workout partner mode.** Drills that need a second person (catching, feeding, rallies)
+  switch to solo versions when you train alone.
 - **Meals that fit.** A weekly meal plan built on your nutrition targets, with dietary
   restrictions, a weekly budget, prep-ahead tips and a grocery list.
 - **Your account, every device.** Sign up with just a username and password (no email or
@@ -43,8 +49,11 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
   gets you back in if you forget your password. Requires the accounts server in
   [`server/`](server/README.md).
 - **Stay on track.** Workout calendar, weekly recap and a streak badge.
-- **Make it yours.** Themes (dark, dimmed, OLED, light, high contrast), accent colors,
-  text size, big workout mode, reduced motion, colorblind-friendly status colors and more.
+- **Make it yours.** Workout settings (lb or kg, rest timer, countdown, keep screen on, weight
+  steps, demo speed, week start), themes (dark, dimmed, OLED, light, high contrast), accent
+  colors, text size, big workout mode, reduced motion and colorblind-friendly status colors.
+- **Your data, your call.** Download what's stored on your device, clear your workout
+  history, or erase everything. No ads and no tracking.
 
 <!-- Screenshots: drop images in docs/screenshots/ and uncomment.
 <p align="center">
@@ -79,14 +88,15 @@ Built by **Harlem Globesluggers** at the DevFest 2026 kickoff hackathon.
 You'll need [Node.js](https://nodejs.org) 22 or newer.
 
 ```bash
-git clone https://github.com/bloxxyis/devfest-2026-kickoff---harlem-globesluggers.git
-cd devfest-2026-kickoff---harlem-globesluggers/athleet
+git clone https://github.com/sdpuffy/devfest-2026-kickoff.git
+cd devfest-2026-kickoff/athleet
 npm install
 npx expo start
 ```
 
 Then press **w** for the web, or scan the QR code with [Expo Go](https://expo.dev/go) on your
-phone.
+phone. To turn on accounts, set `EXPO_PUBLIC_ACCOUNTS_URL` (see
+[`server/README.md`](server/README.md)); without it, everything is saved on the device.
 
 | Command | What it does |
 | --- | --- |
@@ -99,18 +109,21 @@ phone.
 
 - **[Expo](https://expo.dev) + React Native**, with **Expo Router** for file-based navigation
   and the **React Compiler**.
-- **Runs offline-first.** Plans, meals and progress are generated and saved on the device; a
-  hosted backend is optional.
-- **GitHub Actions** type-checks, lints, tests and deploys the website to GitHub Pages on
-  every push to `main`.
+- **Runs offline-first.** Plans, meals and progress are generated and saved on the device.
+- **Accounts server** ([`server/`](server/README.md)): a dependency-free Node.js server with
+  username/password accounts, recovery codes and data sync, storing data in
+  [Turso](https://turso.tech) and hosted on [Render](https://render.com).
+- **GitHub Actions** type-checks, lints and tests the app and server, then deploys the website
+  to [GitHub Pages](https://sdpuffy.github.io/devfest-2026-kickoff/) on every push to `main`.
 
 ```
-athleet/
+athleet/              the Expo app
 ├── src/app/          screens (file-based routes)
 ├── src/components/   UI: coach, plan, workout, meals, settings
-├── src/data/         coaches, workouts, foods
-├── src/lib/          plan and meal generation, storage, theme
+├── src/data/         coaches, workouts, positions, foods
+├── src/lib/          plan and meal generation, accounts and sync, storage, theme
 └── tests/            unit tests
+server/               accounts and sync server (Node.js)
 ```
 
 More detail, including deployment, is in [`athleet/README.md`](athleet/README.md).
@@ -124,7 +137,11 @@ More detail, including deployment, is in [`athleet/README.md`](athleet/README.md
 __F*** it, we ball.__
 
 
-## Contributors
+## Team
+
+This repo is a fork of the team's original hackathon repo,
+[Caffy-Inc/devfest-2026-kickoff---harlem-globesluggers](https://github.com/Caffy-Inc/devfest-2026-kickoff---harlem-globesluggers).
+
 
 Joseph Karam  
 Ben Ervin  

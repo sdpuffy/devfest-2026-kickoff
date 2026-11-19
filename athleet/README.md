@@ -21,6 +21,7 @@ Copy `.env.example` to `.env`:
 | Variable | Used for |
 | --- | --- |
 | `EXPO_PUBLIC_API_URL` | A hosted backend for plans and chat. Without it, everything is generated on the device. |
+| `EXPO_PUBLIC_ACCOUNTS_URL` | The accounts server ([`../server`](../server/README.md)), e.g. `https://athleet-accounts.onrender.com`. Without it, account features are hidden. |
 
 ## Scripts
 
@@ -41,11 +42,11 @@ src/
 ├── app/            screens (Expo Router file-based routes)
 │   ├── (tabs)/     Your Plan, Workout Plan, Your Meals, Coaches
 │   ├── chat/[id]   coach chat, plan preview and guided workout
-│   ├── settings    appearance and feel
+│   ├── account     sign up, log in, recover with a recovery code
+│   ├── settings/   hub + Account, Workouts, Appearance & feel, Data & privacy, About & help
 ├── components/     UI building blocks
-├── data/           coaches, workouts, foods, suggestions
-├── lib/            plan and meal generation, storage, theme, settings
-├── hooks/          shared React hooks
+├── data/           coaches, workouts, positions, partner drills, foods, suggestions
+├── lib/            plan and meal generation, accounts and sync, storage, theme, settings
 tests/              unit tests
 ```
 
@@ -55,16 +56,17 @@ density settings.
 
 ## Deploy the website (GitHub Pages)
 
-The web app is published to **https://bloxxyis.github.io/devfest-2026-kickoff---harlem-globesluggers/** by the
-workflow in `.github/workflows/deploy-pages.yml`. It runs on every push to `main` that touches `athleet/`
-(or manually from the **Actions** tab), checks types, lint and tests, builds, and deploys.
+The web app is published to **https://sdpuffy.github.io/devfest-2026-kickoff/** by the workflow in
+`.github/workflows/deploy-pages.yml`. It runs on every push to `main` that touches `athleet/` or
+`server/` (or manually from the **Actions** tab), checks types, lint and the app and server tests,
+builds, and deploys.
 
 One-time setup: on GitHub go to **Settings → Pages** and set **Source** to **GitHub Actions**.
 
 Try the exact production build locally first:
 
 ```bash
-npm run preview:pages   # builds into dist/ and serves it at http://localhost:8080/devfest-2026-kickoff---harlem-globesluggers/
+npm run preview:pages   # builds into dist/ and serves it at http://localhost:8080/devfest-2026-kickoff/
 ```
 
 What's different on GitHub Pages (it only hosts static files):
@@ -72,8 +74,8 @@ What's different on GitHub Pages (it only hosts static files):
 - The build uses `static` output with the repo name as the base URL (see `app.config.js`). Local
   development with `npx expo start` is unchanged.
 - Everything (plans, meals, workouts, settings) runs in the browser and saves to the browser's storage.
-- To use a hosted backend, add `EXPO_PUBLIC_API_URL` under **Settings → Secrets and variables →
-  Actions → Variables**. Never put secret keys in `EXPO_PUBLIC_` variables: they end up in the
+- To turn on accounts or a hosted backend, add `EXPO_PUBLIC_ACCOUNTS_URL` / `EXPO_PUBLIC_API_URL`
+  under **Settings → Secrets and variables → Actions → Variables**. Never put secret keys in `EXPO_PUBLIC_` variables: they end up in the
   public site.
 
 ## Learn more

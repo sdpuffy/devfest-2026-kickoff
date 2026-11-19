@@ -102,8 +102,12 @@ function subscribe(listener: () => void) {
 /** Calls `listener` when the history changes (used by account sync). */
 export const subscribeWorkoutLogs = (listener: () => void) => subscribe(listener);
 
+const NO_LOGS: WorkoutLog[] = [];
+const getServerLogs = () => NO_LOGS;
+
 export function useWorkoutLogs(): WorkoutLog[] {
-  return useSyncExternalStore(subscribe, getLogs, getLogs);
+  // The static web build has no saved history, so hydration starts empty to match its HTML.
+  return useSyncExternalStore(subscribe, getLogs, getServerLogs);
 }
 
 /** Most recent log for a plan day, if it was done this week. */

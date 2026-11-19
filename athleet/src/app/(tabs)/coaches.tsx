@@ -8,14 +8,15 @@ import { CoachCard } from '@/components/coach-card';
 import { StreakBadge } from '@/components/streak-badge';
 import { COACHES } from '@/data/coaches';
 import { rankCoaches } from '@/lib/match';
-import { getProfile } from '@/lib/profile-store';
+import { useProfile } from '@/lib/profile-store';
 import { useSelectedPlan } from '@/lib/selected-plan';
 import { colors, themedStyles } from '@/lib/theme';
 import { themed } from '@/components/themed-screen';
 
 // The chatbot section: every coach, best matches first.
 function CoachesScreen() {
-  const profile = getProfile();
+  // A hook, not getProfile(): hydration-safe on the static site, and it updates when sync brings in a profile.
+  const profile = useProfile();
   const selectedCoachId = useSelectedPlan()?.coachId;
   const ranked = useMemo(
     () =>

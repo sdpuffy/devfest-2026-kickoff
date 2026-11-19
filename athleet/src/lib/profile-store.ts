@@ -87,5 +87,6 @@ export const subscribeProfile = subscribe;
 
 /** Re-renders when the profile changes or finishes loading from storage. */
 export function useProfile(): UserProfile | null {
-  return useSyncExternalStore(subscribe, getProfile, getProfile);
+  // The static web build has no saved profile, so hydration starts from null to match its HTML.
+  return useSyncExternalStore(subscribe, getProfile, () => null);
 }

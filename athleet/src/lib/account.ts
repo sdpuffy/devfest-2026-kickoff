@@ -71,6 +71,9 @@ const freshMeta = (userId?: number): Meta => ({ userId, enabled: true, firstSync
 // ── State ──
 
 let state: AccountState = { status: accountsEnabled ? 'loading' : 'signedOut', syncEnabled: true, syncing: false };
+// What the static web build rendered. Hydration must start from it, then React re-renders
+// with the real state (the saved session can load before hydration finishes).
+const INITIAL_STATE = state;
 let session: StoredSession | null = null;
 let meta: Meta = freshMeta();
 const listeners = new Set<() => void>();
@@ -88,7 +91,7 @@ export function useAccount(): AccountState {
   return useSyncExternalStore(
     (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
     getAccount,
-    getAccount,
+    () => INITIAL_STATE,
   );
 }
 

@@ -12,6 +12,7 @@ import { sendChat } from '@/lib/api';
 import { getProfile, updateProfile } from '@/lib/profile-store';
 import { getPosition, NO_POSITION, positionsFor } from '@/data/positions';
 import { canonicalCoachId } from '@/lib/coach-ids';
+import { useHydrated } from '@/lib/use-hydrated';
 import type { CoachMotion } from '@/lib/coach-motion';
 import type { ChatMessage, Equipment, Goal } from '@/lib/types';
 import { colors, themedStyles } from '@/lib/theme';
@@ -44,7 +45,10 @@ export default function ChatScreen() {
   const params = useLocalSearchParams<PlanParams & { id: string; view?: string; day?: string }>();
   // Old links used the previous coach ids (e.g. /chat/lebron); send them to the renamed coach.
   const coachId = canonicalCoachId(String(params.id));
+  // The session starts from your saved profile and plan, which the static web HTML can't know.
+  const hydrated = useHydrated();
   if (coachId !== params.id) return <Redirect href={{ pathname: '/chat/[id]', params: { ...params, id: coachId } }} />;
+  if (!hydrated) return <View style={styles.screen} />;
   return <CoachSession key={`${params.id}:${params.view ?? ''}`} id={String(params.id)} parameters={params} />;
 }
 function CoachSession({ id, parameters }: { id: string; parameters: PlanParams & { view?: string; day?: string } }) {

@@ -126,7 +126,7 @@ __F*** it, we ball.__
 
 ## Contributors
 
-Joseph Karam/
-Ben Ervin/
-Carl Salazar/
-Gabriel Moskus-Solis/
+Joseph Karam  
+Ben Ervin  
+Carl Salazar  
+Gabriel Moskus-Solis  

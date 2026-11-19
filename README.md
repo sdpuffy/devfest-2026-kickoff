@@ -122,3 +122,11 @@ More detail, including deployment, is in [`athleet/README.md`](athleet/README.md
 <img src="swag.jpg" alt="The Harlem Globesluggers mascot, a yellow slug in a basketball jersey, spinning a ball on court" width="600">
 
 __F*** it, we ball.__
+
+
+## Contributors
+
+Joseph Karam
+Ben Ervin
+Carl Salazar
+Gabriel Moskus-Solis

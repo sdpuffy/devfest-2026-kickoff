@@ -8,10 +8,10 @@ import { colors, themedStyles } from '@/lib/theme';
 // Height of the bottom tab bar (ours or the tab navigator's) above the safe area.
 const TAB_BAR_HEIGHT = 56;
 
-// Screens without the button: the settings screens themselves, the coach session (its send
+// Screens without the button: the settings screens themselves, the sign-in screen, the coach session (its send
 // button and workout controls sit in the bottom-right corner), and the questionnaire (its
 // answers are in progress, and changing the theme there would reset them).
-const HIDDEN_ON = new Set(['settings', 'workout', 'plan', 'chat', 'questionnaire']);
+const HIDDEN_ON = new Set(['settings', 'account', 'workout', 'plan', 'chat', 'questionnaire']);
 
 /** The floating gear in the bottom-right corner that opens Settings. */
 export function SettingsButton() {
@@ -32,7 +32,7 @@ export function SettingsButton() {
       onPress={() => router.push('/settings' as any)}
       accessibilityRole="button"
       accessibilityLabel="Settings"
-      accessibilityHint="Change the theme, colors, text size and more."
+      accessibilityHint="Your account, theme, colors, text size and more."
       hitSlop={8}
       style={({ pressed }) => [styles.button, { bottom, right: 16 + insets.right }, pressed && styles.pressed]}>
       <Text style={styles.icon}>⚙︎</Text>

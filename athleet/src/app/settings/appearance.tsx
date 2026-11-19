@@ -1,10 +1,8 @@
-import { router } from 'expo-router';
 import type { ReactNode } from 'react';
 import { Pressable, ScrollView, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AccountSettings } from '@/components/account-settings';
-import { ResetOnboarding } from '@/components/reset-onboarding';
+import { SettingsHeader } from '@/components/settings-header';
 import { coachShortName, getCoach } from '@/data/coaches';
 import {
   resetAppearance,
@@ -29,7 +27,7 @@ import {
   type StyleContext,
 } from '@/lib/theme';
 
-// Settings → appearance and feel. This screen stays mounted while you change things, so it
+// Settings → Appearance & feel. This screen stays mounted while you change things, so it
 // reads everything through hooks (useAppearance / useTheme / useThemedStyles) and updates live.
 
 type Option<T> = { value: T; label: string };
@@ -70,9 +68,9 @@ const MASCOT: Option<AppearanceSettings['mascot']>[] = [
   { value: 'hidden', label: 'Hidden' },
 ];
 
-export default function SettingsScreen() {
+export default function AppearanceSettingsScreen() {
   const settings = useAppearance();
-  const { colors, dark, version } = useTheme();
+  const { colors, dark } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const selected = useSelectedPlan();
   const coach = selected ? getCoach(selected.coachId) : undefined;
@@ -83,18 +81,9 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <View style={styles.header}>
-        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} accessibilityRole="button" hitSlop={12}>
-          <Text style={styles.back}>← Back</Text>
-        </Pressable>
-        <Text style={styles.title} accessibilityRole="header">Settings</Text>
-        <View style={styles.headerSpacer} />
-      </View>
+      <SettingsHeader title="Appearance & feel" fallback="/settings" />
 
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Keyed by theme version so the form pieces redraw with the current look. */}
-        <AccountSettings key={`account-${version}`} />
-
         <Preview colors={colors} styles={styles} />
 
         {/* ── Theme ── */}
@@ -268,13 +257,6 @@ export default function SettingsScreen() {
             <Text style={styles.resetText}>Reset to defaults</Text>
           </Pressable>
         </Section>
-
-        {/* ── Demo ── (moved here from the home screen and Coaches tab) */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">Demo</Text>
-          {/* Keyed by theme version so it redraws with the current look while this screen stays open. */}
-          <ResetOnboarding key={version} />
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -388,10 +370,6 @@ function makeStyles({ colors: c }: StyleContext) {
   return {
     screen: { flex: 1, backgroundColor: c.bg },
     flex: { flex: 1, minWidth: 0 },
-    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: c.border },
-    back: { color: c.textSecondary, fontSize: 15, fontWeight: '600' },
-    title: { color: c.text, fontSize: 18, fontWeight: '800' },
-    headerSpacer: { width: 50 },
     content: { padding: 20, paddingBottom: 64, gap: 22, width: '100%', maxWidth: 560, alignSelf: 'center' },
 
     preview: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.borderStrong, borderRadius: 14, padding: 16, gap: 6 },
